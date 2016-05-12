@@ -16,7 +16,7 @@
                 })
                 .success(function (data, status) {
                     // TODO: temp order/truncate.  In future, use pretty pagination/infinite scrolling.
-                    mailCtrl.items = data.reverse().slice(0,10);
+                    mailCtrl.items = data.reverse().slice(0,50);
                 })
                 .error(function (data, status) {
                     //alert("Failed to query mail service.");
@@ -33,7 +33,11 @@
 
                 var modalInstance = $modal.open({
                     templateUrl: 'modal.html',
-                    controller: 'ModalCtrl as modalCtrl'
+                    controller: 'ModalCtrl as modalCtrl',
+                    backdrop: "static",
+                    windowClass: 'mail-details-modal',
+                    modalFade: true,
+
                 });
 
                 modalInstance.selectedMail = selectedMail;

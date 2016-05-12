@@ -13,3 +13,20 @@ body {
 .navbar {
     margin-bottom: 0 !important;
 }
+
+.mail-details-modal .modal-dialog {
+    width :40%;
+    height: 90%;
+    min-width: 800px;
+    min-height: 400px;
+}
+
+pre.mail-body-plaintext {
+
+    height: auto;
+    min-height: 200px;
+    max-height: 400px;
+    overflow: auto;
+    background-color: #fafafa;
+
+}

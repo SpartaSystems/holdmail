@@ -1,9 +1,46 @@
 <div class="modal-header">
-    <h3 class="modal-title">Modal</h3>
+    <h3 class="modal-title">Subject: {{selectedMail.subject}}</h3>
 </div>
 <div class="modal-body">
     <div>
-        <b>your selected item: {{selectedMail}}</b>
+
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">From</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static">{{selectedMail.senderEmail}}</p>
+                </div>
+                <label class="col-sm-2 control-label">To</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static"><span ng-repeat="recip in selectedMail.recipients">{{recip}}{{$last ? '' : ', '}}</span></p>
+                </div>
+                <label class="col-sm-2 control-label">Sent</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static">{{selectedMail.receivedDate | date:'medium'}}</p>
+                </div>
+            </div>
+        </form>
+
+        <pre class="mail-body-plaintext">{{selectedMail.messageBody}}</pre>
+
+        <!--
+        <uib-tabset active="activeForm">
+
+            <uib-tab index="0" heading="Plaintext">
+                PLAINTEXT
+            </uib-tab>
+
+            <uib-tab index="1" heading="HTML">
+                Some Tab Content
+            </uib-tab>
+
+            <uib-tab index="2" heading="Other Options">
+                More Tab Content
+            </uib-tab>
+
+        </uib-tabset>
+        -->
+
     </div>
 </div>
 <div class="modal-footer">

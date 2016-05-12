@@ -84,7 +84,7 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="item in mailCtrl.items" ng-click="mailCtrl.rowClick(item)">
-                        <td>{{item.receivedDate}}</td>
+                        <td>{{item.receivedDate | date:'medium'}}</td>
                         <td>{{item.identifier}}</td>
                         <td>{{item.senderEmail}}</td>
                         <td>{{item.subject}}</td>
