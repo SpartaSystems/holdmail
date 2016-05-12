@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="HoldMailApp">
+<head>
+    <title>HoldMailApp</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="css/mail.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+
+</head>
+
+<body ng-app="HoldMailApp" ng-controller="MailController as mailCtrl">
+
+<nav class="navbar navbar-default" role="navigation">
+
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">HoldMail</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navmenu">
+            <ul class="nav navbar-nav">
+                <li><a href="#">herp</a></li>
+                <li><a href="#">derp</a></li>
+                <li><a href="#">flerp</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+
+    <div class="row">
+
+        <div id="mailCriteriaAndResults" class="col-lg-12" >
+
+            <div id="mailCriteria" style="margin-bottom: 10px;">
+                <div>
+                    <h3>Mails
+                        <small>search for mail</small>
+                    </h3>
+                </div>
+                <div class="input-group">
+
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                                aria-expanded="false">By: Recipient Email <span class="caret"></span></button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#">Recipient Email</a></li>
+                            <li><a href="#">Subject</a></li>
+                            <li><a href="#">Sender Email</a></li>
+                            <li><a href="#">Sender Host</a></li>
+                        </ul>
+                    </div>
+
+                    <input id="mainSearchTxt" type="text" class="form-control"
+                           placeholder="Enter pattern, eg homer@simpsons.com or *@google.com">
+
+                        <span class="input-group-btn">
+                            <button id="mainSearchBut" class="btn btn-success" type="button"
+                                    ng-click="mailCtrl.queryMails()">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search!
+                            </button>
+                        </span>
+
+                </div>
+            </div>
+
+
+            <div id="mailResults">
+
+                <table class="table table-condensed table-striped table-bordered table-hover"
+                       ng-show="mailCtrl.hasNoResults()">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>ID</th>
+                        <th>From</th>
+                        <th>Name</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in mailCtrl.items" ng-click="mailCtrl.rowClick(item)">
+                        <td>{{item.receivedDate}}</td>
+                        <td>{{item.identifier}}</td>
+                        <td>{{item.senderEmail}}</td>
+                        <td>{{item.subject}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<br />
+
+<script src="vendor/angular/angular.js"></script>
+<script src="vendor/angular-route/angular-route.js"></script>
+<script src="vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+
+<script type="text/javascript" src="js/holdmail-app.js"></script>
+<script type="text/javascript" src="js/mailcontroller.js"></script>
+<script type="text/javascript" src="js/modalcontroller.js"></script>
+
+</body>
+
+
+</html>

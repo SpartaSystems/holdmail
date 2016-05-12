@@ -1,0 +1,15 @@
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    height: calc(100% - 100px); /* header */
+}
+
+.navbar {
+    margin-bottom: 0 !important;
+}
