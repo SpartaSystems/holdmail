@@ -1,7 +1,8 @@
 package com.spartasystems.holdmail.service;
 
 import com.spartasystems.holdmail.MessageMapper;
-import com.spartasystems.holdmail.model.MessageModel;
+import com.spartasystems.holdmail.model.Message;
+import com.spartasystems.holdmail.model.MessageList;
 import com.spartasystems.holdmail.persistence.MessageEntity;
 import com.spartasystems.holdmail.persistence.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +20,27 @@ public class MessageService {
     @Autowired
     private MessageMapper messageMapper;
 
-    public MessageModel saveIncomingMessage(MessageModel message) {
+    public Message saveMessage(Message message) {
 
-        MessageEntity entity = messageMapper.toEntity(message);
+        MessageEntity entity = messageMapper.fromMessage(message);
 
         entity = messageRepository.save(entity);
 
-        return messageMapper.fromEntity(entity);
+        return messageMapper.toMessage(entity);
     }
 
-    // TODO: perhaps more approrpiate not to load the whole entity (read: body) for a list
-    public List<MessageModel> loadAll() {
+    public Message getMessage(long messageId) {
 
-        List<MessageEntity> allEntities = messageRepository.findAll();
+        MessageEntity entity = messageRepository.findOne(messageId);
 
-        return allEntities.stream()
-                          .map(e -> messageMapper.fromEntity(e))
-                          .collect(Collectors.toList());
+        return messageMapper.toMessage(entity);
+    }
+
+    public MessageList loadAll() {
+
+        List<MessageEntity> allEntities = messageRepository.findAllByOrderByReceivedDateDesc();
+
+        return messageMapper.toMessageList(allEntities);
 
     }
 

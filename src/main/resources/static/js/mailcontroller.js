@@ -9,19 +9,19 @@
 
             mailCtrl.items = [];
 
-            mailCtrl.queryMails = function () {
+            mailCtrl.loadMessageList = function () {
                 $http({
                     method: 'GET',
                     url: '/rest/messages'
                 })
-                .success(function (data, status) {
-                    // TODO: temp order/truncate.  In future, use pretty pagination/infinite scrolling.
-                    mailCtrl.items = data.reverse().slice(0,50);
-                })
-                .error(function (data, status) {
-                    //alert("Failed to query mail service.");
-                });
+                    .success(function (data, status) {
+                        mailCtrl.items = data.messages;
+                    })
+                    .error(function (data, status) {
+                        //alert("Failed to query mail service.");
+                    });
             };
+
 
             mailCtrl.hasNoResults = function () {
 
@@ -31,21 +31,35 @@
 
             mailCtrl.rowClick = function (selectedMail) {
 
-                var modalInstance = $modal.open({
-                    templateUrl: 'modal.html',
-                    controller: 'ModalCtrl as modalCtrl',
-                    backdrop: "static",
-                    windowClass: 'mail-details-modal',
-                    modalFade: true,
+                $http({
+                    method: 'GET',
+                    url: '/rest/messages/' + selectedMail.messageId
+                })
+                    .success(function (data, status) {
 
-                });
+                        var modalInstance = $modal.open({
+                            templateUrl: 'modal.html',
+                            controller: 'ModalCtrl as modalCtrl',
+                            backdrop: "static",
+                            windowClass: 'mail-details-modal',
+                            modalFade: true
 
-                modalInstance.selectedMail = selectedMail;
+                        });
+
+                        modalInstance.message = data;
+
+                    })
+                    .error(function (data, status) {
+                        //alert("Failed to query mail service.");
+                    });
+
+
+
             };
 
             //alert('routeParams = ' + JSON.stringify($routeParams));
 
-            mailCtrl.queryMails();
+            mailCtrl.loadMessageList();
 
         }]);
 

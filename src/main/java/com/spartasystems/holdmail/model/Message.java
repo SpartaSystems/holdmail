@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class MessageModel {
+public class Message {
 
     private String identifier;
     private String subject;
@@ -21,11 +21,11 @@ public class MessageModel {
     private List<String>              recipients = new ArrayList<>();
     private Map<String, List<String>> headers    = new HashMap<>();
 
-    public MessageModel() {
+    public Message() {
         this(null);
     }
 
-    public MessageModel(String identifier) {
+    public Message(String identifier) {
         setIdentifier(identifier);
     }
 

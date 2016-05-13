@@ -1,11 +1,10 @@
-
 (function () {
     'use strict';
 
     angular.module('HoldMailApp')
-        .controller('ModalCtrl', ['$scope', '$uibModalInstance', function ($scope, $modalInstance) {
+        .controller('ModalCtrl', ['$scope', '$uibModalInstance', '$http', function ($scope, $modalInstance, $http) {
 
-            $scope.selectedMail = $modalInstance.selectedMail;
+            $scope.message = $modalInstance.message;
 
             var modalCtrl = this;
 

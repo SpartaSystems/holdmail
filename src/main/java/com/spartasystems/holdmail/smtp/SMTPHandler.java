@@ -1,6 +1,6 @@
 package com.spartasystems.holdmail.smtp;
 
-import com.spartasystems.holdmail.model.MessageModel;
+import com.spartasystems.holdmail.model.Message;
 import com.spartasystems.holdmail.service.MessageService;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.CharEncoding;
@@ -34,7 +34,7 @@ public class SMTPHandler implements MessageHandler {
 
     private Logger logger = LoggerFactory.getLogger(SMTPHandler.class);
 
-    private MessageModel message;
+    private Message message;
 
     @Autowired
     private MessageService messageService;
@@ -48,7 +48,7 @@ public class SMTPHandler implements MessageHandler {
 
         InetSocketAddress senderHost = (InetSocketAddress) ctx.getRemoteAddress();
 
-        message = new MessageModel();
+        message = new Message();
         message.setSenderHost(senderHost.getAddress().getHostAddress());
         message.setReceivedDate(new Date());
 
@@ -84,7 +84,7 @@ public class SMTPHandler implements MessageHandler {
             message.setSubject(headers.get("Subject").get(0));
             message.setHeaders(headers);
 
-            messageService.saveIncomingMessage(message);
+            messageService.saveMessage(message);
 
             logger.info("Stored mail from " + message.getSenderEmail()
                     + " to " + StringUtils.join(message.getRecipients(), ","));

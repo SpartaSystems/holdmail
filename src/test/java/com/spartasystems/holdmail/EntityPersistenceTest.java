@@ -8,7 +8,7 @@ import com.spartasystems.holdmail.persistence.MessageRepository;
 import org.hibernate.AssertionFailure;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+//import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import javax.transaction.Transactional;
 import java.util.Date;

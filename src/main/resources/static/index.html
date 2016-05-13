@@ -61,7 +61,7 @@
 
                         <span class="input-group-btn">
                             <button id="mainSearchBut" class="btn btn-success" type="button"
-                                    ng-click="mailCtrl.queryMails()">
+                                    ng-click="mailCtrl.loadMessageList()">
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search!
                             </button>
                         </span>
@@ -76,17 +76,19 @@
                        ng-show="mailCtrl.hasNoResults()">
                     <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>ID</th>
-                        <th>From</th>
-                        <th>Name</th>
+                        <th width="2%">ID</th>
+                        <th width="8%">Received</th>
+                        <th width="15%">From</th>
+                        <th width="25%">Recipients</th>
+                        <th width="50%">Subject</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="item in mailCtrl.items" ng-click="mailCtrl.rowClick(item)">
-                        <td>{{item.receivedDate | date:'medium'}}</td>
-                        <td>{{item.identifier}}</td>
-                        <td>{{item.senderEmail}}</td>
+                        <td nowrap>{{item.messageId}}</td>
+                        <td nowrap>{{item.receivedDate | date:'medium'}}</td>
+                        <td nowrap>{{item.senderEmail}}</td>
+                        <td>{{item.recipients}}</td>
                         <td>{{item.subject}}</td>
                     </tr>
                     </tbody>

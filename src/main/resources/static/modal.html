@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3 class="modal-title">Subject: {{selectedMail.subject}}</h3>
+    <h3 class="modal-title">Subject: {{message.subject}}</h3>
 </div>
 <div class="modal-body">
     <div>
@@ -8,20 +8,20 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">From</label>
                 <div class="col-sm-10">
-                    <p class="form-control-static">{{selectedMail.senderEmail}}</p>
+                    <p class="form-control-static">{{message.senderEmail}}</p>
                 </div>
-                <label class="col-sm-2 control-label">To</label>
+                <label class="col-sm-2 control-label">Recipient(s)</label>
                 <div class="col-sm-10">
-                    <p class="form-control-static"><span ng-repeat="recip in selectedMail.recipients">{{recip}}{{$last ? '' : ', '}}</span></p>
+                    <p class="form-control-static"><span ng-repeat="recip in message.recipients">{{recip}}{{$last ? '' : ', '}}</span></p>
                 </div>
                 <label class="col-sm-2 control-label">Sent</label>
                 <div class="col-sm-10">
-                    <p class="form-control-static">{{selectedMail.receivedDate | date:'medium'}}</p>
+                    <p class="form-control-static">{{message.receivedDate | date:'medium'}}</p>
                 </div>
             </div>
         </form>
 
-        <pre class="mail-body-plaintext">{{selectedMail.messageBody}}</pre>
+        <pre class="mail-body-plaintext">{{message.messageBody}}</pre>
 
         <!--
         <uib-tabset active="activeForm">
