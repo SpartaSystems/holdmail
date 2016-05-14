@@ -8,7 +8,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">From</label>
                 <div class="col-sm-10">
-                    <p class="form-control-static">{{message.senderEmail}}</p>
+                    <p class="form-control-static">{{message.messageId}}</p>
                 </div>
                 <label class="col-sm-2 control-label">Recipient(s)</label>
                 <div class="col-sm-10">
@@ -21,7 +21,11 @@
             </div>
         </form>
 
-        <pre class="mail-body-plaintext">{{message.messageBody}}</pre>
+        <!--<pre class="mail-body-plaintext">{{message.messageBody}}</pre>-->
+
+
+        <iframe width="99.6%" height="400" src="{{messageDownloadURL}}">
+        </iframe>
 
         <!--
         <uib-tabset active="activeForm">

@@ -6,6 +6,9 @@
 
             $scope.message = $modalInstance.message;
 
+            // todo: let backend determine content type
+            $scope.messageDownloadURL = '/rest/messages/' + $scope.message.messageId + '/content?mode=HTML';
+
             var modalCtrl = this;
 
             modalCtrl.close = function () {

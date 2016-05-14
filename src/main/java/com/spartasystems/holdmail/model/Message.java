@@ -11,6 +11,7 @@ import java.util.UUID;
 
 public class Message {
 
+    private long messageId;
     private String identifier;
     private String subject;
     private       String senderEmail;
@@ -36,6 +37,14 @@ public class Message {
         else {
             this.identifier = identifier;
         }
+    }
+
+    public long getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(long messageId) {
+        this.messageId = messageId;
     }
 
     public String getIdentifier() {

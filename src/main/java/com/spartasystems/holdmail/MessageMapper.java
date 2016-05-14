@@ -70,6 +70,7 @@ public class MessageMapper {
     public Message toMessage(MessageEntity entity) {
 
         Message model = new Message();
+        model.setMessageId(entity.getMessageId());
         model.setIdentifier(entity.getIdentifier());
         model.setSubject(entity.getSubject());
         model.setSenderEmail(entity.getSenderEmail());

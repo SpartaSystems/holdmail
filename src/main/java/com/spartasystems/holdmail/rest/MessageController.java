@@ -3,14 +3,17 @@ package com.spartasystems.holdmail.rest;
 import com.spartasystems.holdmail.model.Message;
 import com.spartasystems.holdmail.model.MessageList;
 import com.spartasystems.holdmail.model.MessageListItem;
+import com.spartasystems.holdmail.rest.mime.MessageMimeConverter;
 import com.spartasystems.holdmail.service.MessageService;
-import edu.emory.mathcs.backport.java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.ByteArrayInputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +25,9 @@ public class MessageController {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private MessageMimeConverter messageMimeConverter;
 
     @RequestMapping(method = GET)
     public MessageList listMessages() {
@@ -44,6 +50,16 @@ public class MessageController {
     public Message getMessage(@PathVariable long messageId) {
 
         return messageService.getMessage(messageId);
+
+    }
+
+    @RequestMapping(value = "/{messageId}/content", method = GET)
+    public ResponseEntity getMessageContent(@PathVariable("messageId") long messageId,
+                                        @RequestParam(value = "mode", defaultValue = "TEXT") String mode) throws Exception {
+
+        String messageBody = messageService.getMessage(messageId).getMessageBody();
+
+        return messageMimeConverter.convertContentType(new ByteArrayInputStream(messageBody.getBytes()), null, mode);
 
     }
 }
