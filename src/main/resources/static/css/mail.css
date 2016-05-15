@@ -21,12 +21,3 @@ body {
     min-height: 400px;
 }
 
-pre.mail-body-plaintext {
-
-    height: auto;
-    min-height: 200px;
-    max-height: 400px;
-    overflow: auto;
-    background-color: #fafafa;
-
-}

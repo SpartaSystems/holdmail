@@ -3,8 +3,11 @@ package com.spartasystems.holdmail.rest;
 import com.spartasystems.holdmail.model.Message;
 import com.spartasystems.holdmail.model.MessageList;
 import com.spartasystems.holdmail.model.MessageListItem;
-import com.spartasystems.holdmail.rest.mime.MessageMimeConverter;
+import com.spartasystems.holdmail.rest.mime.MimeBodyPart;
+import com.spartasystems.holdmail.rest.mime.MimeBodyParts;
+import com.spartasystems.holdmail.rest.mime.MimeBodyParser;
 import com.spartasystems.holdmail.service.MessageService;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -27,7 +31,7 @@ public class MessageController {
     private MessageService messageService;
 
     @Autowired
-    private MessageMimeConverter messageMimeConverter;
+    private MimeBodyParser mimeBodyParser;
 
     @RequestMapping(method = GET)
     public MessageList listMessages() {
@@ -59,7 +63,24 @@ public class MessageController {
 
         String messageBody = messageService.getMessage(messageId).getMessageBody();
 
-        return messageMimeConverter.convertContentType(new ByteArrayInputStream(messageBody.getBytes()), null, mode);
+        MimeBodyParts allBodyParts = mimeBodyParser
+                .findAllBodyParts(IOUtils.toInputStream(messageBody, StandardCharsets.UTF_8));
+
+        Optional<MimeBodyPart> htmlBody = allBodyParts.findFirstHTMLBody();
+        if(htmlBody.isPresent()){
+            return htmlBody.get().toResponseEntity();
+        }
+
+        Optional<MimeBodyPart> textBody = allBodyParts.findFirstTextBody();
+        if(textBody.isPresent()){
+            return textBody.get().toResponseEntity();
+        }
+        //        return messageMimeConverter.convertContentType(new ByteArrayInputStream(messageBody.getBytes()), null, mode);
+
+        return ResponseEntity.ok()
+                             .header("Content-type: text/plain")
+                             .body("no html or text found to serve. I have: \r\n" + allBodyParts);
+
 
     }
 }
