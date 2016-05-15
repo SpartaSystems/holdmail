@@ -5,11 +5,15 @@ import com.spartasystems.holdmail.model.Message;
 import com.spartasystems.holdmail.model.MessageList;
 import com.spartasystems.holdmail.persistence.MessageEntity;
 import com.spartasystems.holdmail.persistence.MessageRepository;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.Null;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.Collections.singletonList;
 
 @Component
 public class MessageService {
@@ -36,11 +40,18 @@ public class MessageService {
         return messageMapper.toMessage(entity);
     }
 
-    public MessageList loadAll() {
+    public MessageList findMessages(@Null @Email String recipientEmail) {
 
-        List<MessageEntity> allEntities = messageRepository.findAllByOrderByReceivedDateDesc();
+        List<MessageEntity> entities;
 
-        return messageMapper.toMessageList(allEntities);
+        if(StringUtils.isBlank(recipientEmail)) {
+            entities = messageRepository.findAllByOrderByReceivedDateDesc();
+        }
+        else {
+            entities = messageRepository.findAllForRecipientOrderByReceivedDateDesc(recipientEmail);
+        }
+
+        return messageMapper.toMessageList(entities);
 
     }
 

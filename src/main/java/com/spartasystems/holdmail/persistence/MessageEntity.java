@@ -21,7 +21,7 @@ import java.util.Set;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 
-@Entity
+@Entity()
 @Table(name = "message")
 public class MessageEntity {
 

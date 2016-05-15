@@ -10,9 +10,18 @@
             mailCtrl.items = [];
 
             mailCtrl.loadMessageList = function () {
+
+                var findMessagesREST = '/rest/messages';
+
+                if($scope.recipientEmail) {
+                    findMessagesREST = '/rest/messages?recipient=' + $scope.recipientEmail;
+                }
+
+                mailCtrl.items = [];
+
                 $http({
                     method: 'GET',
-                    url: '/rest/messages'
+                    url: findMessagesREST
                 })
                     .success(function (data, status) {
                         mailCtrl.items = data.messages;
