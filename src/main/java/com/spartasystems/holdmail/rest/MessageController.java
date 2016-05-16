@@ -37,10 +37,10 @@ public class MessageController {
 
         // TODO: pagination needed, limit for now
         List<MessageListItem> messages = messageList.getMessages();
-        if(messages.size() > 100) {
-            messageList.setMessages(messages.subList(0, 100));
+        if(messages.size() > 150) {
+            messageList.setMessages(messages.subList(0, 150));
             messageList.getMessages().add(new MessageListItem(0, new Date().getTime(),
-                    "system", "system", "hold-mail return max 100 mails (for now)"));
+                    "system", "system", "hold-mail return max 150 mails (for now)"));
         }
 
         return messageList;
@@ -60,6 +60,10 @@ public class MessageController {
 
         Message message = messageService.getMessage(messageId);
         MessageSummary summary = messageSummaryMapper.toMessageSummary(message);
+
+        if(summary.getMessageBodyHTML() == null){
+            return ResponseEntity.notFound().build();
+        }
 
         return ResponseEntity.ok()
                              .contentType(MediaType.TEXT_HTML)

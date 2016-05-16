@@ -79,6 +79,14 @@ public class MessageSummary {
         return messageBodyText;
     }
 
+    public boolean getMessageHasBodyHTML() {
+        return getMessageBodyHTML() != null;
+    }
+
+    public boolean getMessageHasBodyText() {
+        return getMessageBodyText() != null;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

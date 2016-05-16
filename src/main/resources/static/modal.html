@@ -5,12 +5,14 @@
 
     <uib-tabset active="activeForm" class="mail-summary">
 
-        <uib-tab index="0" heading="HTML Body">
+        <!-- TODO: fix auto-selection of first tab when first tab not shown -->
+
+        <uib-tab index="0" heading="HTML Body" ng-show="message.messageHasBodyHTML">
             <div ng-include src="'includes/mail-meta.html'" class="mail-summary-meta"></div>
             <iframe class="mail-summary-content mail-summary-content-html" src="{{messageHTMLURL}}"></iframe>
         </uib-tab>
 
-        <uib-tab index="1" heading="Text Body">
+        <uib-tab index="1" heading="Text Body" ng-show="message.messageHasBodyText">
             <div ng-include src="'includes/mail-meta.html'"></div>
             <div class="mail-summary-content mail-summary-content-pre">{{message.messageBodyText}}</div>
         </uib-tab>
