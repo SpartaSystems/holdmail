@@ -7,11 +7,11 @@
         function($routeProvider) {
             $routeProvider.when('/mails', {
                             templateUrl: 'index.html',
-                            controller: 'MailController'
+                            controller: 'MessageListController'
                             })
                             .when('/mails/:mailId', {
                                 templateUrl: 'index.html',
-                                controller: 'MailController'
+                                controller: 'MessageListController'
                             })
                             .otherwise({
                                 redirectTo: '/mails'

@@ -1,15 +1,15 @@
 (function () {
     'use strict';
 
-    angular.module('HoldMailApp')
+    angular.module('HoldMailApp', ['ui.bootstrap'])
 
-        .controller('MailController', ['$scope', '$uibModal', '$http', '$routeParams', function ($scope, $modal, $http, $routeParams) {
+        .controller('MessageListController', ['$scope', '$uibModal', '$http', function ($scope, $modal, $http) {
 
-            var mailCtrl = this;
+            var mainCtrl = this;
 
-            mailCtrl.items = [];
+            mainCtrl.items = [];
 
-            mailCtrl.loadMessageList = function () {
+            mainCtrl.loadMessageList = function () {
 
                 var findMessagesREST = '/rest/messages';
 
@@ -17,14 +17,14 @@
                     findMessagesREST = '/rest/messages?recipient=' + $scope.recipientEmail;
                 }
 
-                mailCtrl.items = [];
+                mainCtrl.items = [];
 
                 $http({
                     method: 'GET',
                     url: findMessagesREST
                 })
                     .success(function (data, status) {
-                        mailCtrl.items = data.messages;
+                        mainCtrl.items = data.messages;
                     })
                     .error(function (data, status) {
                         //alert("Failed to query mail service.");
@@ -32,13 +32,13 @@
             };
 
 
-            mailCtrl.hasNoResults = function () {
+            mainCtrl.hasNoResults = function () {
 
-                return mailCtrl.items;
+                return mainCtrl.items;
 
             };
 
-            mailCtrl.rowClick = function (selectedMail) {
+            mainCtrl.rowClick = function (selectedMail) {
 
                 $http({
                     method: 'GET',
@@ -66,9 +66,7 @@
 
             };
 
-            //alert('routeParams = ' + JSON.stringify($routeParams));
-
-            mailCtrl.loadMessageList();
+            mainCtrl.loadMessageList();
 
         }]);
 
