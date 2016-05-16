@@ -1,13 +1,11 @@
 package com.spartasystems.holdmail.rest;
 
-import com.spartasystems.holdmail.model.Message;
+import com.spartasystems.holdmail.domain.Message;
+import com.spartasystems.holdmail.mapper.MessageSummaryMapper;
 import com.spartasystems.holdmail.model.MessageList;
 import com.spartasystems.holdmail.model.MessageListItem;
-import com.spartasystems.holdmail.rest.mime.MimeBodyParser;
-import com.spartasystems.holdmail.rest.mime.MimeBodyPart;
-import com.spartasystems.holdmail.rest.mime.MimeBodyParts;
+import com.spartasystems.holdmail.model.MessageSummary;
 import com.spartasystems.holdmail.service.MessageService;
-import org.apache.commons.io.IOUtils;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,11 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -33,7 +28,7 @@ public class MessageController {
     private MessageService messageService;
 
     @Autowired
-    private MimeBodyParser mimeBodyParser;
+    private MessageSummaryMapper messageSummaryMapper;
 
     @RequestMapping(method = GET)
     public MessageList getMessages(@RequestParam(name="recipient", required = false) @Email String recipientEmail) {
@@ -53,35 +48,21 @@ public class MessageController {
 
 
     @RequestMapping(value = "/{messageId}", method = GET)
-    public Message getMessage(@PathVariable long messageId) {
-
-        return messageService.getMessage(messageId);
-
-    }
-
-    @RequestMapping(value = "/{messageId}/content", method = GET)
     public ResponseEntity getMessageContent(@PathVariable("messageId") long messageId) throws Exception {
 
-        String messageBody = messageService.getMessage(messageId).getMessageBody();
+        Message message = messageService.getMessage(messageId);
+        MessageSummary summary = messageSummaryMapper.toMessageSummary(message);
+        return ResponseEntity.ok().body(summary);
+    }
 
-        MimeBodyParts allBodyParts = mimeBodyParser
-                .findAllBodyParts(IOUtils.toInputStream(messageBody, StandardCharsets.UTF_8));
+    @RequestMapping(value = "/{messageId}/html", method = GET)
+    public ResponseEntity getMessageContentHTML(@PathVariable("messageId") long messageId) throws Exception {
 
-        Optional<MimeBodyPart> htmlBody = allBodyParts.findFirstHTMLBody();
-        if(htmlBody.isPresent()){
-            return htmlBody.get().toResponseEntity();
-        }
-
-        Optional<MimeBodyPart> textBody = allBodyParts.findFirstTextBody();
-        if(textBody.isPresent()){
-            return textBody.get().toResponseEntity();
-        }
-        //        return messageMimeConverter.convertContentType(new ByteArrayInputStream(messageBody.getBytes()), null, mode);
+        Message message = messageService.getMessage(messageId);
+        MessageSummary summary = messageSummaryMapper.toMessageSummary(message);
 
         return ResponseEntity.ok()
-                             .header("Content-type: text/plain")
-                             .body("no html or text found to serve. I have: \r\n" + allBodyParts);
-
-
+                             .contentType(MediaType.TEXT_HTML)
+                             .body(summary.getMessageBodyHTML());
     }
 }

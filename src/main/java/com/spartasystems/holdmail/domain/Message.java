@@ -1,4 +1,4 @@
-package com.spartasystems.holdmail.model;
+package com.spartasystems.holdmail.domain;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -11,14 +11,14 @@ import java.util.UUID;
 
 public class Message {
 
-    private long messageId;
-    private String identifier;
-    private String subject;
+    private long         messageId;
+    private String       identifier;
+    private String       subject;
     private       String senderEmail;
-    private Date   receivedDate;
-    private String senderHost;
-    private int    messageSize;
-    private String messageBody;
+    private Date         receivedDate;
+    private String       senderHost;
+    private int          messageSize;
+    private String       rawMessage;
     private List<String>              recipients = new ArrayList<>();
     private Map<String, List<String>> headers    = new HashMap<>();
 
@@ -91,12 +91,12 @@ public class Message {
         this.messageSize = messageSize;
     }
 
-    public String getMessageBody() {
-        return messageBody;
+    public String getRawMessage() {
+        return rawMessage;
     }
 
-    public void setMessageBody(String messageBody) {
-        this.messageBody = messageBody;
+    public void getRawMessageBody(String rawMessageBody) {
+        this.rawMessage = rawMessageBody;
     }
 
     public List<String> getRecipients() {

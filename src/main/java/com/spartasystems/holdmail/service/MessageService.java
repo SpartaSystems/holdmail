@@ -1,7 +1,8 @@
 package com.spartasystems.holdmail.service;
 
-import com.spartasystems.holdmail.MessageMapper;
-import com.spartasystems.holdmail.model.Message;
+import com.spartasystems.holdmail.domain.Message;
+import com.spartasystems.holdmail.mapper.MessageListMapper;
+import com.spartasystems.holdmail.mapper.MessageMapper;
 import com.spartasystems.holdmail.model.MessageList;
 import com.spartasystems.holdmail.persistence.MessageEntity;
 import com.spartasystems.holdmail.persistence.MessageRepository;
@@ -13,8 +14,6 @@ import org.springframework.stereotype.Component;
 import javax.validation.constraints.Null;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
-
 @Component
 public class MessageService {
 
@@ -24,20 +23,23 @@ public class MessageService {
     @Autowired
     private MessageMapper messageMapper;
 
+    @Autowired
+    private MessageListMapper messageListMapper;
+
     public Message saveMessage(Message message) {
 
-        MessageEntity entity = messageMapper.fromMessage(message);
+        MessageEntity entity = messageMapper.fromDomain(message);
 
         entity = messageRepository.save(entity);
 
-        return messageMapper.toMessage(entity);
+        return messageMapper.toDomain(entity);
     }
 
     public Message getMessage(long messageId) {
 
         MessageEntity entity = messageRepository.findOne(messageId);
 
-        return messageMapper.toMessage(entity);
+        return messageMapper.toDomain(entity);
     }
 
     public MessageList findMessages(@Null @Email String recipientEmail) {
@@ -51,7 +53,7 @@ public class MessageService {
             entities = messageRepository.findAllForRecipientOrderByReceivedDateDesc(recipientEmail);
         }
 
-        return messageMapper.toMessageList(entities);
+        return messageListMapper.toMessageList(entities);
 
     }
 

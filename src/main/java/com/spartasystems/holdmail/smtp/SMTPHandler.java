@@ -1,6 +1,6 @@
 package com.spartasystems.holdmail.smtp;
 
-import com.spartasystems.holdmail.model.Message;
+import com.spartasystems.holdmail.domain.Message;
 import com.spartasystems.holdmail.service.MessageService;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.CharEncoding;
@@ -67,7 +67,7 @@ public class SMTPHandler implements MessageHandler {
 
         data = IOUtils.toByteArray(is);
         message.setMessageSize(data.length);
-        message.setMessageBody(IOUtils.toString(data, CharEncoding.UTF_8));
+        message.getRawMessageBody(IOUtils.toString(data, CharEncoding.UTF_8));
     }
 
     public void done() {

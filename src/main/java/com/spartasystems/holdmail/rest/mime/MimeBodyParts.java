@@ -5,7 +5,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class MimeBodyParts {
 
@@ -19,12 +18,12 @@ public class MimeBodyParts {
         this.bodyPartList.add(bodyPart);
     }
 
-    public Optional<MimeBodyPart> findFirstHTMLBody() {
-        return bodyPartList.stream().filter(MimeBodyPart::isHTML).findFirst();
+    public MimeBodyPart findFirstHTMLBody() {
+        return bodyPartList.stream().filter(MimeBodyPart::isHTML).findFirst().orElse(null);
     }
 
-    public Optional<MimeBodyPart> findFirstTextBody() {
-        return bodyPartList.stream().filter(MimeBodyPart::isText).findFirst();
+    public MimeBodyPart findFirstTextBody() {
+        return bodyPartList.stream().filter(MimeBodyPart::isText).findFirst().orElse(null);
     }
 
     @Override

@@ -1,12 +1,10 @@
 package com.spartasystems.holdmail.rest.mime;
 
 import org.apache.commons.io.IOUtils;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.ResponseEntity;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,15 +29,12 @@ public class MimeBodyPart {
         return type != null && type.startsWith("text/plain");
     }
 
-    public void addContent(InputStream in) throws IOException {
+    public void setContent(InputStream in) throws IOException {
         this.content = IOUtils.toByteArray(in);
     }
 
-    // TODO: split into parser
-    public ResponseEntity toResponseEntity() {
-        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
-        headers.forEach(builder::header);
-        return builder.body(new InputStreamResource(new ByteArrayInputStream(content)));
+    public String getContentString() {
+        return this.content == null ? null : new String(content, StandardCharsets.UTF_8);
     }
 
     @Override

@@ -36,7 +36,7 @@ class MimeBodyPartsExtractor extends AbstractContentHandler {
     @Override
     public void body(BodyDescriptor bd, InputStream is) throws MimeException, IOException {
 
-        nextPotentialPart.addContent(is);
+        nextPotentialPart.setContent(is);
         foundBodyParts.addBodyPart(nextPotentialPart);
 
     }

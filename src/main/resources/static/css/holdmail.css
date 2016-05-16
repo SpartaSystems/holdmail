@@ -21,3 +21,48 @@ body {
     min-height: 400px;
 }
 
+.mail-details-modal .modal-header {
+
+    padding: 5px 15px 0 15px;
+    border-bottom: 0;
+
+}
+
+.mail-details-modal .modal-body {
+    padding: 5px;
+}
+
+.mail-summary {
+    height: 500px;
+    flex-direction: column;
+}
+
+.mail-summary-meta {
+
+}
+
+.mail-summary-content {
+
+    width: 100%;
+    height: 330px;
+    border: 1px solid #dddddd;
+    /*margin: 0 15px 5px 15px;*/
+    padding: 5px;
+
+}
+
+.mail-summary-content-pre {
+    background-color: #eeeeee;
+    white-space: pre;
+    font-family: monospace;
+    overflow: auto;
+}
+
+.mail-summary-content-html {
+
+}
+
+.mail-summary-content-raw {
+    margin-top: 10px;
+    height: 430px;
+}
