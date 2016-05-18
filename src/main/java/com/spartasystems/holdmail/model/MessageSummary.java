@@ -1,5 +1,8 @@
 package com.spartasystems.holdmail.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.spartasystems.holdmail.rest.mime.MimeBodyPart;
+import com.spartasystems.holdmail.rest.mime.MimeBodyParts;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -16,12 +19,11 @@ public class MessageSummary {
     private int    messageSize;
     private String recipients;
     private String messageRaw;
-    private String messageBodyHTML;
-    private String messageBodyText;
+    private MimeBodyParts mimeBodyParts;
 
     public MessageSummary(long messageId, String identifier, String subject, String senderEmail,
             Date receivedDate, String senderHost, int messageSize, String recipients, String messageRaw,
-            String messageBodyHTML, String messageBodyText) {
+            MimeBodyParts mimeBodyParts) {
         this.messageId = messageId;
         this.identifier = identifier;
         this.subject = subject;
@@ -31,8 +33,7 @@ public class MessageSummary {
         this.messageSize = messageSize;
         this.recipients = recipients;
         this.messageRaw = messageRaw;
-        this.messageBodyHTML = messageBodyHTML;
-        this.messageBodyText = messageBodyText;
+        this.mimeBodyParts = mimeBodyParts;
     }
 
     public long getMessageId() {
@@ -72,11 +73,18 @@ public class MessageSummary {
     }
 
     public String getMessageBodyHTML() {
-        return messageBodyHTML;
+        MimeBodyPart mime = mimeBodyParts.findFirstHTMLBody();
+        return mime == null ? null : mime.getContentString();
     }
 
     public String getMessageBodyText() {
-        return messageBodyText;
+        MimeBodyPart mime = mimeBodyParts.findFirstTextBody();
+        return mime == null ? null : mime.getContentString();
+    }
+
+    @JsonIgnore
+    public MimeBodyPart getMessageContentById(String contentId) {
+        return mimeBodyParts.findByContentId(contentId);
     }
 
     public boolean getMessageHasBodyHTML() {

@@ -26,6 +26,10 @@ public class MimeBodyParts {
         return bodyPartList.stream().filter(MimeBodyPart::isText).findFirst().orElse(null);
     }
 
+    public MimeBodyPart findByContentId(String contentId) {
+        return bodyPartList.stream().filter(b -> b.hasContentId(contentId)).findFirst().orElse(null);
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

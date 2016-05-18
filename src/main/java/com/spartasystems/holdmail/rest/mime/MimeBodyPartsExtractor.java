@@ -28,7 +28,7 @@ class MimeBodyPartsExtractor extends AbstractContentHandler {
 
         // field may have been called after a message container header()
         if(nextPotentialPart != null) {
-            nextPotentialPart.addHeader(field.getName(), field.getBody());
+            nextPotentialPart.setHeader(field.getName(), field.getBody());
         }
     }
 

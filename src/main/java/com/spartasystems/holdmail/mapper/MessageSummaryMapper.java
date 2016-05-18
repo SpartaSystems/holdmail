@@ -3,7 +3,6 @@ package com.spartasystems.holdmail.mapper;
 import com.spartasystems.holdmail.domain.Message;
 import com.spartasystems.holdmail.model.MessageSummary;
 import com.spartasystems.holdmail.rest.mime.MimeBodyParser;
-import com.spartasystems.holdmail.rest.mime.MimeBodyPart;
 import com.spartasystems.holdmail.rest.mime.MimeBodyParts;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,21 +23,8 @@ public class MessageSummaryMapper {
 
         String rawContent = message.getRawMessage();
 
-        MimeBodyParts allBodyParts = mimeBodyParser
-                .findAllBodyParts(IOUtils.toInputStream(rawContent, StandardCharsets.UTF_8));
-
-        String htmlContent = null;
-        String textContent = null;
-
-        MimeBodyPart htmlBody = allBodyParts.findFirstHTMLBody();
-        if(htmlBody != null){
-            htmlContent = htmlBody.getContentString();
-        }
-
-        MimeBodyPart textBody = allBodyParts.findFirstTextBody();
-        if(textBody != null){
-            textContent = textBody.getContentString();
-        }
+        MimeBodyParts allBodyParts = mimeBodyParser.findAllBodyParts(
+                IOUtils.toInputStream(rawContent, StandardCharsets.UTF_8));
 
         return new MessageSummary(
                 message.getMessageId(),
@@ -50,8 +36,7 @@ public class MessageSummaryMapper {
                 message.getMessageSize(),
                 StringUtils.join(message.getRecipients(), ","),
                 message.getRawMessage(),
-                htmlContent,
-                textContent);
+                allBodyParts);
 
     }
 

@@ -5,9 +5,11 @@ import com.spartasystems.holdmail.mapper.MessageSummaryMapper;
 import com.spartasystems.holdmail.model.MessageList;
 import com.spartasystems.holdmail.model.MessageListItem;
 import com.spartasystems.holdmail.model.MessageSummary;
+import com.spartasystems.holdmail.rest.mime.MimeBodyPart;
 import com.spartasystems.holdmail.service.MessageService;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Date;
 import java.util.List;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.http.MediaType.TEXT_HTML;
+import static org.springframework.http.MediaType.TEXT_PLAIN;
 
 @RestController
 @RequestMapping(value="/rest/messages", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -30,7 +33,7 @@ public class MessageController {
     @Autowired
     private MessageSummaryMapper messageSummaryMapper;
 
-    @RequestMapping(method = GET)
+    @RequestMapping()
     public MessageList getMessages(@RequestParam(name="recipient", required = false) @Email String recipientEmail) {
 
         MessageList messageList = messageService.findMessages(recipientEmail);
@@ -47,26 +50,61 @@ public class MessageController {
     }
 
 
-    @RequestMapping(value = "/{messageId}", method = GET)
+    @RequestMapping(value = "/{messageId}")
     public ResponseEntity getMessageContent(@PathVariable("messageId") long messageId) throws Exception {
 
-        Message message = messageService.getMessage(messageId);
-        MessageSummary summary = messageSummaryMapper.toMessageSummary(message);
+        MessageSummary summary = loadSummary(messageId);
         return ResponseEntity.ok().body(summary);
     }
 
-    @RequestMapping(value = "/{messageId}/html", method = GET)
+    @RequestMapping(value = "/{messageId}/html")
     public ResponseEntity getMessageContentHTML(@PathVariable("messageId") long messageId) throws Exception {
 
-        Message message = messageService.getMessage(messageId);
-        MessageSummary summary = messageSummaryMapper.toMessageSummary(message);
+        MessageSummary summary = loadSummary(messageId);
+        return serveContent(summary.getMessageBodyHTML(), TEXT_HTML);
+    }
 
-        if(summary.getMessageBodyHTML() == null){
-            return ResponseEntity.notFound().build();
-        }
+    @RequestMapping(value = "/{messageId}/text")
+    public ResponseEntity getMessageContentTEXT(@PathVariable("messageId") long messageId) throws Exception {
+
+        MessageSummary summary = loadSummary(messageId);
+        return serveContent(summary.getMessageBodyText(), TEXT_PLAIN);
+    }
+
+    @RequestMapping(value = "/{messageId}/raw")
+    public ResponseEntity getMessageContentRAW(@PathVariable("messageId") long messageId) throws Exception {
+
+        MessageSummary summary = loadSummary(messageId);
+        return serveContent(summary.getMessageRaw(), TEXT_PLAIN);
+    }
+
+
+    @RequestMapping(value = "/{messageId}/content/{contentId}")
+    public ResponseEntity getMessageContentHTML(@PathVariable("messageId") long messageId,
+                                                @PathVariable("contentId") String contentId) throws Exception {
+
+        MessageSummary summary = loadSummary(messageId);
+
+        MimeBodyPart content = summary.getMessageContentById(contentId);
 
         return ResponseEntity.ok()
-                             .contentType(MediaType.TEXT_HTML)
-                             .body(summary.getMessageBodyHTML());
+                             .header("Content-Type", content.getContentType())
+                             .body(new InputStreamResource(content.getContentStream()));
     }
+
+    // -------------------------- utility ------------------------------------
+
+    private MessageSummary loadSummary(long messageId) throws Exception {
+        Message message = messageService.getMessage(messageId);
+        return messageSummaryMapper.toMessageSummary(message);
+    }
+
+    private ResponseEntity serveContent(Object data, MediaType mediaType) throws Exception {
+
+        if(data == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().contentType(mediaType).body(data);
+    }
+
 }
