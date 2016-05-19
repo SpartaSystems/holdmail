@@ -6,6 +6,7 @@ import com.spartasystems.holdmail.model.MessageList;
 import com.spartasystems.holdmail.model.MessageListItem;
 import com.spartasystems.holdmail.model.MessageSummary;
 import com.spartasystems.holdmail.rest.mime.MimeBodyPart;
+import com.spartasystems.holdmail.rest.mime.MimeContentIdPreParser;
 import com.spartasystems.holdmail.service.MessageService;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class MessageController {
 
     @Autowired
     private MessageSummaryMapper messageSummaryMapper;
+
+    @Autowired
+    private MimeContentIdPreParser mimeContentIdPreParser;
 
     @RequestMapping()
     public MessageList getMessages(@RequestParam(name="recipient", required = false) @Email String recipientEmail) {
@@ -61,7 +65,8 @@ public class MessageController {
     public ResponseEntity getMessageContentHTML(@PathVariable("messageId") long messageId) throws Exception {
 
         MessageSummary summary = loadSummary(messageId);
-        return serveContent(summary.getMessageBodyHTML(), TEXT_HTML);
+        String htmlSubstituted = mimeContentIdPreParser.replaceWithRestPath(messageId, summary.getMessageBodyHTML());
+        return serveContent(htmlSubstituted, TEXT_HTML);
     }
 
     @RequestMapping(value = "/{messageId}/text")
