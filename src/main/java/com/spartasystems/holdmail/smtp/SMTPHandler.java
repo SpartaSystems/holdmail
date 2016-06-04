@@ -67,7 +67,7 @@ public class SMTPHandler implements MessageHandler {
 
         data = IOUtils.toByteArray(is);
         message.setMessageSize(data.length);
-        message.getRawMessageBody(IOUtils.toString(data, CharEncoding.UTF_8));
+        message.setRawMessageBody(IOUtils.toString(data, CharEncoding.UTF_8));
     }
 
     public void done() {

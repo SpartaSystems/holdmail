@@ -12,8 +12,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URL;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = HoldMailApplication.class)
 @WebAppConfiguration

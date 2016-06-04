@@ -50,7 +50,7 @@ public class MessageMapper {
         model.setReceivedDate(entity.getReceivedDate());
         model.setSenderHost(entity.getSenderHost());
         model.setMessageSize(entity.getMessageSize());
-        model.getRawMessageBody(entity.getMessageBody());
+        model.setRawMessageBody(entity.getMessageBody());
 
         entity.getHeaders().forEach(h -> {
             String headerName = h.getHeaderName();
