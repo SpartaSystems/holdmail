@@ -16,12 +16,11 @@ public class Message {
     private long         messageId;
     private String       identifier;
     private String       subject;
-    private       String senderEmail;
+    private String       senderEmail;
     private Date         receivedDate;
     private String       senderHost;
     private int          messageSize;
     private String       rawMessage;
-    private String       messageBody;
     private List<String>              recipients = new ArrayList<>();
     private Map<String, List<String>> headers    = new HashMap<>();
 
@@ -118,15 +117,6 @@ public class Message {
         this.headers = headers;
     }
 
-    //TODO: Figure out how to get the clean body content
-    public String getMessageBody() {
-        return messageBody;
-    }
-
-    public void setMessageBody(String messageBody) {
-        this.messageBody = messageBody;
-    }
-
     @Override
     public String toString() {
         return "Message{" +
@@ -138,7 +128,6 @@ public class Message {
                 ", senderHost='" + senderHost + '\'' +
                 ", messageSize=" + messageSize +
                 ", rawMessage='" + rawMessage + '\'' +
-                ", messageBody='" + messageBody + '\'' +
                 ", recipients=" + recipients +
                 ", headers=" + headers +
                 '}';
@@ -161,7 +150,6 @@ public class Message {
                 .append(receivedDate, message.receivedDate)
                 .append(senderHost, message.senderHost)
                 .append(rawMessage, message.rawMessage)
-                .append(messageBody, message.messageBody)
                 .append(recipients, message.recipients)
                 .append(headers, message.headers)
                 .isEquals();
@@ -178,7 +166,6 @@ public class Message {
                 .append(senderHost)
                 .append(messageSize)
                 .append(rawMessage)
-                .append(messageBody)
                 .append(recipients)
                 .append(headers)
                 .toHashCode();
