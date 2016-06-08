@@ -1,6 +1,8 @@
 package com.spartasystems.holdmail.domain;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,7 +16,7 @@ public class Message {
     private long         messageId;
     private String       identifier;
     private String       subject;
-    private       String senderEmail;
+    private String       senderEmail;
     private Date         receivedDate;
     private String       senderHost;
     private int          messageSize;
@@ -95,7 +97,7 @@ public class Message {
         return rawMessage;
     }
 
-    public void getRawMessageBody(String rawMessageBody) {
+    public void setRawMessageBody(String rawMessageBody) {
         this.rawMessage = rawMessageBody;
     }
 
@@ -113,5 +115,59 @@ public class Message {
 
     public void setHeaders(Map<String, List<String>> headers) {
         this.headers = headers;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "messageId=" + messageId +
+                ", identifier='" + identifier + '\'' +
+                ", subject='" + subject + '\'' +
+                ", senderEmail='" + senderEmail + '\'' +
+                ", receivedDate=" + receivedDate +
+                ", senderHost='" + senderHost + '\'' +
+                ", messageSize=" + messageSize +
+                ", rawMessage='" + rawMessage + '\'' +
+                ", recipients=" + recipients +
+                ", headers=" + headers +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Message message = (Message) o;
+
+        return new EqualsBuilder()
+                .append(messageId, message.messageId)
+                .append(messageSize, message.messageSize)
+                .append(identifier, message.identifier)
+                .append(subject, message.subject)
+                .append(senderEmail, message.senderEmail)
+                .append(receivedDate, message.receivedDate)
+                .append(senderHost, message.senderHost)
+                .append(rawMessage, message.rawMessage)
+                .append(recipients, message.recipients)
+                .append(headers, message.headers)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(messageId)
+                .append(identifier)
+                .append(subject)
+                .append(senderEmail)
+                .append(receivedDate)
+                .append(senderHost)
+                .append(messageSize)
+                .append(rawMessage)
+                .append(recipients)
+                .append(headers)
+                .toHashCode();
     }
 }

@@ -8,11 +8,14 @@ import com.spartasystems.holdmail.persistence.MessageEntity;
 import com.spartasystems.holdmail.persistence.MessageRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.Null;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class MessageService {
@@ -55,6 +58,28 @@ public class MessageService {
 
         return messageListMapper.toMessageList(entities);
 
+    }
+
+    @Transactional
+    public List<Message> findDomainMessages(@Null @Email String recipientEmail) {
+
+        List<MessageEntity> entities;
+
+        if(StringUtils.isBlank(recipientEmail)) {
+            entities = messageRepository.findAllByOrderByReceivedDateDesc();
+        }
+        else {
+            entities = messageRepository.findAllForRecipientOrderByReceivedDateDesc(recipientEmail);
+        }
+
+        return entities.stream().map(messageMapper::toDomain).collect(Collectors.toList());
+
+    }
+
+    public void deleteMessagesForRecepient(@NotBlank @Email String recipientEmail ) {
+        List<MessageEntity> entities = messageRepository.findAllForRecipientOrderByReceivedDateDesc(recipientEmail);
+
+        messageRepository.delete(entities);
     }
 
 }
