@@ -99,7 +99,7 @@ public class SMTPHandler implements MessageHandler {
 
     }
 
-    private Map<String, List<String>> getHeaders(MimeMessage message) throws MessagingException {
+    protected Map<String, List<String>> getHeaders(MimeMessage message) throws MessagingException {
 
         Map<String, List<String>> result = new HashMap<>();
 
