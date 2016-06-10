@@ -1,5 +1,6 @@
 package com.spartasystems.holdmail.mapper;
 
+import com.spartasystems.holdmail.domain.Message;
 import com.spartasystems.holdmail.model.MessageList;
 import com.spartasystems.holdmail.model.MessageListItem;
 import com.spartasystems.holdmail.persistence.MessageEntity;
@@ -9,17 +10,26 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class MessageListMapper {
 
 
     public MessageList toMessageList(List<MessageEntity> messageEntityList) {
+        return toMessageList(messageEntityList.stream());
+    }
 
-        return new MessageList(messageEntityList.stream()
-                                                .map(this::toMessageListItem)
-                                                .collect(Collectors.toList()));
+    public MessageList toMessageList(Stream<MessageEntity> messageEntityStream) {
+        return new MessageList(messageEntityStream
+                .map(this::toMessageListItem)
+                .collect(Collectors.toList()));
+    }
 
+    public MessageList fromDomainList(List<Message> messages) {
+        return new MessageList(messages.stream()
+                .map(this::toMessageListItem)
+                .collect(Collectors.toList()));
     }
 
     protected MessageListItem toMessageListItem(MessageEntity entity) {
@@ -36,6 +46,18 @@ public class MessageListMapper {
                 entity.getSenderEmail(),
                 recipientString,
                 entity.getSubject());
+    }
+
+    protected MessageListItem toMessageListItem(Message message) {
+
+        String recipientString = StringUtils.join(message.getRecipients(), ", ");
+
+        return new MessageListItem(
+                message.getMessageId(),
+                message.getReceivedDate().getTime(),
+                message.getSenderEmail(),
+                recipientString,
+                message.getSubject());
     }
 
 }
