@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +59,12 @@ public class MessageService {
 
         return messageListMapper.toMessageList(entities);
 
+    }
+
+
+
+    public MessageList findMessageListBySubject(@NotBlank String subject) {
+        return messageListMapper.toMessageList(messageRepository.findBySubject(subject,new PageRequest(0,150)));
     }
 
     @Transactional
