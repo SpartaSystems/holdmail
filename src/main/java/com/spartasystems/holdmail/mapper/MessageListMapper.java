@@ -1,6 +1,5 @@
 package com.spartasystems.holdmail.mapper;
 
-import com.spartasystems.holdmail.domain.Message;
 import com.spartasystems.holdmail.model.MessageList;
 import com.spartasystems.holdmail.model.MessageListItem;
 import com.spartasystems.holdmail.persistence.MessageEntity;
@@ -26,12 +25,6 @@ public class MessageListMapper {
                 .collect(Collectors.toList()));
     }
 
-    public MessageList fromDomainList(List<Message> messages) {
-        return new MessageList(messages.stream()
-                .map(this::toMessageListItem)
-                .collect(Collectors.toList()));
-    }
-
     protected MessageListItem toMessageListItem(MessageEntity entity) {
 
         List<String> recipients = entity.getRecipients()
@@ -48,16 +41,6 @@ public class MessageListMapper {
                 entity.getSubject());
     }
 
-    protected MessageListItem toMessageListItem(Message message) {
 
-        String recipientString = StringUtils.join(message.getRecipients(), ", ");
-
-        return new MessageListItem(
-                message.getMessageId(),
-                message.getReceivedDate().getTime(),
-                message.getSenderEmail(),
-                recipientString,
-                message.getSubject());
-    }
 
 }
