@@ -6,6 +6,7 @@ import com.spartasystems.holdmail.mapper.MessageMapper;
 import com.spartasystems.holdmail.model.MessageList;
 import com.spartasystems.holdmail.persistence.MessageEntity;
 import com.spartasystems.holdmail.persistence.MessageRepository;
+import com.spartasystems.holdmail.smtp.OutgoingMailSender;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
@@ -26,6 +27,9 @@ public class MessageService {
 
     @Autowired
     private MessageMapper messageMapper;
+
+    @Autowired
+    private OutgoingMailSender outgoingMailSender;
 
     @Autowired
     private MessageListMapper messageListMapper;
@@ -87,6 +91,12 @@ public class MessageService {
         List<MessageEntity> entities = messageRepository.findAllForRecipientOrderByReceivedDateDesc(recipientEmail);
 
         messageRepository.delete(entities);
+    }
+
+    public void forwardMessage(long messageId, @NotBlank @Email String recipientEmail) {
+
+        Message message = getMessage(messageId);
+        outgoingMailSender.sendEmail(recipientEmail, message.getRawMessage());
     }
 
 }

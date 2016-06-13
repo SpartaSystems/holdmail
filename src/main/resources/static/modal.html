@@ -3,6 +3,8 @@
 </div>
 <div class="modal-body">
 
+    <div growl></div>
+
     <uib-tabset active="activeForm" class="mail-summary">
 
         <uib-tab id="0" heading="HTML Body" ng-if="message.messageHasBodyHTML">
@@ -24,6 +26,28 @@
 
 </div>
 <div class="modal-footer">
-    <button class="btn btn-info" ng-click="modalCtrl.close()">Close</button>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <form name="forwardForm">
+                <div class="input-group">
+                    <input id="forwardRecipientTxt" type="email" class="form-control" ng-model="forwardRecipient"
+                            placeholder="Forward To: e.g. homer@simpson.com" required>
+                    <span class="input-group-btn">
+                        <button id="mainSearchBut" class="btn btn-primary" type="button"
+                                ng-click="modalCtrl.forwardMail()" ng-disabled="forwardForm.$invalid">
+                            Forward <span class="glyphicon glyphicon-forward" aria-hidden="true"></span>
+                        </button>
+                    </span>
+                </div>
+            </form>
+        </div>
+        <div class="col-lg-6">
+            <button id="mainSearchBut2" class="btn btn-default" type="button" ng-click="modalCtrl.close()">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Close
+            </button>
+        </div>
+    </div>
+
 </div>
 

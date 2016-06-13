@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('HoldMailApp', ['ui.bootstrap'])
+    angular.module('HoldMailApp')
 
         .controller('MessageListController', ['$scope', '$uibModal', '$http', function ($scope, $modal, $http) {
 

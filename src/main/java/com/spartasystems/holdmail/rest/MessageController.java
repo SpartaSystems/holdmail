@@ -2,6 +2,7 @@ package com.spartasystems.holdmail.rest;
 
 import com.spartasystems.holdmail.domain.Message;
 import com.spartasystems.holdmail.mapper.MessageSummaryMapper;
+import com.spartasystems.holdmail.model.MessageForwardCommand;
 import com.spartasystems.holdmail.model.MessageList;
 import com.spartasystems.holdmail.model.MessageListItem;
 import com.spartasystems.holdmail.model.MessageSummary;
@@ -13,11 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -96,6 +95,17 @@ public class MessageController {
                              .header("Content-Type", content.getContentType())
                              .body(new InputStreamResource(content.getContentStream()));
     }
+
+    @RequestMapping(value = "/{messageId}/forward", method = RequestMethod.POST)
+    public ResponseEntity fowardMail(@PathVariable("messageId") long messageId,
+                                     @Valid @RequestBody MessageForwardCommand forwardCommand) throws Exception {
+
+        messageService.forwardMessage(messageId, forwardCommand.getRecipient());
+
+        return ResponseEntity.accepted().build();
+    }
+
+
 
     // -------------------------- utility ------------------------------------
 

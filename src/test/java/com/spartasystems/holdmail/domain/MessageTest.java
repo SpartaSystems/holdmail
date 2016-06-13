@@ -65,14 +65,4 @@ public class MessageTest {
 
     }
 
-    @Test
-    public void shouldHaveSatisfyEqualsHashcodeContract() throws Exception {
-
-        EqualsVerifier
-                .forClass(Message.class)
-                .suppress(Warning.NONFINAL_FIELDS, Warning.STRICT_INHERITANCE)
-                .verify();
-
-    }
-
 }

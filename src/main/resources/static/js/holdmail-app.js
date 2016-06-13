@@ -1,21 +1,13 @@
 (function () {
     'use strict';
 
-    var holdmailApp = angular.module('HoldMailApp', ['ui.bootstrap','ngRoute']);
+    var HoldMailApp = angular.module('HoldMailApp', ['ui.bootstrap', 'angular-growl']);
 
-    holdmailApp.config(['$routeProvider',
-        function($routeProvider) {
-            $routeProvider.when('/mails', {
-                            templateUrl: 'index.html',
-                            controller: 'MessageListController'
-                            })
-                            .when('/mails/:mailId', {
-                                templateUrl: 'index.html',
-                                controller: 'MessageListController'
-                            })
-                            .otherwise({
-                                redirectTo: '/mails'
-                            });
+    HoldMailApp.config([
+
+        'growlProvider', function (growlProvider) {
+            growlProvider.globalTimeToLive({success: 3000, error: -1, warning: 3000, info: 3000});
         }]);
+
 
 }());
