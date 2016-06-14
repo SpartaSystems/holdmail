@@ -1,5 +1,7 @@
 package com.spartasystems.holdmail.persistence;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.CascadeType;
@@ -23,7 +25,7 @@ import static org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 
 @Entity()
 @Table(name = "message")
-public class MessageEntity {
+public final class MessageEntity {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -157,5 +159,15 @@ public class MessageEntity {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, SHORT_PREFIX_STYLE);
 
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return EqualsBuilder.reflectionEquals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 }

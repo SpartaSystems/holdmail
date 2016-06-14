@@ -15,16 +15,16 @@ import java.util.UUID;
 
 public class Message {
 
-    private long         messageId;
-    private String       identifier;
-    private String       subject;
-    private String       senderEmail;
-    private Date         receivedDate;
-    private String       senderHost;
-    private int          messageSize;
-    private String       rawMessage;
-    private List<String>              recipients = new ArrayList<>();
-    private Map<String, List<String>> headers    = new HashMap<>();
+    private long messageId;
+    private String identifier;
+    private String subject;
+    private String senderEmail;
+    private Date receivedDate;
+    private String senderHost;
+    private int messageSize;
+    private String rawMessage;
+    private List<String> recipients = new ArrayList<>();
+    private Map<String, List<String>> headers = new HashMap<>();
 
     public Message() {
         this(null);
@@ -34,11 +34,25 @@ public class Message {
         setIdentifier(identifier);
     }
 
+    public Message(long messageId, String identifier, String subject, String senderEmail, Date receivedDate,
+                   String senderHost, int messageSize, String rawMessage, List<String> recipients,
+                   Map<String, List<String>> headers) {
+        this.messageId = messageId;
+        this.identifier = identifier;
+        this.subject = subject;
+        this.senderEmail = senderEmail;
+        this.receivedDate = receivedDate;
+        this.senderHost = senderHost;
+        this.messageSize = messageSize;
+        this.rawMessage = rawMessage;
+        this.recipients = recipients;
+        this.headers = headers;
+    }
+
     public void setIdentifier(String identifier) {
-        if(StringUtils.isBlank(identifier)){
+        if (StringUtils.isBlank(identifier)) {
             this.identifier = UUID.randomUUID().toString();
-        }
-        else {
+        } else {
             this.identifier = identifier;
         }
     }

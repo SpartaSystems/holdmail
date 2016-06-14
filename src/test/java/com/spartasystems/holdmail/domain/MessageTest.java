@@ -14,10 +14,10 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ UUID.class })
+@PrepareForTest({UUID.class})
 public class MessageTest {
 
-    private static final String HEXCHAR   = "[0-9a-fA-F]";
+    private static final String HEXCHAR = "[0-9a-fA-F]";
     private static final String UUID_PATT = String.format("^%s{8}\\-%s{4}\\-%s{4}\\-%s{4}\\-%s{12}$",
             HEXCHAR, HEXCHAR, HEXCHAR, HEXCHAR, HEXCHAR);
 
@@ -63,6 +63,13 @@ public class MessageTest {
             seen.add(message.getIdentifier());
         }
 
+    }
+
+    @Test
+    public void shouldVerifyEqualContract() {
+        EqualsVerifier.forClass(Message.class)
+                .suppress(Warning.NONFINAL_FIELDS, Warning.NULL_FIELDS, Warning.STRICT_INHERITANCE)
+                .verify();
     }
 
 }
