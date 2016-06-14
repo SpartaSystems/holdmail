@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
 
     <name>HoldMail</name>
-    <description>HoldMail Applciation</description>
+    <description>HoldMail Application</description>
     
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -132,13 +132,6 @@
             <version>1.2.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>3.4.0</version>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
