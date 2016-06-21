@@ -71,6 +71,10 @@ public class MessageService {
         return messageListMapper.toMessageList(messageRepository.findBySubject(subject,new PageRequest(0,150)));
     }
 
+    public MessageList findMessageListBySenderEmail(@NotBlank String senderEmail) {
+        return messageListMapper.toMessageList(messageRepository.findBySenderEmail(senderEmail,new PageRequest(0,150)));
+    }
+
     @Transactional
     public List<Message> findDomainMessages(@Null @Email String recipientEmail) {
 

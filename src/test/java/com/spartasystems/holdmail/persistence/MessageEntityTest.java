@@ -9,7 +9,7 @@ public class MessageEntityTest {
     @Test
     public void shouldVerifyEqualsContract() {
         EqualsVerifier.forClass(MessageEntity.class)
-                .suppress(Warning.NONFINAL_FIELDS, Warning.NULL_FIELDS)
+                .suppress(Warning.NONFINAL_FIELDS, Warning.NULL_FIELDS, Warning.STRICT_INHERITANCE)
                 .verify();
     }
 

@@ -32,4 +32,12 @@ public class MessageRepositoryTest extends BaseIntegrationTest{
         Stream<MessageEntity> first150BySubjectDesc = messageRepository.findBySubject("This is it", new PageRequest(0,150));
         assertThat(first150BySubjectDesc.collect(Collectors.toList())).hasSize(6);
     }
+
+    @Test
+    public void shouldFind25MessagesWithSomeoneExampleComSenderEmail() throws Exception {
+        Stream<MessageEntity> first150BySenderEmail = messageRepository.findBySenderEmail("someone@example.org",new PageRequest(0,150));
+
+        assertThat(first150BySenderEmail.collect(Collectors.toList())).hasSize(25);
+
+    }
 }
