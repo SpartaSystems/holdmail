@@ -2,7 +2,7 @@ package com.spartasystems.holdmail;
 
 import com.spartasystems.holdmail.domain.Message;
 import com.spartasystems.holdmail.service.MessageService;
-import com.spartasystems.holdmail.util.MailClient;
+import com.spartasystems.holdmail.mime.MailClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

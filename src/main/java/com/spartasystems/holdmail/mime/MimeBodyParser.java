@@ -1,4 +1,4 @@
-package com.spartasystems.holdmail.rest.mime;
+package com.spartasystems.holdmail.mime;
 
 import org.apache.james.mime4j.MimeException;
 import org.apache.james.mime4j.parser.MimeStreamParser;

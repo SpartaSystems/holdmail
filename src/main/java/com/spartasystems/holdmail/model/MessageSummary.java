@@ -1,8 +1,9 @@
 package com.spartasystems.holdmail.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.spartasystems.holdmail.rest.mime.MimeBodyPart;
-import com.spartasystems.holdmail.rest.mime.MimeBodyParts;
+import com.spartasystems.holdmail.mime.MimeBodyPart;
+import com.spartasystems.holdmail.mime.MimeBodyParts;
+import com.spartasystems.holdmail.mime.MimeHeaders;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -19,11 +20,12 @@ public class MessageSummary {
     private int    messageSize;
     private String recipients;
     private String messageRaw;
+    private MimeHeaders messageHeaders = new MimeHeaders();
     private MimeBodyParts mimeBodyParts;
 
     public MessageSummary(long messageId, String identifier, String subject, String senderEmail,
             Date receivedDate, String senderHost, int messageSize, String recipients, String messageRaw,
-            MimeBodyParts mimeBodyParts) {
+            MimeHeaders messageHeaders, MimeBodyParts mimeBodyParts) {
         this.messageId = messageId;
         this.identifier = identifier;
         this.subject = subject;
@@ -33,6 +35,7 @@ public class MessageSummary {
         this.messageSize = messageSize;
         this.recipients = recipients;
         this.messageRaw = messageRaw;
+        this.messageHeaders = messageHeaders;
         this.mimeBodyParts = mimeBodyParts;
     }
 
@@ -66,6 +69,10 @@ public class MessageSummary {
 
     public String getRecipients() {
         return recipients;
+    }
+
+    public MimeHeaders getMessageHeaders() {
+        return messageHeaders;
     }
 
     public String getMessageRaw() {

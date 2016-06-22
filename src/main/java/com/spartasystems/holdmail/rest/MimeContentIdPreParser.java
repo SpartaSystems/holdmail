@@ -1,4 +1,4 @@
-package com.spartasystems.holdmail.rest.mime;
+package com.spartasystems.holdmail.rest;
 
 import org.springframework.stereotype.Component;
 

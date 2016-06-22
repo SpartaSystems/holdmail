@@ -1,5 +1,6 @@
 package com.spartasystems.holdmail.domain;
 
+import com.spartasystems.holdmail.mime.MimeHeaders;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -8,23 +9,21 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class Message {
 
-    private long messageId;
+    private long   messageId;
     private String identifier;
     private String subject;
     private String senderEmail;
-    private Date receivedDate;
+    private Date   receivedDate;
     private String senderHost;
-    private int messageSize;
+    private int    messageSize;
     private String rawMessage;
     private List<String> recipients = new ArrayList<>();
-    private Map<String, List<String>> headers = new HashMap<>();
+    private MimeHeaders  headers    = new MimeHeaders();
 
     public Message() {
         this(null);
@@ -36,7 +35,7 @@ public class Message {
 
     public Message(long messageId, String identifier, String subject, String senderEmail, Date receivedDate,
                    String senderHost, int messageSize, String rawMessage, List<String> recipients,
-                   Map<String, List<String>> headers) {
+                   MimeHeaders headers) {
         this.messageId = messageId;
         this.identifier = identifier;
         this.subject = subject;
@@ -125,11 +124,11 @@ public class Message {
         this.recipients = recipients;
     }
 
-    public Map<String, List<String>> getHeaders() {
+    public MimeHeaders getHeaders() {
         return headers;
     }
 
-    public void setHeaders(Map<String, List<String>> headers) {
+    public void setHeaders(MimeHeaders headers) {
         this.headers = headers;
     }
 

@@ -1,4 +1,4 @@
-package com.spartasystems.holdmail.util;
+package com.spartasystems.holdmail.mime;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

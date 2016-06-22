@@ -1,9 +1,9 @@
 package com.spartasystems.holdmail.mapper;
 
 import com.spartasystems.holdmail.domain.Message;
+import com.spartasystems.holdmail.mime.MimeBodyParser;
+import com.spartasystems.holdmail.mime.MimeBodyParts;
 import com.spartasystems.holdmail.model.MessageSummary;
-import com.spartasystems.holdmail.rest.mime.MimeBodyParser;
-import com.spartasystems.holdmail.rest.mime.MimeBodyParts;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.james.mime4j.MimeException;
@@ -36,6 +36,7 @@ public class MessageSummaryMapper {
                 message.getMessageSize(),
                 StringUtils.join(message.getRecipients(), ","),
                 message.getRawMessage(),
+                message.getHeaders(),
                 allBodyParts);
 
     }

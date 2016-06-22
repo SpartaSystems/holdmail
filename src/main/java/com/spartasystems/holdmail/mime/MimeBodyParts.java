@@ -1,4 +1,4 @@
-package com.spartasystems.holdmail.rest.mime;
+package com.spartasystems.holdmail.mime;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
