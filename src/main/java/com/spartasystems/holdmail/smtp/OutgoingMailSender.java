@@ -2,10 +2,16 @@ package com.spartasystems.holdmail.smtp;
 
 import com.spartasystems.holdmail.exception.HoldMailException;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.mail.*;
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
@@ -14,11 +20,16 @@ import java.util.Properties;
 @Component
 public class OutgoingMailSender {
 
+    private Logger logger = LoggerFactory.getLogger(OutgoingMailSender.class);
+
     @Value("${holdmail.outgoing.smtp.server:localhost}")
     private String outgoingServer;
 
     @Value("${holdmail.outgoing.smtp.port:25000}")
     private int outgoingPort;
+
+    @Value("${holdmail.outgoing.mail.from:holdmail@localhost.localdomain}")
+    private String senderFrom;
 
     public void sendEmail(String recipient, String rawBody) {
 
@@ -47,7 +58,16 @@ public class OutgoingMailSender {
             // and set the new recipient
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
 
+            InternetAddress[] parsedFrom = InternetAddress.parse(senderFrom);
+            if(parsedFrom.length > 0) {
+                message.setFrom(parsedFrom[0]);
+                logger.info("Outgoing mail will have From: " + parsedFrom[0].getAddress());
+            }
+
+
             Transport.send(message);
+
+            logger.info("Outgoing mail forwarded to " + recipient);
 
         } catch (MessagingException e) {
             throw new HoldMailException("couldn't send mail: " + e.getMessage(), e);
