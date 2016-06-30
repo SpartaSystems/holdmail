@@ -4,11 +4,16 @@ Mailhold is a simple app which runs an SMTP server that accepts mail, but doesn'
 
 ## running it
 
-This is a [spring boot](http://projects.spring.io/spring-boot) application.  Most modern Java-aware IDEs should be able to import it and run it without any special config. 
+This is an [Angular 1](https://angularjs.org/) and [Spring Boot](http://projects.spring.io/spring-boot) application, built with Bower and Maven respectively.  
 
-For the command line folks, go to the root directory and run:
+For a first time run, fetch the UI deps with:
+
+    bower install
+
+Most modern Java-aware IDEs should be able to import the root POM and run the app without any special config.  From the command line, use: 
 
 	mvn spring-boot:run
+
 
 ## accessing it
 
@@ -28,5 +33,5 @@ At the moment configuration is very minimal, comprising the standard spring opti
 
 ## storage
 
-The app uses simple JPA with SQL-based storage, so should support the usual suspects (MySQL, Postgres, H2). The default config will automatically create and initialize a H2 database located at **$HOME/mailhold-db.mv.db**, which will be persisted between runs.
+The app uses simple JPA with SQL-based storage, so should support the usual suspects (MySQL, Postgres, H2). The default config will automatically create and initialize a H2 database located at **$HOME/holdmail.mv.db**, which will be persisted between runs.
 
