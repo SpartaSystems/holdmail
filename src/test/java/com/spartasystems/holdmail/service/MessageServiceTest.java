@@ -60,8 +60,8 @@ public class MessageServiceTest {
 
     @Test
     public void shouldFindMessagesBySubject() throws Exception {
-        MessageEntity messageEntityMock1 = mock(MessageEntity.class);
-        MessageEntity messageEntityMock2 = mock(MessageEntity.class);
+        MessageEntity messageEntityMock1 = new MessageEntity();
+        MessageEntity messageEntityMock2 = new MessageEntity();
         Stream<MessageEntity> entityStream = Stream.of(messageEntityMock1, messageEntityMock2);
         when(messageRepositoryMock.findBySubject(eq(SUBJECT),any(Pageable.class))).thenReturn(entityStream);
         MessageList messageListMock = mock(MessageList.class);
@@ -75,8 +75,8 @@ public class MessageServiceTest {
 
     @Test
     public void shouldFindMessageListBySenderEmail() throws Exception {
-        MessageEntity messageEntityMock1 = mock(MessageEntity.class);
-        MessageEntity messageEntityMock2 = mock(MessageEntity.class);
+        MessageEntity messageEntityMock1 = new MessageEntity();
+        MessageEntity messageEntityMock2 = new MessageEntity();
         Stream<MessageEntity> entityStream = Stream.of(messageEntityMock1, messageEntityMock2);
         when(messageRepositoryMock.findBySenderEmail(eq(SENDER_EMAIL),any(Pageable.class))).thenReturn(entityStream);
         MessageList messageListMock = mock(MessageList.class);

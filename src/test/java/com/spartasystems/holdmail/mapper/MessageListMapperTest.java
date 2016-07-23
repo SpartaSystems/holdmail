@@ -26,7 +26,7 @@ public class MessageListMapperTest {
 
     private static final String EMAIL_HOMER      = "homer.simpson@snpp.com";
     private static final String EMAIL_MONTY      = "monty.burns@snpp.com";
-    private static final int    MESSAGE_ID       = 223344;
+    private static final Long   MESSAGE_ID       = 223344L;
     private static final String MESSAGE_SUBJECT  = "subject";
     private static final String EMAIL_CARL       = "carl.carlson@snpp.com";
     private static final long   MESSAGE_RECEIVED = 1465767099897L;

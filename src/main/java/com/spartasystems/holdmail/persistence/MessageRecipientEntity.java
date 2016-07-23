@@ -17,12 +17,12 @@ import static org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 
 @Entity
 @Table(name = "message_recipient")
-public class MessageRecipientEntity {
+public final class MessageRecipientEntity {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "message_recipient_id")
-    private long messageRecipientId;
+    private Long messageRecipientId;
 
     @NotNull
     @Size(max = 255)
@@ -36,11 +36,11 @@ public class MessageRecipientEntity {
         this.recipientEmail = recipientEmail;
     }
 
-    public long getMessageRecipientId() {
+    public Long getMessageRecipientId() {
         return messageRecipientId;
     }
 
-    public void setMessageRecipientId(long messageRecipientId) {
+    public void setMessageRecipientId(Long messageRecipientId) {
         this.messageRecipientId = messageRecipientId;
     }
 

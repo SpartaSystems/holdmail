@@ -1,6 +1,6 @@
 
 create table message (
-  message_id int not null auto_increment primary key,
+  message_id int auto_increment primary key,
   identifier varchar(100) not null,
   subject varchar(255) not null,
   sender_email varchar(255) not null,
@@ -11,7 +11,7 @@ create table message (
 );
 
 create table message_header (
-  message_header_id int not null auto_increment primary key,
+  message_header_id int auto_increment primary key,
   message_id int not null,
   header_name varchar(255) not null,
   header_value varchar(1000),
@@ -19,7 +19,7 @@ create table message_header (
 );
 
 create table message_recipient (
-  message_recipient_id int not null auto_increment primary key,
+  message_recipient_id int auto_increment primary key,
   message_id int not null,
   recipient_email varchar(255) not null,
   foreign key (message_id) references message(message_id)

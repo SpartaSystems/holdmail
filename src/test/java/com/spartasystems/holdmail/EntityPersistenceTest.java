@@ -36,7 +36,7 @@ public class EntityPersistenceTest extends BaseIntegrationTest {
 
         MessageEntity entity = buildBasicEntity();
 
-        long savedEntityId = messageRepository.save(entity).getMessageId();
+        Long savedEntityId = messageRepository.save(entity).getMessageId();
         assertThat(savedEntityId).isGreaterThan(0);
 
         MessageEntity loaded = messageRepository.findOne(savedEntityId);

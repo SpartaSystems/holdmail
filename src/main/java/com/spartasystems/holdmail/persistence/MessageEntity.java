@@ -25,12 +25,12 @@ import static org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 
 @Entity()
 @Table(name = "message")
-public class MessageEntity {
+public final class MessageEntity {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "message_id")
-    private long messageId;
+    private Long messageId;
 
     @NotNull
     @Size(max = 100)
@@ -75,11 +75,11 @@ public class MessageEntity {
     public MessageEntity() {
     }
 
-    public long getMessageId() {
+    public Long getMessageId() {
         return messageId;
     }
 
-    public void setMessageId(long messageId) {
+    public void setMessageId(Long messageId) {
         this.messageId = messageId;
     }
 

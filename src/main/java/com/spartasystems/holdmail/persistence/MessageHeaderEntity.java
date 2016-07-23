@@ -17,12 +17,12 @@ import static org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 
 @Entity
 @Table(name = "message_header")
-public class MessageHeaderEntity {
+public final class MessageHeaderEntity {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "message_header_id")
-    private long messageHeaderId;
+    private Long messageHeaderId;
 
     @NotNull
     @Size(max = 255)
@@ -42,11 +42,11 @@ public class MessageHeaderEntity {
         this.headerValue = headerValue;
     }
 
-    public long getMessageHeaderId() {
+    public Long getMessageHeaderId() {
         return messageHeaderId;
     }
 
-    public void setMessageHeaderId(long messageHeaderId) {
+    public void setMessageHeaderId(Long messageHeaderId) {
         this.messageHeaderId = messageHeaderId;
     }
 
