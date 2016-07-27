@@ -4,7 +4,7 @@ Mailhold is a simple app which runs an SMTP server that accepts mail, but doesn'
 
 ## running it
 
-This is an [Angular 1](https://angularjs.org/) and [Spring Boot](http://projects.spring.io/spring-boot) application, built with Bower and Maven respectively.  
+This is an [Angular 1](https://angularjs.org/) and [Spring Boot](http://projects.spring.io/spring-boot) application, built with [Bower](https://bower.io) and [Gradle](https://gradle.org) respectively.  
 
 For a first time run, fetch the UI deps with:
 
@@ -12,7 +12,7 @@ For a first time run, fetch the UI deps with:
 
 Most modern Java-aware IDEs should be able to import the root POM and run the app without any special config.  From the command line, use: 
 
-	mvn spring-boot:run
+	gradle bootRun
 
 
 ## accessing it

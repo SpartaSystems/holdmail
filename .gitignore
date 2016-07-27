@@ -1,9 +1,11 @@
 target/
+build/
 vendor/
 out/
 .project
 .classpath
 .settings/
+.gradle/
 *.class
 .idea/
 *.iml
