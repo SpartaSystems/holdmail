@@ -21,6 +21,8 @@ package com.spartasystems.holdmail.mime;
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,10 +44,6 @@ public class MimeHeaders {
         return new HashMap<>(headerMap);
     }
 
-    public boolean containsHeader(String key) {
-        return headerMap.containsKey(key);
-    }
-
     public void put(String key, String value) {
         headerMap.put(key, value);
     }
@@ -62,5 +60,12 @@ public class MimeHeaders {
     @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("headerMap", headerMap)
+                .toString();
     }
 }

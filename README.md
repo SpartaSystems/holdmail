@@ -10,7 +10,7 @@ For a first time run, fetch the UI deps with:
 
     bower install
 
-Most modern Java-aware IDEs should be able to import the root POM and run the app without any special config.  From the command line, use: 
+Most modern Java-aware IDEs should be able to import *build.gradle* and run the app without any special config.  From the command line, use: 
 
 	gradle bootRun
 

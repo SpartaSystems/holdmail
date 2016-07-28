@@ -20,6 +20,8 @@ package com.spartasystems.holdmail.mime;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -30,8 +32,8 @@ import java.util.Map;
 
 public class MimeBodyPart {
 
-    Map<String, String> headers = new HashMap<>();
-    byte[] content;
+    private Map<String, String> headers = new HashMap<>();
+    private byte[] content;
 
     public MimeBodyPart() {
     }
@@ -40,8 +42,8 @@ public class MimeBodyPart {
         this.headers.put(header, value);
     }
 
-    public void setContent(InputStream in) throws IOException {
-        this.content = IOUtils.toByteArray(in);
+    public Map<String, String> getHeaders() {
+        return headers;
     }
 
     public String getContentType() {
@@ -65,6 +67,10 @@ public class MimeBodyPart {
 
     }
 
+    public void setContent(InputStream in) throws IOException {
+        this.content = IOUtils.toByteArray(in);
+    }
+
     public String getContentString() {
         return this.content == null ? null : new String(content, StandardCharsets.UTF_8);
     }
@@ -74,11 +80,21 @@ public class MimeBodyPart {
     }
 
     @Override
+    public boolean equals(Object other) {
+        return EqualsBuilder.reflectionEquals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("BodyPart{");
+        final StringBuilder sb = new StringBuilder("BodyPart[");
         sb.append("headers=").append(headers);
         sb.append(", content=").append(content == null ? "null" : content.length + "b");
-        sb.append('}');
+        sb.append(']');
         return sb.toString();
     }
 }

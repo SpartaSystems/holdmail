@@ -28,11 +28,11 @@ import java.io.InputStream;
 
 class MimeBodyPartsExtractor extends AbstractContentHandler {
 
-    private MimeBodyParts foundBodyParts;
+    private MimeBodyParts bodyParts;
     private MimeBodyPart  nextPotentialPart;
 
     public MimeBodyPartsExtractor() {
-        foundBodyParts = new MimeBodyParts();
+        bodyParts = new MimeBodyParts();
         nextPotentialPart = null;
     }
 
@@ -55,11 +55,15 @@ class MimeBodyPartsExtractor extends AbstractContentHandler {
     public void body(BodyDescriptor bd, InputStream is) throws MimeException, IOException {
 
         nextPotentialPart.setContent(is);
-        foundBodyParts.addBodyPart(nextPotentialPart);
+        bodyParts.addBodyPart(nextPotentialPart);
 
     }
 
+    protected MimeBodyPart getNextPotentialPart() {
+        return nextPotentialPart;
+    }
+
     public MimeBodyParts getParts() {
-        return foundBodyParts;
+        return bodyParts;
     }
 }

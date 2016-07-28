@@ -66,9 +66,10 @@ public class MessageController {
         // TODO: pagination needed, limit for now
         List<MessageListItem> messages = messageList.getMessages();
         if(messages.size() > 150) {
-            messageList.setMessages(messages.subList(0, 150));
-            messageList.getMessages().add(new MessageListItem(0, new Date().getTime(),
+            List<MessageListItem> newList = messages.subList(0, 150);
+            newList.add(new MessageListItem(0, new Date().getTime(),
                     "system", "system", "hold-mail return max 150 mails (for now)"));
+            return new MessageList(newList);
         }
 
         return messageList;
@@ -78,14 +79,14 @@ public class MessageController {
     @RequestMapping(value = "/{messageId}")
     public ResponseEntity getMessageContent(@PathVariable("messageId") long messageId) throws Exception {
 
-        MessageSummary summary = loadSummary(messageId);
+        MessageSummary summary = loadMessageSummary(messageId);
         return ResponseEntity.ok().body(summary);
     }
 
     @RequestMapping(value = "/{messageId}/html")
     public ResponseEntity getMessageContentHTML(@PathVariable("messageId") long messageId) throws Exception {
 
-        MessageSummary summary = loadSummary(messageId);
+        MessageSummary summary = loadMessageSummary(messageId);
         String htmlSubstituted = mimeContentIdPreParser.replaceWithRestPath(messageId, summary.getMessageBodyHTML());
         return serveContent(htmlSubstituted, TEXT_HTML);
     }
@@ -93,23 +94,23 @@ public class MessageController {
     @RequestMapping(value = "/{messageId}/text")
     public ResponseEntity getMessageContentTEXT(@PathVariable("messageId") long messageId) throws Exception {
 
-        MessageSummary summary = loadSummary(messageId);
+        MessageSummary summary = loadMessageSummary(messageId);
         return serveContent(summary.getMessageBodyText(), TEXT_PLAIN);
     }
 
     @RequestMapping(value = "/{messageId}/raw")
     public ResponseEntity getMessageContentRAW(@PathVariable("messageId") long messageId) throws Exception {
 
-        MessageSummary summary = loadSummary(messageId);
+        MessageSummary summary = loadMessageSummary(messageId);
         return serveContent(summary.getMessageRaw(), TEXT_PLAIN);
     }
 
 
     @RequestMapping(value = "/{messageId}/content/{contentId}")
-    public ResponseEntity getMessageContentHTML(@PathVariable("messageId") long messageId,
+    public ResponseEntity getMessageContentByPartId(@PathVariable("messageId") long messageId,
                                                 @PathVariable("contentId") String contentId) throws Exception {
 
-        MessageSummary summary = loadSummary(messageId);
+        MessageSummary summary = loadMessageSummary(messageId);
 
         MimeBodyPart content = summary.getMessageContentById(contentId);
 
@@ -131,12 +132,12 @@ public class MessageController {
 
     // -------------------------- utility ------------------------------------
 
-    private MessageSummary loadSummary(long messageId) throws Exception {
+    protected MessageSummary loadMessageSummary(long messageId) throws Exception {
         Message message = messageService.getMessage(messageId);
         return messageSummaryMapper.toMessageSummary(message);
     }
 
-    private ResponseEntity serveContent(Object data, MediaType mediaType) throws Exception {
+    protected ResponseEntity serveContent(Object data, MediaType mediaType) throws Exception {
 
         if(data == null){
             return ResponseEntity.notFound().build();

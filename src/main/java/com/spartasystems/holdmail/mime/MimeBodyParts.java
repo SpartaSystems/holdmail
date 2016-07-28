@@ -18,6 +18,8 @@
 
 package com.spartasystems.holdmail.mime;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -46,6 +48,16 @@ public class MimeBodyParts {
 
     public MimeBodyPart findByContentId(String contentId) {
         return bodyPartList.stream().filter(b -> b.hasContentId(contentId)).findFirst().orElse(null);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return EqualsBuilder.reflectionEquals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override
