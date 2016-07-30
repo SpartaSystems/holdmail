@@ -49,24 +49,26 @@ public class OutgoingMailSender {
     @Value("${holdmail.outgoing.mail.from:holdmail@localhost.localdomain}")
     private String senderFrom;
 
-    public void sendEmail(String recipient, String rawBody) {
+    public String getOutgoingServer() {
+        return outgoingServer;
+    }
 
-        // WARNING HERE BE DRAGONS
-        // TODO: this is a temporary hacky solution that just bounces back to self, rather than the REAL server
-        // as I figure out the appropriate method to perform SMTP bounces
+    public int getOutgoingPort() {
+        return outgoingPort;
+    }
+
+    public String getSenderFrom() {
+        return senderFrom;
+    }
+
+    public void redirectMessage(String recipient, String rawBody) {
+
+        // TODO: this is a crude first pass at bouncing a mail and probably needs to be a little more sophisticated
 
         try {
 
-            Properties props = new Properties();
-            props.put("mail.smtp.auth", "false");
-            props.put("mail.smtp.starttls.enable", "false");
-            props.put("mail.smtp.host", outgoingServer);
-            props.put("mail.smtp.port", outgoingPort);
-
-            Session session = Session.getInstance(props);
-
-            // read back in the original
-            Message message = new MimeMessage(session, IOUtils.toInputStream(rawBody, StandardCharsets.UTF_8));
+            Session session = getMailSession();
+            Message message = initializeMimeMessage(rawBody, session);
 
             // wipe out ALL exisitng recipients
             message.setRecipients(Message.RecipientType.TO, new Address[]{});
@@ -76,14 +78,13 @@ public class OutgoingMailSender {
             // and set the new recipient
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
 
-            InternetAddress[] parsedFrom = InternetAddress.parse(senderFrom);
+            InternetAddress[] parsedFrom = InternetAddress.parse(getSenderFrom());
             if(parsedFrom.length > 0) {
                 message.setFrom(parsedFrom[0]);
                 logger.info("Outgoing mail will have From: " + parsedFrom[0].getAddress());
             }
 
-
-            Transport.send(message);
+            sendMessage(message);
 
             logger.info("Outgoing mail forwarded to " + recipient);
 
@@ -91,5 +92,24 @@ public class OutgoingMailSender {
             throw new HoldMailException("couldn't send mail: " + e.getMessage(), e);
         }
 
+    }
+
+    protected void sendMessage(Message message) throws MessagingException {
+        Transport.send(message);
+    }
+
+    protected Message initializeMimeMessage(String rawBody, Session session) throws MessagingException {
+        return new MimeMessage(session, IOUtils.toInputStream(rawBody, StandardCharsets.UTF_8));
+    }
+
+    protected Session getMailSession() {
+
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "false");
+        props.put("mail.smtp.starttls.enable", "false");
+        props.put("mail.smtp.host", getOutgoingServer());
+        props.put("mail.smtp.port", getOutgoingPort());
+
+        return Session.getInstance(props);
     }
 }

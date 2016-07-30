@@ -43,7 +43,7 @@ import static org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 
 @Entity()
 @Table(name = "message")
-public final class MessageEntity {
+public class MessageEntity {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -176,7 +176,6 @@ public final class MessageEntity {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, SHORT_PREFIX_STYLE);
-
     }
 
     @Override

@@ -16,19 +16,33 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.spartasystems.holdmail.persistence;
+package com.spartasystems.holdmail.model;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.junit.Test;
 
-public class MessageEntityTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class MessageForwardCommandTest {
 
     @Test
-    public void shouldVerifyEqualsContract() {
-        EqualsVerifier.forClass(MessageEntity.class)
-                .suppress(Warning.NONFINAL_FIELDS, Warning.STRICT_INHERITANCE)
-                .verify();
+    public void shouldSetRecipientOnConstruct() throws Exception{
+
+        MessageForwardCommand command = new MessageForwardCommand("bob");
+
+        assertThat(command.getRecipient()).isEqualTo("bob");
     }
+
+    @Test
+    public void shouldHaveValidEqualsHashcode() throws Exception {
+
+        EqualsVerifier.forClass(MessageForwardCommand.class)
+                      .suppress(Warning.NONFINAL_FIELDS,
+                              Warning.STRICT_INHERITANCE)
+                      .verify();
+
+    }
+
 
 }

@@ -32,8 +32,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
@@ -47,6 +49,7 @@ public class MessageServiceTest {
 
     private static final String SUBJECT = "email subject";
     private static final String SENDER_EMAIL = "sender@email.org";
+
     @Mock
     private MessageRepository messageRepositoryMock;
 
@@ -54,26 +57,68 @@ public class MessageServiceTest {
     private MessageMapper messageMapperMock;
 
     @Mock
-    private MessageListMapper messageListMapper;
+    private OutgoingMailSender outgoingMailSenderMock;
 
     @Mock
-    private OutgoingMailSender outgoingMailSenderMock;
+    private MessageListMapper messageListMapper;
 
     @InjectMocks
     private MessageService messageService;
 
     @Test
-    public void shouldForwardMail() throws Exception {
+    public void shouldSaveMessage() throws Exception{
 
+        Message messageToSave = mock(Message.class);
+        Message savedMessage = mock(Message.class);
+        MessageEntity entityToSave = mock(MessageEntity.class);
+        MessageEntity savedEntity = mock(MessageEntity.class);
+
+        when(messageMapperMock.fromDomain(messageToSave)).thenReturn(entityToSave);
+        when(messageRepositoryMock.save(entityToSave)).thenReturn(savedEntity);
+        when(messageMapperMock.toDomain(savedEntity)).thenReturn(savedMessage);
+
+        assertThat(messageService.saveMessage(messageToSave)).isEqualTo(savedMessage);
+
+    }
+
+    @Test
+    public void shouldGetMessage() throws Exception{
+
+        long messageId = 34234;
+
+        MessageEntity messageEntityMock = mock(MessageEntity.class);
         Message messageMock = mock(Message.class);
-        when(messageMock.getRawMessage()).thenReturn("RAW message");
 
-        MessageService messageServiceSpy = spy(messageService);
-        when(messageServiceSpy.getMessage(359)).thenReturn(messageMock);
+        when(messageRepositoryMock.findOne(messageId)).thenReturn(messageEntityMock);
+        when(messageMapperMock.toDomain(messageEntityMock)).thenReturn(messageMock);
 
-        messageServiceSpy.forwardMessage(359, "some@guy.com");
-        verify(outgoingMailSenderMock).sendEmail("some@guy.com", "RAW message");
+        assertThat(messageService.getMessage(messageId)).isEqualTo(messageMock);
 
+    }
+
+    @Test
+    public void shouldFindMessagesAndReturnAllIfEmailIsBlank() throws Exception{
+
+        List<MessageEntity> entities = asList(mock(MessageEntity.class), mock(MessageEntity.class));
+        MessageList messageListMock = mock(MessageList.class);
+
+        when(messageRepositoryMock.findAllByOrderByReceivedDateDesc()).thenReturn(entities);
+        when(messageListMapper.toMessageList(entities)).thenReturn(messageListMock);
+
+        assertThat(messageService.findMessages(null)).isEqualTo(messageListMock);
+        assertThat(messageService.findMessages("")).isEqualTo(messageListMock);
+    }
+
+    @Test
+    public void shouldFindMessagesForRecipientIfEmailIsNotBlank() throws Exception{
+
+        List<MessageEntity> entities = asList(mock(MessageEntity.class), mock(MessageEntity.class));
+        MessageList messageListMock = mock(MessageList.class);
+
+        when(messageRepositoryMock.findAllForRecipientOrderByReceivedDateDesc(SENDER_EMAIL)).thenReturn(entities);
+        when(messageListMapper.toMessageList(entities)).thenReturn(messageListMock);
+
+        assertThat(messageService.findMessages(SENDER_EMAIL)).isEqualTo(messageListMock);
     }
 
     @Test
@@ -105,4 +150,18 @@ public class MessageServiceTest {
         assertThat(messageListBySubject).isEqualTo(messageListMock);
     }
 
+
+    @Test
+    public void shouldForwardMail() throws Exception {
+
+        Message messageMock = mock(Message.class);
+        when(messageMock.getRawMessage()).thenReturn("RAW message");
+
+        MessageService messageServiceSpy = spy(messageService);
+        when(messageServiceSpy.getMessage(359)).thenReturn(messageMock);
+
+        messageServiceSpy.forwardMessage(359, "some@guy.com");
+        verify(outgoingMailSenderMock).redirectMessage("some@guy.com", "RAW message");
+
+    }
 }

@@ -80,10 +80,7 @@ public class MessageService {
         }
 
         return messageListMapper.toMessageList(entities);
-
     }
-
-
 
     public MessageList findMessageListBySubject(@NotBlank String subject) {
         return messageListMapper.toMessageList(messageRepository.findBySubject(subject,new PageRequest(0,150)));
@@ -93,6 +90,8 @@ public class MessageService {
         return messageListMapper.toMessageList(messageRepository.findBySenderEmail(senderEmail,new PageRequest(0,150)));
     }
 
+    // TODO?
+    @Deprecated
     @Transactional
     public List<Message> findDomainMessages(@Null @Email String recipientEmail) {
 
@@ -109,6 +108,8 @@ public class MessageService {
 
     }
 
+    // TODO??
+    @Deprecated
     public void deleteMessagesForRecepient(@NotBlank @Email String recipientEmail ) {
         List<MessageEntity> entities = messageRepository.findAllForRecipientOrderByReceivedDateDesc(recipientEmail);
 
@@ -118,7 +119,7 @@ public class MessageService {
     public void forwardMessage(long messageId, @NotBlank @Email String recipientEmail) {
 
         Message message = getMessage(messageId);
-        outgoingMailSender.sendEmail(recipientEmail, message.getRawMessage());
+        outgoingMailSender.redirectMessage(recipientEmail, message.getRawMessage());
     }
 
 }

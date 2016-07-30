@@ -16,19 +16,22 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.spartasystems.holdmail.persistence;
+package com.spartasystems.holdmail.model;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.junit.Test;
 
-public class MessageEntityTest {
+public class MessageListItemTest {
 
     @Test
-    public void shouldVerifyEqualsContract() {
-        EqualsVerifier.forClass(MessageEntity.class)
-                .suppress(Warning.NONFINAL_FIELDS, Warning.STRICT_INHERITANCE)
-                .verify();
+    public void shouldHaveValidEqualsHashcode() throws Exception {
+
+        EqualsVerifier.forClass(MessageListItem.class)
+                      .suppress(Warning.NONFINAL_FIELDS,
+                              Warning.STRICT_INHERITANCE)
+                      .verify();
+
     }
 
 }

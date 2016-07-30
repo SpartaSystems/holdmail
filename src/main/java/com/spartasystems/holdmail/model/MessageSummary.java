@@ -22,6 +22,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spartasystems.holdmail.mime.MimeBodyPart;
 import com.spartasystems.holdmail.mime.MimeBodyParts;
 import com.spartasystems.holdmail.mime.MimeHeaders;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -38,7 +40,7 @@ public class MessageSummary {
     private int    messageSize;
     private String recipients;
     private String messageRaw;
-    private MimeHeaders messageHeaders = new MimeHeaders();
+    private MimeHeaders messageHeaders;
     private MimeBodyParts mimeBodyParts;
 
     public MessageSummary(long messageId, String identifier, String subject, String senderEmail,
@@ -107,17 +109,27 @@ public class MessageSummary {
         return mime == null ? null : mime.getContentString();
     }
 
-    @JsonIgnore
-    public MimeBodyPart getMessageContentById(String contentId) {
-        return mimeBodyParts.findByContentId(contentId);
-    }
-
     public boolean getMessageHasBodyHTML() {
         return getMessageBodyHTML() != null;
     }
 
     public boolean getMessageHasBodyText() {
         return getMessageBodyText() != null;
+    }
+
+    @JsonIgnore
+    public MimeBodyPart getMessageContentById(String contentId) {
+        return mimeBodyParts.findByContentId(contentId);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return EqualsBuilder.reflectionEquals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override

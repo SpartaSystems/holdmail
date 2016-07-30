@@ -22,13 +22,13 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.junit.Test;
 
-public class MessageEntityTest {
+public class MessageRecipientEntityTest {
 
     @Test
     public void shouldVerifyEqualsContract() {
-        EqualsVerifier.forClass(MessageEntity.class)
-                .suppress(Warning.NONFINAL_FIELDS, Warning.STRICT_INHERITANCE)
-                .verify();
+        EqualsVerifier.forClass(MessageRecipientEntity.class)
+                      .suppress(Warning.NONFINAL_FIELDS, Warning.STRICT_INHERITANCE)
+                      .verify();
     }
 
 }
