@@ -16,8 +16,9 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.spartasystems.holdmail;
+package com.spartasystems.holdmail.integration;
 
+import com.spartasystems.holdmail.HoldMailApplication;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;

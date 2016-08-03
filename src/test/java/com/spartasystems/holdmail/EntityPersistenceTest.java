@@ -19,6 +19,7 @@
 package com.spartasystems.holdmail;
 
 import com.google.common.collect.ImmutableSet;
+import com.spartasystems.holdmail.integration.BaseIntegrationTest;
 import com.spartasystems.holdmail.persistence.MessageEntity;
 import com.spartasystems.holdmail.persistence.MessageHeaderEntity;
 import com.spartasystems.holdmail.persistence.MessageRecipientEntity;
@@ -26,7 +27,6 @@ import com.spartasystems.holdmail.persistence.MessageRepository;
 import org.hibernate.AssertionFailure;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import javax.transaction.Transactional;
 import java.util.Date;
@@ -35,7 +35,6 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
-//@TransactionConfiguration(defaultRollback = false)
 public class EntityPersistenceTest extends BaseIntegrationTest {
 
     private static final String MESSAGE_ID = "derpID";

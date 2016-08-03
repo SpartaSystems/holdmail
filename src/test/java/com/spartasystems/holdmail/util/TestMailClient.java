@@ -18,10 +18,12 @@
 
 package com.spartasystems.holdmail.util;
 
+import com.spartasystems.holdmail.exception.HoldMailException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -32,27 +34,20 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.io.InputStream;
 import java.util.Properties;
 
-public final class MailClient {
+public final class TestMailClient {
 
-    private static final Logger logger = LoggerFactory
-            .getLogger(MailClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestMailClient.class);
 
-
-    private final int port;
-    private final String smtpHost;
     private final Session session;
 
-    public MailClient(int port, String smtpHost) {
-
-        this.port = port;
-        this.smtpHost = smtpHost;
+    public TestMailClient(int port, String smtpHost) {
 
         Properties props = new Properties();
 
         props.put("mail.smtp.auth", "false");
-        //Put below to false, if no https is needed
         props.put("mail.smtp.starttls.enable", "false");
         props.put("mail.smtp.host", smtpHost);
         props.put("mail.smtp.port", port);
@@ -60,23 +55,20 @@ public final class MailClient {
         session = Session.getInstance(props);
     }
 
-
     public void sendEmail(String fromEmail, String toEmail, String subject, String textBody, String htmlBody) {
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(fromEmail));
-            message.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse(toEmail));
-//            message.addRecipient(Message.RecipientType.BCC, new InternetAddress("some@example.org"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject(subject);
-
 
             // Set the message
             createMultiMimePart(message, textBody, htmlBody);
 
             Transport.send(message);
-        } catch (MessagingException e) {
-            logger.error("Failed to send email", e);
+        }
+        catch (MessagingException e) {
+            throw new HoldMailException("Failed to send email : " + e.getMessage(), e);
         }
     }
 
@@ -112,6 +104,38 @@ public final class MailClient {
         BodyPart textPart = new MimeBodyPart();
         textPart.setText(messageBody);
         return textPart;
+    }
+
+    public void sendResourceEmail(String resourceName, String sender, String recipient, String subject) {
+
+        try {
+
+            InputStream resource = TestMailClient.class.getClassLoader().getResourceAsStream(resourceName);
+            if (resource == null) {
+                throw new MessagingException("Couldn't find resource at: " + resourceName);
+            }
+
+            Message message = new MimeMessage(session, resource);
+
+            // wipe out ALL exisitng recipients
+            message.setRecipients(Message.RecipientType.TO, new Address[] {});
+            message.setRecipients(Message.RecipientType.CC, new Address[] {});
+            message.setRecipients(Message.RecipientType.BCC, new Address[] {});
+
+            // then set the new data
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
+            message.setFrom(InternetAddress.parse(sender)[0]);
+            message.setSubject(subject);
+
+            Transport.send(message);
+
+            logger.info("Outgoing mail forwarded to " + recipient);
+
+        }
+        catch (MessagingException e) {
+            throw new HoldMailException("couldn't send mail: " + e.getMessage(), e);
+        }
+
     }
 
 }

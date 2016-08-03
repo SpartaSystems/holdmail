@@ -76,7 +76,6 @@ public class SMTPHandler implements MessageHandler {
     }
 
     public void recipient(String recipient) throws RejectException {
-        logger.error("ADDING RECIPIENT: " + recipient);
         message.getRecipients().add(recipient);
     }
 
@@ -103,9 +102,8 @@ public class SMTPHandler implements MessageHandler {
 
             messageService.saveMessage(message);
 
-            logger.info("Stored mail from " + message.getSenderEmail()
+            logger.info("Stored SMTP message from " + message.getSenderEmail()
                     + " to " + StringUtils.join(message.getRecipients(), ","));
-
 
         }
         catch (Exception e) {

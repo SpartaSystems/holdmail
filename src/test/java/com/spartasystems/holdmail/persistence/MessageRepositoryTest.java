@@ -21,7 +21,8 @@ package com.spartasystems.holdmail.persistence;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.spartasystems.holdmail.BaseIntegrationTest;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import com.spartasystems.holdmail.integration.BaseIntegrationTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -38,9 +39,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class, DbUnitTestExecutionListener.class})
-@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/messages.xml")
+@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/messages.xml")
+@DatabaseTearDown(type = DatabaseOperation.DELETE, value = "/messages.xml")
 @DirtiesContext
 public class MessageRepositoryTest extends BaseIntegrationTest{
+
 
     @Autowired
     private MessageRepository messageRepository;
