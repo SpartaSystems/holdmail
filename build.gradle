@@ -20,6 +20,10 @@ group = 'com.spartasystems.holdmail'
 version = '0.0.1-SNAPSHOT'
 description = 'holdmail'
 
+def RPM_INSTALL_DIR = '/opt/holdmail'
+def RPM_USER = 'holdmail'
+def RPM_GROUP = 'holdmail'
+
 buildscript {
 
     repositories {
@@ -31,6 +35,7 @@ buildscript {
     dependencies {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.3.6.RELEASE'
         classpath 'gradle.plugin.org.nosphere.apache:creadur-rat-gradle:0.2.1'
+        classpath "gradle.plugin.com.netflix.nebula:gradle-ospackage-plugin:3.6.1"
     }
 }
 
@@ -45,6 +50,7 @@ apply plugin: "jacoco"
 apply plugin: 'spring-boot'
 apply plugin: 'maven-publish'
 apply plugin: "org.nosphere.apache.rat"
+apply plugin: "nebula.ospackage"
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -80,17 +86,26 @@ dependencies {
     testCompile group: 'com.github.springtestdbunit', name: 'spring-test-dbunit', version: '1.2.1'
 }
 
+// make the jar executable
+springBoot {
+    executable = true
+    excludeDevtools = true
+}
+
 rat {
     excludes = [
-            '.idea/**',
-            'src/main/resources/static/vendor/**',
-            'README.md',
             '.bowerrc',
             'bower.json',
+            '.idea/**',
+            'README.md',
+            'src/main/resources/static/vendor/**',
             'src/main/resources/db/migration/*.sql',
+            'src/test/resources/mails/**',
+            'scripts/rpm/**',
             '**/.gradle/**',
             '**gradle**',
-            '**/build/**'
+            '**/build/**',
+            '**/*.json'
     ]
 }
 
@@ -98,6 +113,42 @@ jar {
     from { ['LICENSE', 'NOTICE'] }
 }
 
+// guide: https://github.com/nebula-plugins/gradle-ospackage-plugin/wiki/Provided-Plugins
+ospackage {
+    packageName = "${project.name}"
+    version = "${project.version}".replace("-SNAPSHOT","")
+    release = 1
+    arch = NOARCH
+    os = LINUX
+    type = BINARY
+
+    preInstall file('scripts/rpm/preInstall.sh')
+    postInstall file('scripts/rpm/postInstall.sh')
+    preUninstall file('scripts/rpm/preUninstall.sh')
+    postUninstall file('scripts/rpm/postUninstall.sh')
+
+    into RPM_INSTALL_DIR
+    user RPM_USER
+    permissionGroup RPM_GROUP
+
+    from(jar.outputs.files) {
+        rename { String f -> f.replace("-${project.version}", "") }
+        into 'bin'
+        fileMode = 0500
+    }
+
+}
+
+buildRpm {
+
+    user RPM_USER
+    permissionGroup RPM_GROUP
+
+    // we can do this because the springBoot plugin above makes the jar executable
+    link('/etc/init.d/holdmail', RPM_INSTALL_DIR + '/bin/holdmail.jar')
+}
+
+tasks.build.dependsOn 'buildRpm'
 
 task srcJAR(type: Jar) {
     from sourceSets.main.allSource
