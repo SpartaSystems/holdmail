@@ -16,16 +16,27 @@
  * limitations under the License.
  ******************************************************************************/
 
-(function () {
-    'use strict';
+package com.spartasystems.holdmail;
 
-    var HoldMailApp = angular.module('HoldMailApp', ['ui.bootstrap', 'angular-growl', 'infinite-scroll']);
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
 
-    HoldMailApp.config([
+@Configuration
+public class MvcConfig {
 
-        'growlProvider', function (growlProvider) {
-            growlProvider.globalTimeToLive({success: 3000, error: -1, warning: 3000, info: 3000});
-        }]);
+    @Bean
+    public RepositoryRestConfigurer repositoryRestConfigurer() {
 
+        return new RepositoryRestConfigurerAdapter() {
 
-}());
+            @Override
+            public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
+                config.setDefaultPageSize(150);
+            }
+        };
+    }
+
+}

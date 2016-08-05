@@ -30,10 +30,10 @@ import java.util.stream.Stream;
 @Component
 public interface MessageRepository extends CrudRepository<MessageEntity, Long> {
 
-    List<MessageEntity> findAllByOrderByReceivedDateDesc();
+    List<MessageEntity> findAllByOrderByReceivedDateDesc(Pageable pageable);
 
     @Query("SELECT m FROM MessageEntity m join m.recipients r where r.recipientEmail = :recipientEmail order by  m.receivedDate desc")
-    List<MessageEntity> findAllForRecipientOrderByReceivedDateDesc(@Param("recipientEmail") String recipientEmail);
+    List<MessageEntity> findAllForRecipientOrderByReceivedDateDesc(@Param("recipientEmail") String recipientEmail, Pageable pageable);
 
     Stream<MessageEntity> findBySubject(String subject, Pageable pageable);
 

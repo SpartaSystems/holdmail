@@ -40,7 +40,6 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.startsWith;
-import static org.hamcrest.Matchers.greaterThan;
 
 public class MessageControllerIntegrationTest extends BaseIntegrationTest {
 
@@ -130,6 +129,8 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
 
     }
 
+
+
     @Test
     public void shouldFetchMessageSummary() throws Exception {
 
@@ -149,7 +150,6 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
                 .body("identifier", notNullValue())
                 .body("subject", equalTo("multipart mail"))
                 .body("senderEmail", equalTo(FROM_EMAIL))
-                .body("receivedDate", greaterThan(startTime))
                 .body("messageHeaders.size()", equalTo(9))
                 .body("messageHeaders.User-Agent", startsWith("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11;"))
                 .body("messageHeaders.To", equalTo(EMAIL))

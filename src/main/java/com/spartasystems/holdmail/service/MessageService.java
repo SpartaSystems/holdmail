@@ -29,13 +29,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.Null;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class MessageService {
@@ -68,52 +66,18 @@ public class MessageService {
         return messageMapper.toDomain(entity);
     }
 
-    public MessageList findMessages(@Null @Email String recipientEmail) {
+    public MessageList findMessages(@Null @Email String recipientEmail, Pageable pageRequest) {
 
         List<MessageEntity> entities;
 
-        if(StringUtils.isBlank(recipientEmail)) {
-            entities = messageRepository.findAllByOrderByReceivedDateDesc();
+        if (StringUtils.isBlank(recipientEmail)) {
+            entities = messageRepository.findAllByOrderByReceivedDateDesc(pageRequest);
         }
         else {
-            entities = messageRepository.findAllForRecipientOrderByReceivedDateDesc(recipientEmail);
+            entities = messageRepository.findAllForRecipientOrderByReceivedDateDesc(recipientEmail, pageRequest);
         }
 
         return messageListMapper.toMessageList(entities);
-    }
-
-    public MessageList findMessageListBySubject(@NotBlank String subject) {
-        return messageListMapper.toMessageList(messageRepository.findBySubject(subject,new PageRequest(0,150)));
-    }
-
-    public MessageList findMessageListBySenderEmail(@NotBlank String senderEmail) {
-        return messageListMapper.toMessageList(messageRepository.findBySenderEmail(senderEmail,new PageRequest(0,150)));
-    }
-
-    // TODO?
-    @Deprecated
-    @Transactional
-    public List<Message> findDomainMessages(@Null @Email String recipientEmail) {
-
-        List<MessageEntity> entities;
-
-        if(StringUtils.isBlank(recipientEmail)) {
-            entities = messageRepository.findAllByOrderByReceivedDateDesc();
-        }
-        else {
-            entities = messageRepository.findAllForRecipientOrderByReceivedDateDesc(recipientEmail);
-        }
-
-        return entities.stream().map(messageMapper::toDomain).collect(Collectors.toList());
-
-    }
-
-    // TODO??
-    @Deprecated
-    public void deleteMessagesForRecepient(@NotBlank @Email String recipientEmail ) {
-        List<MessageEntity> entities = messageRepository.findAllForRecipientOrderByReceivedDateDesc(recipientEmail);
-
-        messageRepository.delete(entities);
     }
 
     public void forwardMessage(long messageId, @NotBlank @Email String recipientEmail) {

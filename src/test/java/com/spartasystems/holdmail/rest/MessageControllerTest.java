@@ -35,6 +35,7 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.omg.CORBA.portable.InputStream;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -63,32 +64,26 @@ public class MessageControllerTest {
     @Mock
     private MimeContentIdPreParser mimeContentIdPreParserMock;
 
+    @Mock
+    private Pageable pageableMock;
+
     @Spy
     @InjectMocks
     private MessageController messageControllerSpy;
 
     @Test
-    public void shouldGetMessagesLessThanMax() throws Exception {
+    public void shouldGetMessages() throws Exception {
 
-        MessageList expectedMessages = mockMessages(100);
-        when(messageServiceMock.findMessages(MOE_SZYSLAK)).thenReturn(expectedMessages);
+        List<MessageListItem> messageMocks = new ArrayList<>(100);
+        for (int i = 0; i < 100; i++) {
+            messageMocks.add(mock(MessageListItem.class));
+        }
 
-        assertThat(messageControllerSpy.getMessages(MOE_SZYSLAK)).isEqualTo(expectedMessages);
-    }
+        MessageList expectedMessages = new MessageList(messageMocks);
 
-    @Test
-    public void shouldGetMessagesMoreThanMax() throws Exception {
+        when(messageServiceMock.findMessages(MOE_SZYSLAK, pageableMock)).thenReturn(expectedMessages);
 
-        MessageList expectedMessages = mockMessages(200);
-        when(messageServiceMock.findMessages(MOE_SZYSLAK)).thenReturn(expectedMessages);
-
-        List<MessageListItem> messages = messageControllerSpy.getMessages(MOE_SZYSLAK).getMessages();
-
-        assertThat(messages).hasSize(151);
-
-        MessageListItem lastItem = messages.get(messages.size() - 1);
-        assertThat(lastItem.getSubject()).isEqualTo("hold-mail return max 150 mails (for now)");
-
+        assertThat(messageControllerSpy.getMessages(MOE_SZYSLAK, pageableMock)).isEqualTo(expectedMessages);
     }
 
     @Test
@@ -224,14 +219,5 @@ public class MessageControllerTest {
 
     }
 
-    private MessageList mockMessages(int numMessages) {
-
-        List<MessageListItem> messages = new ArrayList<>(numMessages);
-        for (int i = 0; i < numMessages; i++) {
-            messages.add(mock(MessageListItem.class));
-        }
-
-        return new MessageList(messages);
-    }
 
 }

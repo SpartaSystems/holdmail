@@ -29,6 +29,7 @@ import com.spartasystems.holdmail.service.MessageService;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,22 +60,12 @@ public class MessageController {
     private MimeContentIdPreParser mimeContentIdPreParser;
 
     @RequestMapping()
-    public MessageList getMessages(@RequestParam(name="recipient", required = false) @Email String recipientEmail) {
+    public MessageList getMessages(
+            @RequestParam(name="recipient", required = false) @Email String recipientEmail,
+            Pageable pageRequest) {
 
-        MessageList messageList = messageService.findMessages(recipientEmail);
-
-        // TODO: pagination needed, limit for now
-        List<MessageListItem> messages = messageList.getMessages();
-        if(messages.size() > 150) {
-            List<MessageListItem> newList = messages.subList(0, 150);
-            newList.add(new MessageListItem(0, new Date().getTime(),
-                    "system", "system", "hold-mail return max 150 mails (for now)"));
-            return new MessageList(newList);
-        }
-
-        return messageList;
+        return messageService.findMessages(recipientEmail, pageRequest);
     }
-
 
     @RequestMapping(value = "/{messageId}")
     public ResponseEntity getMessageContent(@PathVariable("messageId") long messageId) throws Exception {

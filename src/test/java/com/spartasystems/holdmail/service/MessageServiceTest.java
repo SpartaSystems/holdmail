@@ -33,12 +33,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -47,7 +44,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class MessageServiceTest {
 
-    private static final String SUBJECT = "email subject";
     private static final String SENDER_EMAIL = "sender@email.org";
 
     @Mock
@@ -62,11 +58,14 @@ public class MessageServiceTest {
     @Mock
     private MessageListMapper messageListMapper;
 
+    @Mock
+    private Pageable pageableMock;
+
     @InjectMocks
     private MessageService messageService;
 
     @Test
-    public void shouldSaveMessage() throws Exception{
+    public void shouldSaveMessage() throws Exception {
 
         Message messageToSave = mock(Message.class);
         Message savedMessage = mock(Message.class);
@@ -82,7 +81,7 @@ public class MessageServiceTest {
     }
 
     @Test
-    public void shouldGetMessage() throws Exception{
+    public void shouldGetMessage() throws Exception {
 
         long messageId = 34234;
 
@@ -97,59 +96,30 @@ public class MessageServiceTest {
     }
 
     @Test
-    public void shouldFindMessagesAndReturnAllIfEmailIsBlank() throws Exception{
+    public void shouldFindMessagesAndReturnAllIfEmailIsBlank() throws Exception {
 
         List<MessageEntity> entities = asList(mock(MessageEntity.class), mock(MessageEntity.class));
         MessageList messageListMock = mock(MessageList.class);
 
-        when(messageRepositoryMock.findAllByOrderByReceivedDateDesc()).thenReturn(entities);
+        when(messageRepositoryMock.findAllByOrderByReceivedDateDesc(pageableMock)).thenReturn(entities);
         when(messageListMapper.toMessageList(entities)).thenReturn(messageListMock);
 
-        assertThat(messageService.findMessages(null)).isEqualTo(messageListMock);
-        assertThat(messageService.findMessages("")).isEqualTo(messageListMock);
+        assertThat(messageService.findMessages(null, pageableMock)).isEqualTo(messageListMock);
+        assertThat(messageService.findMessages("", pageableMock)).isEqualTo(messageListMock);
     }
 
     @Test
-    public void shouldFindMessagesForRecipientIfEmailIsNotBlank() throws Exception{
+    public void shouldFindMessagesForRecipientIfEmailIsNotBlank() throws Exception {
 
         List<MessageEntity> entities = asList(mock(MessageEntity.class), mock(MessageEntity.class));
         MessageList messageListMock = mock(MessageList.class);
 
-        when(messageRepositoryMock.findAllForRecipientOrderByReceivedDateDesc(SENDER_EMAIL)).thenReturn(entities);
+        when(messageRepositoryMock.findAllForRecipientOrderByReceivedDateDesc(SENDER_EMAIL, pageableMock))
+                .thenReturn(entities);
         when(messageListMapper.toMessageList(entities)).thenReturn(messageListMock);
 
-        assertThat(messageService.findMessages(SENDER_EMAIL)).isEqualTo(messageListMock);
+        assertThat(messageService.findMessages(SENDER_EMAIL, pageableMock)).isEqualTo(messageListMock);
     }
-
-    @Test
-    public void shouldFindMessagesBySubject() throws Exception {
-        MessageEntity messageEntityMock1 = new MessageEntity();
-        MessageEntity messageEntityMock2 = new MessageEntity();
-        Stream<MessageEntity> entityStream = Stream.of(messageEntityMock1, messageEntityMock2);
-        when(messageRepositoryMock.findBySubject(eq(SUBJECT),any(Pageable.class))).thenReturn(entityStream);
-        MessageList messageListMock = mock(MessageList.class);
-        when(messageListMapper.toMessageList(entityStream)).thenReturn(messageListMock);
-
-        MessageList messageListBySubject = messageService.findMessageListBySubject(SUBJECT);
-
-        assertThat(messageListBySubject).isEqualTo(messageListMock);
-
-    }
-
-    @Test
-    public void shouldFindMessageListBySenderEmail() throws Exception {
-        MessageEntity messageEntityMock1 = new MessageEntity();
-        MessageEntity messageEntityMock2 = new MessageEntity();
-        Stream<MessageEntity> entityStream = Stream.of(messageEntityMock1, messageEntityMock2);
-        when(messageRepositoryMock.findBySenderEmail(eq(SENDER_EMAIL),any(Pageable.class))).thenReturn(entityStream);
-        MessageList messageListMock = mock(MessageList.class);
-        when(messageListMapper.toMessageList(entityStream)).thenReturn(messageListMock);
-
-        MessageList messageListBySubject = messageService.findMessageListBySenderEmail(SENDER_EMAIL);
-
-        assertThat(messageListBySubject).isEqualTo(messageListMock);
-    }
-
 
     @Test
     public void shouldForwardMail() throws Exception {
