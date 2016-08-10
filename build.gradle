@@ -20,9 +20,6 @@ group = 'com.spartasystems.holdmail'
 version = '0.0.1-SNAPSHOT'
 description = 'holdmail'
 
-def RPM_INSTALL_DIR = '/opt/holdmail'
-def RPM_USER = 'holdmail'
-def RPM_GROUP = 'holdmail'
 
 buildscript {
 
@@ -57,6 +54,7 @@ targetCompatibility = '1.8'
 
 
 dependencies {
+
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
@@ -66,12 +64,14 @@ dependencies {
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
         exclude(module: 'commons-logging')
     }
+
     compile group: 'com.h2database', name: 'h2', version: '1.4.192'
     compile group: 'org.subethamail', name: 'subethasmtp', version: '3.1.7'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
     compile group: 'commons-io', name: 'commons-io', version: '2.5'
     compile group: 'org.apache.james', name: 'apache-mime4j', version: '0.7.2'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '4.0.3'
+
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.4.1'
     testCompile group: 'org.powermock', name: 'powermock-module-junit4', version: '1.6.5'
     testCompile group: 'org.powermock', name: 'powermock-api-mockito', version: '1.6.5'
@@ -79,14 +79,13 @@ dependencies {
     testCompile group: 'io.rest-assured', name:'rest-assured', version: '3.0.0'
     testCompile group: 'io.rest-assured', name:'spring-mock-mvc', version: '3.0.0'
     testCompile group: 'io.rest-assured', name:'json-schema-validator', version: '3.0.0'
-
+    testCompile group: 'com.github.springtestdbunit', name: 'spring-test-dbunit', version: '1.2.1'
     testCompile(group: 'org.dbunit', name: 'dbunit', version: '2.5.1') {
         exclude(module: 'junit')
     }
-    testCompile group: 'com.github.springtestdbunit', name: 'spring-test-dbunit', version: '1.2.1'
+    runtime group: 'mysql', name: 'mysql-connector-java', version: '6.0.2'
 }
 
-// make the jar executable
 springBoot {
     executable = true
     excludeDevtools = true
@@ -113,7 +112,12 @@ jar {
     from { ['LICENSE', 'NOTICE'] }
 }
 
-// guide: https://github.com/nebula-plugins/gradle-ospackage-plugin/wiki/Provided-Plugins
+def RPM_INSTALL_DIR = '/opt/holdmail'
+def RPM_USER = 'holdmail'
+def RPM_GROUP = 'holdmail'
+
+// guide:
+// https://github.com/nebula-plugins/gradle-ospackage-plugin/wiki/Usage-Example
 ospackage {
     packageName = "${project.name}"
     version = "${project.version}".replace("-SNAPSHOT","")
@@ -135,6 +139,13 @@ ospackage {
         rename { String f -> f.replace("-${project.version}", "") }
         into 'bin'
         fileMode = 0500
+    }
+
+    // Spring boot will look for conf files in the same dir as the app JAR file
+    // see 'CONF_FOLDER' in http://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html
+    from("scripts/bin") {
+        fileType CONFIG | NOREPLACE
+        into "bin"
     }
 
 }
