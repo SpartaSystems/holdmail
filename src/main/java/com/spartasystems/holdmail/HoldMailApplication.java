@@ -20,12 +20,9 @@ package com.spartasystems.holdmail;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-@Import(RepositoryRestMvcConfiguration.class)
+
 @EnableSpringDataWebSupport
 @SpringBootApplication
 public class HoldMailApplication {
