@@ -33,6 +33,7 @@ buildscript {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.4.0.RELEASE'
         classpath 'gradle.plugin.org.nosphere.apache:creadur-rat-gradle:0.2.1'
         classpath "gradle.plugin.com.netflix.nebula:gradle-ospackage-plugin:3.6.1"
+        classpath "com.moowork.gradle:gradle-node-plugin:0.13"
     }
 }
 
@@ -48,6 +49,7 @@ apply plugin: 'spring-boot'
 apply plugin: 'maven-publish'
 apply plugin: "org.nosphere.apache.rat"
 apply plugin: "nebula.ospackage"
+apply plugin: 'com.moowork.node'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -93,11 +95,10 @@ springBoot {
 
 rat {
     excludes = [
-            '.bowerrc',
-            'bower.json',
+            'node_modules/**',
             '.idea/**',
             'README.md',
-            'src/main/resources/static/vendor/**',
+            'src/main/resources/static/js/holdmail-deps.js',
             'src/main/resources/db/migration/*.sql',
             'src/test/resources/mails/**',
             'scripts/rpm/**',
@@ -159,7 +160,7 @@ buildRpm {
     link('/etc/init.d/holdmail', RPM_INSTALL_DIR + '/bin/holdmail.jar')
 }
 
-tasks.build.dependsOn 'buildRpm'
+tasks.build.dependsOn('buildRpm','npmInstall')
 
 task srcJAR(type: Jar) {
     from sourceSets.main.allSource

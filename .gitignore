@@ -1,6 +1,5 @@
 target/
 build/
-vendor/
 out/
 .project
 .classpath
@@ -9,4 +8,6 @@ out/
 *.class
 .idea/
 *.iml
+node_modules/
+holdmail-deps.js
 

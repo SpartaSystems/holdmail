@@ -16,6 +16,12 @@
  * limitations under the License.
  ******************************************************************************/
 
+require('angular');
+require('angular-route');
+require('angular-growl-v2');
+require('angular-ui-bootstrap');
+require('ng-infinite-scroll');
+
 (function () {
     'use strict';
 
