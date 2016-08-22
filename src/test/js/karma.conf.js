@@ -25,14 +25,11 @@ module.exports = function(karma) {
 
         frameworks: ['browserify', 'jasmine-jquery', 'jasmine'],
 
-        files: [
-            'src/test/js/spec/**/*Spec.js',
-            {
-                pattern: 'test/mocks/**/*.json',
-                watched: true,
-                served: true,
-                included: false
-            }
+        files: [{
+            pattern: 'src/test/js/spec/**/*Spec.js',
+            watched: false,
+            included: true,
+            served: true}
         ],
 
         singleRun: true,
@@ -48,12 +45,7 @@ module.exports = function(karma) {
         browserNoActivityTimeout: 30000,
 
         browserify: {
-            debug: true,
-            transform: [
-                ['browserify-shim', {
-                    global: true
-                }]
-            ]
+            debug: true
         }
     });
 };
