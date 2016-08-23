@@ -17,6 +17,7 @@
     "test": "karma start src/test/js/karma.conf.js"
   },
   "devDependencies": {
+    "angular-mocks": "^1.5.8",
     "browserify": "^13.1.0",
     "uglify-js": "^2.7.3",
     "jasmine-core": "^2.4.1",

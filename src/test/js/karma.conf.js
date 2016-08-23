@@ -18,27 +18,26 @@
 
 'use strict';
 
-module.exports = function(karma) {
+module.exports = function (karma) {
     karma.set({
 
         basePath: '../../../',
 
         frameworks: ['browserify', 'jasmine-jquery', 'jasmine'],
 
-        files: [{
-            pattern: 'src/test/js/spec/**/*Spec.js',
-            watched: false,
-            included: true,
-            served: true}
+        files: [
+            { pattern: 'src/test/js/spec/**/*Spec.js', watched: false, included: true, served: true },
         ],
 
-        singleRun: true,
+        singleRun: false,
 
         reporters: ['progress'],
 
         preprocessors: {
             'src/test/js/spec/**/*Spec.js': ['browserify']
         },
+
+        logLevel: karma.LOG_INFO,
 
         browsers: ['PhantomJS'],
 
@@ -47,5 +46,7 @@ module.exports = function(karma) {
         browserify: {
             debug: true
         }
+
+
     });
 };
