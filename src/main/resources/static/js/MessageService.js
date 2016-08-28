@@ -21,11 +21,10 @@
 
     angular.module('HoldMailApp')
 
-        .service('MessageService', function ($http) {
+        .service('MessageService', ['$http', function ($http) {
 
             var MESSAGES_ENDPOINT = '/rest/messages';
 
-            console.log("Message Service Started");
             var messageSvc = ({
                 messages: [],
                 messageDetail: null,
@@ -106,6 +105,6 @@
 
             }
 
-        });
+        }]);
 
 }());

@@ -21,35 +21,36 @@
 
     angular.module('HoldMailApp')
 
-        .controller('ModalCtrl', function ($scope, $uibModalInstance, growl, MessageService) {
+        .controller('ModalCtrl', ['$scope', '$uibModalInstance', 'growl', 'MessageService',
+            function ($scope, $uibModalInstance, growl, MessageService) {
 
-            var modalCtrl = this;
+                var modalCtrl = this;
 
-            $scope.message = $uibModalInstance.message;
+                $scope.message = $uibModalInstance.message;
 
-            // referenced in the iframe for the HTML view tab
-            $scope.messageHTMLURL = MessageService.getMessageHTMLURI($scope.message.messageId);
+                // referenced in the iframe for the HTML view tab
+                $scope.messageHTMLURL = MessageService.getMessageHTMLURI($scope.message.messageId);
 
-            modalCtrl.close = function () {
-                $uibModalInstance.close();
-            };
+                modalCtrl.close = function () {
+                    $uibModalInstance.close();
+                };
 
-            modalCtrl.forwardMail = function () {
+                modalCtrl.forwardMail = function () {
 
-                var messageId = $scope.message.messageId;
-                var recipient = $scope.forwardRecipient;
+                    var messageId = $scope.message.messageId;
+                    var recipient = $scope.forwardRecipient;
 
-                MessageService.getMessageDetail(messageId, recipient)
-                    .success(function () {
-                        growl.success('Mail ' + messageId + ' successfully sent to <b>' + recipient + '</b>', {});
-                    })
-                    .error(function () {
-                        growl.error("The server rejected the request (it probably didn't like that email address " +
-                            "- see the logs for more info).", {});
-                    });
+                    MessageService.getMessageDetail(messageId, recipient)
+                        .success(function () {
+                            growl.success('Mail ' + messageId + ' successfully sent to <b>' + recipient + '</b>', {});
+                        })
+                        .error(function () {
+                            growl.error("The server rejected the request (it probably didn't like that email address " +
+                                "- see the logs for more info).", {});
+                        });
 
-            }
+                }
 
-        });
+            }]);
 
 }());

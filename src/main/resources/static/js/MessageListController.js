@@ -21,78 +21,79 @@
 
     angular.module('HoldMailApp')
 
-        .controller('MessageListController', function ($scope, $uibModal, MessageService) {
+        .controller('MessageListController', ['$scope', '$uibModal', 'MessageService',
+            function ($scope, $uibModal, MessageService) {
 
-            var mainCtrl = this;
+                var mainCtrl = this;
 
-            mainCtrl.items = [];
-            mainCtrl.busy = false;
-            mainCtrl.noMorePages = false;
-            mainCtrl.page = 0;
-            mainCtrl.size = 40;
-
-            mainCtrl.clearAndFetchMessages = function () {
                 mainCtrl.items = [];
-                mainCtrl.page = 0;
+                mainCtrl.busy = false;
                 mainCtrl.noMorePages = false;
-                mainCtrl.fetchMessages();
-            };
+                mainCtrl.page = 0;
+                mainCtrl.size = 40;
 
-            mainCtrl.fetchMessages = function () {
+                mainCtrl.clearAndFetchMessages = function () {
+                    mainCtrl.items = [];
+                    mainCtrl.page = 0;
+                    mainCtrl.noMorePages = false;
+                    mainCtrl.fetchMessages();
+                };
 
-                if (this.busy || this.noMorePages) {
-                    return;
-                }
-                this.busy = true;
+                mainCtrl.fetchMessages = function () {
 
-                MessageService.getMessageList(mainCtrl.size, mainCtrl.page, $scope.recipientEmail)
-                    .success(function (data) {
+                    if (this.busy || this.noMorePages) {
+                        return;
+                    }
+                    this.busy = true;
 
-                        mainCtrl.items = mainCtrl.items.concat(data.messages);
-                        mainCtrl.noMorePages = data.messages.length < 1;
-                        mainCtrl.busy = false;
-                        mainCtrl.page = mainCtrl.page + 1;
+                    MessageService.getMessageList(mainCtrl.size, mainCtrl.page, $scope.recipientEmail)
+                        .success(function (data) {
 
-                    })
-                    .error(function () {
-                        console.log('Service failed to query message list');
-                        mainCtrl.busy = true;
-                    });
+                            mainCtrl.items = mainCtrl.items.concat(data.messages);
+                            mainCtrl.noMorePages = data.messages.length < 1;
+                            mainCtrl.busy = false;
+                            mainCtrl.page = mainCtrl.page + 1;
 
-            };
-
-            mainCtrl.hasNoResults = function () {
-
-                return mainCtrl.items;
-
-            };
-
-            mainCtrl.rowClick = function (selectedMail) {
-
-                MessageService.getMessageDetail(selectedMail.messageId)
-                    .success(function (data) {
-
-                        var modalInstance = $uibModal.open({
-                            templateUrl: 'modal.html',
-                            controller: 'ModalCtrl as modalCtrl',
-                            backdrop: "static",
-                            windowClass: 'mail-details-modal',
-                            modalFade: true
-
+                        })
+                        .error(function () {
+                            console.log('Service failed to query message list');
+                            mainCtrl.busy = true;
                         });
 
-                        modalInstance.message = data;
+                };
 
-                    })
-                    .error(function () {
-                        console.log('Service failed to query message details');
-                    });
+                mainCtrl.hasNoResults = function () {
 
-            };
+                    return mainCtrl.items;
 
-            mainCtrl.clearAndFetchMessages();
+                };
 
-        });
+                mainCtrl.rowClick = function (selectedMail) {
+
+                    MessageService.getMessageDetail(selectedMail.messageId)
+                        .success(function (data) {
+
+                            var modalInstance = $uibModal.open({
+                                templateUrl: 'modal.html',
+                                controller: 'ModalCtrl as modalCtrl',
+                                backdrop: "static",
+                                windowClass: 'mail-details-modal',
+                                modalFade: true
+
+                            });
+
+                            modalInstance.message = data;
+
+                        })
+                        .error(function () {
+                            console.log('Service failed to query message details');
+                        });
+
+                };
+
+                mainCtrl.clearAndFetchMessages();
+
+            }]);
 
 
 }());
