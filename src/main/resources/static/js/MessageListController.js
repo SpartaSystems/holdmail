@@ -21,7 +21,7 @@
 
     angular.module('HoldMailApp')
 
-        .controller('MessageListController', function ($scope, $uibModal, $http) {
+        .controller('MessageListController', function ($scope, $uibModal, MessageService) {
 
             var mainCtrl = this;
 
@@ -45,16 +45,7 @@
                 }
                 this.busy = true;
 
-                var params = [];
-
-                if ($scope.recipientEmail) {
-                    params.push('recipient=' + $scope.recipientEmail);
-                }
-                params.push('size=' + mainCtrl.size);
-                params.push('page=' + mainCtrl.page);
-                var MESSAGES_ENDPOINT = '/rest/messages?' + params.join('&');
-
-                $http({method: 'GET', url: MESSAGES_ENDPOINT})
+                MessageService.getMessageList(mainCtrl.size, mainCtrl.page, $scope.recipientEmail)
                     .success(function (data) {
 
                         mainCtrl.items = mainCtrl.items.concat(data.messages);
@@ -63,9 +54,9 @@
                         mainCtrl.page = mainCtrl.page + 1;
 
                     })
-                    .error(function (data, status) {
-                        console.log('couldn\'t query mail service: ' + status);
-                        mainCtrl.busy = false;
+                    .error(function () {
+                        console.log('Service failed to query message list');
+                        mainCtrl.busy = true;
                     });
 
             };
@@ -78,10 +69,7 @@
 
             mainCtrl.rowClick = function (selectedMail) {
 
-                $http({
-                    method: 'GET',
-                    url: '/rest/messages/' + selectedMail.messageId
-                })
+                MessageService.getMessageDetail(selectedMail.messageId)
                     .success(function (data) {
 
                         var modalInstance = $uibModal.open({
@@ -96,10 +84,9 @@
                         modalInstance.message = data;
 
                     })
-                    .error(function (data, status) {
-                        //alert("Failed to query mail service.");
+                    .error(function () {
+                        console.log('Service failed to query message details');
                     });
-
 
             };
 

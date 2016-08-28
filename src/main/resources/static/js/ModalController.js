@@ -21,14 +21,14 @@
 
     angular.module('HoldMailApp')
 
-        .controller('ModalCtrl', function ($scope, $uibModalInstance, growl, $http) {
+        .controller('ModalCtrl', function ($scope, $uibModalInstance, growl, MessageService) {
+
+            var modalCtrl = this;
 
             $scope.message = $uibModalInstance.message;
 
             // referenced in the iframe for the HTML view tab
-            $scope.messageHTMLURL = '/rest/messages/' + $scope.message.messageId + '/html';
-
-            var modalCtrl = this;
+            $scope.messageHTMLURL = MessageService.getMessageHTMLURI($scope.message.messageId);
 
             modalCtrl.close = function () {
                 $uibModalInstance.close();
@@ -39,15 +39,11 @@
                 var messageId = $scope.message.messageId;
                 var recipient = $scope.forwardRecipient;
 
-                $http
-                    .post('/rest/messages/' + messageId + '/forward', {
-                        recipient: recipient
-                    })
+                MessageService.getMessageDetail(messageId, recipient)
                     .success(function () {
-                        growl.success("Mail " + messageId + ' successfully sent to <b>' + recipient + '</b>', {});
+                        growl.success('Mail ' + messageId + ' successfully sent to <b>' + recipient + '</b>', {});
                     })
-                    .error(function (data, status) {
-                        console.log("couldn't forward email " + JSON.stringify(data));
+                    .error(function () {
                         growl.error("The server rejected the request (it probably didn't like that email address " +
                             "- see the logs for more info).", {});
                     });
