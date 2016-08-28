@@ -26,7 +26,7 @@ module.exports = function (karma) {
         frameworks: ['browserify', 'jasmine-jquery', 'jasmine'],
 
         files: [
-            { pattern: 'src/test/js/spec/**/*Spec.js', watched: false, included: true, served: true },
+            { pattern: 'src/test/js/spec/**/*Spec.js', watched: false, included: true, served: true }
         ],
 
         singleRun: false,

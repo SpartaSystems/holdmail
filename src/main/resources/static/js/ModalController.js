@@ -21,9 +21,9 @@
 
     angular.module('HoldMailApp')
 
-        .controller('ModalCtrl', ['$scope', '$uibModalInstance', 'growl', '$http', function ($scope, $modalInstance, growl, $http) {
+        .controller('ModalCtrl', function ($scope, $uibModalInstance, growl, $http) {
 
-            $scope.message = $modalInstance.message;
+            $scope.message = $uibModalInstance.message;
 
             // referenced in the iframe for the HTML view tab
             $scope.messageHTMLURL = '/rest/messages/' + $scope.message.messageId + '/html';
@@ -31,7 +31,7 @@
             var modalCtrl = this;
 
             modalCtrl.close = function () {
-                $modalInstance.close();
+                $uibModalInstance.close();
             };
 
             modalCtrl.forwardMail = function () {
@@ -54,6 +54,6 @@
 
             }
 
-        }]);
+        });
 
 }());

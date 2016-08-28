@@ -21,7 +21,7 @@
 
     angular.module('HoldMailApp')
 
-        .controller('MessageListController', ['$scope', '$uibModal', '$http', function ($scope, $modal, $http) {
+        .controller('MessageListController', function ($scope, $uibModal, $http) {
 
             var mainCtrl = this;
 
@@ -31,7 +31,7 @@
             mainCtrl.page = 0;
             mainCtrl.size = 40;
 
-            mainCtrl.clearAndFetchMessages = function() {
+            mainCtrl.clearAndFetchMessages = function () {
                 mainCtrl.items = [];
                 mainCtrl.page = 0;
                 mainCtrl.noMorePages = false;
@@ -84,7 +84,7 @@
                 })
                     .success(function (data) {
 
-                        var modalInstance = $modal.open({
+                        var modalInstance = $uibModal.open({
                             templateUrl: 'modal.html',
                             controller: 'ModalCtrl as modalCtrl',
                             backdrop: "static",
@@ -105,6 +105,7 @@
 
             mainCtrl.clearAndFetchMessages();
 
-        }]);
+        });
+
 
 }());

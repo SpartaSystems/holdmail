@@ -21,8 +21,8 @@
 require('angular');
 require('angular-mocks/ngMock');
 
-require('../../../main/resources/static/js/holdmail-app');
-require('../../../main/resources/static/js/messagelistcontroller');
+require('../../../main/resources/static/js/HoldmailApp');
+require('../../../main/resources/static/js/MessageListController');
 
 describe('MessageListcontroller Tests', function () {
 
