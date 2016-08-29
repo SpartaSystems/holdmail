@@ -54,21 +54,18 @@ Storing the mail in the automatically-created H2 database isn't the most durable
 
 ## Build It
 
-The backend is a [Spring Boot](http://projects.spring.io/spring-boot) application, exposing a REST API and SMTP server.  The UI is an [Angular](https://angularjs.org/) application built with [Bower](https://bower.io) and [Gradle](https://gradle.org) respectively. 
+The backend is a [Spring Boot](http://projects.spring.io/spring-boot) application, exposing a REST API and SMTP server.  The UI is an [Angular](https://angularjs.org/) application built with [NPM](https://www.npmjs.com) and [Gradle](https://gradle.org) respectively. 
 
-For a first time run, fetch the UI deps with:
-
-    bower install
-       
 To build from the command line, use:
 
-	gradle build
+	gradle build (this triggers NPM as well)
 
-And you'll find the JARs under <code>build/libs</code>, with the RPM under <code>build/rpm</code>.  
+You'll find the JARs under <code>build/libs</code>, with the RPM under <code>build/rpm</code>.  
 
 Most modern Java-aware IDEs should be able to import *build.gradle* and launch the app by running the <code>HoldMailApplication</code> class, but from the command line, the app can be launched in dev mode by using:
 
 	gradle bootRun
+
 	
 ## REST API
 
