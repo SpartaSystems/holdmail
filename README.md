@@ -54,7 +54,17 @@ Storing the mail in the automatically-created H2 database isn't the most durable
 
 ## Build It
 
-The backend is a [Spring Boot](http://projects.spring.io/spring-boot) application, exposing a REST API and SMTP server.  The UI is an [Angular](https://angularjs.org/) application built with [NPM](https://www.npmjs.com) and [Gradle](https://gradle.org) respectively. 
+The backend is a [Spring Boot](http://projects.spring.io/spring-boot) application, exposing a REST API and SMTP server.
+
+### You'll Need:
+
+ * [Java 8+ JDK](http://www.oracle.com/technetwork/java/javase/downloads/index-jsp-138363.html#javasejdk)
+ * [Gradle](https://gradle.org)
+ * [NPM](https://www.npmjs.com) with the following globally installed (npm install -g _modulename_) modules:
+    * browserify
+    * uglifyjs 
+    * karma	 
+ * [MySQL connector](https://dev.mysql.com/downloads/connector/j/5.0.html), or other JDBC driver JAR if you don't want to use the default H2 installation.
 
 To build from the command line, use:
 
