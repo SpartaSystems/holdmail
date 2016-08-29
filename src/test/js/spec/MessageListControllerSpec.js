@@ -22,40 +22,161 @@ require('angular');
 require('angular-mocks/ngMock');
 
 require('../../../main/resources/static/js/HoldmailApp');
+require('../../../main/resources/static/js/MessageService');
 require('../../../main/resources/static/js/MessageListController');
 
-describe('MessageListcontroller Tests', function () {
+describe('MessageListController Tests', function () {
 
-    var ctrl, scope;
+    var ctrl, scope, $uibModal, MessageService, $q;
 
-    beforeEach(angular.mock.module('HoldMailApp'));
+    var MESSAGE_LIST_RESPONSE = {
+        data: {
+            messages: [{a:'whatever'}, {b:'whatever'}, {c:'whatever'}]
+        }
+    };
 
-    beforeEach(inject(function($rootScope, $controller) {
+    var MESSAGE_DETAILS_RESPONSE = {
+        data: {
+            thisEntry: 'does not matter'
+        }
+    };
+
+    beforeEach(function () {
+        angular.mock.module('HoldMailApp');
+
+    });
+
+    beforeEach(inject(function ($rootScope, $controller, _$uibModal_, _MessageService_, _$q_) {
+
         scope = $rootScope.$new();
-        ctrl = $controller('MessageListController', {$scope: scope});
+        $uibModal = _$uibModal_;
+        MessageService = _MessageService_;
+        $q = _$q_;
+
+        var messageListDefer = _$q_.defer();
+        messageListDefer.resolve(MESSAGE_LIST_RESPONSE);
+        spyOn(_MessageService_, 'getMessageList').and.returnValue(messageListDefer.promise);
+
+        var messageDetailDefer = _$q_.defer();
+        messageDetailDefer.resolve(MESSAGE_DETAILS_RESPONSE);
+        spyOn(_MessageService_, 'getMessageDetail').and.returnValue(messageDetailDefer.promise);
+
+
+        ctrl = $controller('MessageListController', {
+            $scope: scope,
+            $uibModal: $uibModal,
+            MessageService: _MessageService_
+        });
 
     }));
 
-    it('should have expected functions', function() {
-        expect(ctrl.clearAndFetchMessages).toBeDefined();
-        expect(ctrl.fetchMessages).toBeDefined();
-        expect(ctrl.hasNoResults).toBeDefined();
-        expect(ctrl.rowClick).toBeDefined();
+    describe('| initial state', function () {
+
+        it(' - should have expected functions', function () {
+            expect(ctrl.clearAndFetchMessages).toBeDefined();
+            expect(ctrl.fetchMessages).toBeDefined();
+            expect(ctrl.rowClick).toBeDefined();
+        });
+
     });
 
-    it('should be initialized correctly', function() {
+    describe('| clearAndFetchMessages', function () {
 
-        // TODO: this is going to fail because the mocking
-        // above is resulting in every function in the
-        // controller being invoked
+        it(' - should reset variables and call fetchMessages()', function () {
 
-        expect(ctrl.items).toEqual([]);
-        expect(ctrl.busy).toBeFalsy();
-        expect(ctrl.noMorePages).toBeFalsy();
-        expect(ctrl.page).toEqual(0);
-        expect(ctrl.size).toEqual(40);
-    })
+            ctrl.items = [1, 2, 3];
+            ctrl.page = 2;
+            ctrl.noMorePages = true;
+            spyOn(ctrl, 'fetchMessages').and.callFake(NO_OP);
 
-})
-;
+            ctrl.clearAndFetchMessages();
+
+            expect(ctrl.items.length).toEqual(0);
+            expect(ctrl.page).toEqual(0);
+            expect(ctrl.noMorePages).toBeFalsy();
+            expect(ctrl.fetchMessages).toHaveBeenCalled();
+
+        });
+
+    });
+
+    describe('| fetchMessages', function () {
+
+        it(' - should do nothing if busy is true', function () {
+
+            MessageService.getMessageList = jasmine.createSpy().and.callFake(NO_OP);
+            ctrl.busy = true;
+            ctrl.noMorePages = false;
+
+            ctrl.fetchMessages();
+
+            expect(MessageService.getMessageList).not.toHaveBeenCalled();
+            expect(ctrl.busy).toBeTruthy();
+
+        });
+
+        it(' - should do nothing if noMorePages true', function () {
+
+            MessageService.getMessageList = jasmine.createSpy().and.callFake(NO_OP);
+            ctrl.busy = false;
+            ctrl.noMorePages = true;
+
+            ctrl.fetchMessages();
+
+            expect(MessageService.getMessageList).not.toHaveBeenCalled();
+            expect(ctrl.busy).toBeFalsy();
+
+        });
+
+        it(' - should call service and set busy when controller ready', function () {
+
+            scope.$digest();
+
+            ctrl.busy = false;
+            ctrl.noMorePages = false;
+
+            ctrl.fetchMessages();
+
+            expect(MessageService.getMessageList).toHaveBeenCalled();
+            expect(ctrl.busy).toBeTruthy();
+
+        });
+
+        it(' - should set message list', function () {
+
+            scope.$digest();
+
+            ctrl.busy = false;
+            ctrl.noMorePages = false;
+
+            ctrl.fetchMessages();
+
+            expect(MessageService.getMessageList).toHaveBeenCalledWith(40, 0, undefined);
+
+            expect(ctrl.items).toEqual(MESSAGE_LIST_RESPONSE.data.messages);
+
+
+        });
+
+    });
+
+
+    describe('| rowClick', function () {
+
+        it(' - should call message service', function () {
+
+            scope.$digest();
+
+            ctrl.rowClick({messageId: 3333});
+
+            expect(MessageService.getMessageDetail).toHaveBeenCalledWith(3333);
+
+        });
+
+    });
+
+    var NO_OP = function () {
+    }
+
+});
 

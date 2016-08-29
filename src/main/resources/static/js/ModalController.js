@@ -40,11 +40,11 @@
                     var messageId = $scope.message.messageId;
                     var recipient = $scope.forwardRecipient;
 
-                    MessageService.getMessageDetail(messageId, recipient)
-                        .success(function () {
+                    MessageService.forwardMessage(messageId, recipient)
+                        .then(function () {
                             growl.success('Mail ' + messageId + ' successfully sent to <b>' + recipient + '</b>', {});
-                        })
-                        .error(function () {
+
+                        },function () {
                             growl.error("The server rejected the request (it probably didn't like that email address " +
                                 "- see the logs for more info).", {});
                         });

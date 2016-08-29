@@ -44,7 +44,6 @@
              * @param size The max number of messages to return
              * @param page The page number, if the result set is greater than {@link size} messages
              * @param recipientEmail [optional] The email address for the recipient whose emails are being queried
-             * @returns The list of message items
              */
             function getMessageList(size, page, recipientEmail) {
 
@@ -66,7 +65,6 @@
             /**
              * Fetch the full details for a specific message
              * @param messageId The message ID
-             * @returns The message detail object
              */
             function getMessageDetail(messageId) {
 
@@ -89,10 +87,10 @@
             function forwardMessage(messageId, recipientEmail) {
 
                 var messageForwardURI = MESSAGES_ENDPOINT + '/' + messageId + '/forward';
-                $http
-                    .post(messageForwardURI, {
-                        recipient: recipientEmail
-                    })
+
+                return $http.post(messageForwardURI, {
+                    recipient: recipientEmail
+                })
                     .success(function () {
                     })
                     .error(function (data, status) {

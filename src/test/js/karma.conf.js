@@ -29,7 +29,7 @@ module.exports = function (karma) {
             { pattern: 'src/test/js/spec/**/*Spec.js', watched: false, included: true, served: true }
         ],
 
-        singleRun: false,
+        singleRun: true,
 
         reporters: ['progress'],
 

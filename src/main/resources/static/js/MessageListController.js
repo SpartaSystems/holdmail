@@ -44,34 +44,34 @@
                     if (this.busy || this.noMorePages) {
                         return;
                     }
+
+                    // service is async; tell controller/infinite scroll to back off until response comes through
                     this.busy = true;
 
                     MessageService.getMessageList(mainCtrl.size, mainCtrl.page, $scope.recipientEmail)
-                        .success(function (data) {
+                        .then(function (response) {
 
-                            mainCtrl.items = mainCtrl.items.concat(data.messages);
-                            mainCtrl.noMorePages = data.messages.length < 1;
+                            var messages = response.data.messages;
+
+                            mainCtrl.items = mainCtrl.items.concat(messages);
+                            mainCtrl.noMorePages = messages.length < 1;
                             mainCtrl.busy = false;
                             mainCtrl.page = mainCtrl.page + 1;
 
-                        })
-                        .error(function () {
+                        }, function () {
                             console.log('Service failed to query message list');
+
+                            // keep busy set otherwise infinite scroll will go crazy making followup calls
                             mainCtrl.busy = true;
                         });
 
                 };
 
-                mainCtrl.hasNoResults = function () {
-
-                    return mainCtrl.items;
-
-                };
 
                 mainCtrl.rowClick = function (selectedMail) {
 
                     MessageService.getMessageDetail(selectedMail.messageId)
-                        .success(function (data) {
+                        .then(function (response) {
 
                             var modalInstance = $uibModal.open({
                                 templateUrl: 'modal.html',
@@ -82,10 +82,9 @@
 
                             });
 
-                            modalInstance.message = data;
+                            modalInstance.message = response.data;
 
-                        })
-                        .error(function () {
+                        }, function () {
                             console.log('Service failed to query message details');
                         });
 
