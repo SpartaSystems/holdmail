@@ -100,27 +100,33 @@ describe('ModalController Tests', function () {
 
     });
 
-    /*
-     TODO: solve the mystery of why the spy on the MessageService doesn't
-      trigger the promise callbacks (and therefore don't call the growl spy :(
+
     describe('| forward mail', function () {
 
         it(' - should growl on success', function() {
 
-
-            scope.$apply();
-            scope.$digest();
+            var recpient = 'spongebob@squarepants.com';
+            var messageId = 34234;
 
             spyOn(growl, 'success').and.callFake(function() {});
 
+            scope.forwardRecipient = recpient;
+            scope.message = {
+                messageId: messageId
+            };
+
             ctrl.forwardMail();
 
-            expect(growl.success).toHaveBeenCalledWith('some message');
+            scope.$digest();
+            scope.$apply();
+
+            expect(growl.success).toHaveBeenCalledWith('Mail ' + messageId
+                + ' successfully sent to <b>' + recpient + '</b>', {});
 
         });
 
     });
-*/
+
 
 });
 
