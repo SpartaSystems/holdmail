@@ -20,11 +20,12 @@
 
 BASEDIR=/opt/holdmail
 
-# setup log dir
-LOGDIR=${BASEDIR}/log
-mkdir ${LOGDIR}
-chown holdmail:holdmail ${LOGDIR}
-chmod 755 ${LOGDIR}
+mkdir -m 755 ${BASEDIR}/log
+mkdir -m 711 ${BASEDIR}/lib
 
-echo "Holdmail: Installed."
+chown -R holdmail:holdmail ${BASEDIR}
+
+echo "  - install dir: ${BASEDIR}"
+
+echo "Install of 'holdmail' service complete."
 

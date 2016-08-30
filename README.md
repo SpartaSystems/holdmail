@@ -43,13 +43,24 @@ If you're going to have to expose the HTTP service to a larger group than desire
 
 ### Using a different Datasource
 
-Storing the mail in the automatically-created H2 database isn't the most durable solution, but for most mail testing purposes, it's more than enough.  If you do need to use an external DB, use spring's datasource configuration to switch to your desired provider.  For example, to use MySQL:
+By default, the application will create a [H2](http://www.h2database.com/html/main.html) database file called <code>holdmail.mv.db</code> in the running user's home directory (this is <code>/opt/holdmail/holdmail.mv.db</code> if you used the RPM intaller).
+
+This should be good enough for most users, but if you want to use a different RDBMS such as MySQL, you can configure your own datasource.
+
+ in <code>/etc/holdmail.properties</code> using the relevant [Spring Boot DataSource properties](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html).  The following example shows how to configure to connect to a MySQL DB:
 
 	spring.datasource.driver-class-name=com.mysql.jdbc.Driver
 	spring.datasource.url=jdbc:mysql://mysql-server-host:3306/holdmail?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
 	spring.datasource.username=holdmail
 	spring.datasource.password=password
-	loader.path=/path/to/mysql.jar  # TODO: verify this 
+
+
+* The app manages its own database, so this user will need to have sufficient provileges to create and modify tables.
+
+* Holdmail doesn't distribute drivers for external databases (for reasons of distributable size, but mostly to avoid farcical licensing complications &#128584;).  
+   * If using the Holdmail RPM distribution, place your driver JAR file in <code>/opt/holdmail/lib</code> and the app will find it automatically.
+   * To use the MySQL configuration above, you'll need to download the [MySQL connector driver JAR](https://dev.mysql.com/downloads/connector/j/5.0.html) yourself.
+
 
 
 ## Build It
@@ -64,8 +75,7 @@ The backend is a [Spring Boot](http://projects.spring.io/spring-boot) applicatio
     * browserify
     * uglifyjs 
     * karma	 
- * [MySQL connector](https://dev.mysql.com/downloads/connector/j/5.0.html), or other JDBC driver JAR if you don't want to use the default H2 installation.
-
+ 
 To build from the command line, use:
 
 	gradle build (this triggers NPM as well)

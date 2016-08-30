@@ -18,6 +18,9 @@
 # limitations under the License.
 ################################################################################
 
+echo "Uninstalling Holdmail:"
+
+echo "  - stopping 'holdmail' service"
 
 service holdmail stop
 

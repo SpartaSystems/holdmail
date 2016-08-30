@@ -62,7 +62,6 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
-//    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     compile group: 'org.springframework.boot', name: 'spring-boot-devtools'
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
         exclude(module: 'commons-logging')
@@ -91,6 +90,7 @@ dependencies {
 springBoot {
     executable = true
     excludeDevtools = true
+    layout = 'ZIP' // puts PropertiesLauncher in manifest, needed to support loader.dir
 }
 
 rat {
