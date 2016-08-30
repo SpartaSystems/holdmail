@@ -24,11 +24,27 @@ It's now ready to use!  Without any configuration, holdmail does the following:
 * Similarly, the REST API will be available at [http://localhost:8080/rest/messages](http://localhost:8080/rest/messages)
 * A [H2](http://www.h2database.com/) embedded database will be created in holdmail's home directory (/opt/holdmail).
 
+### REST API
+
+| Endpoint&nbsp;Description | Method | URI | Request/Response |
+|---|---|---|---|
+| Find messages | GET | **/rest/messages** <br/>Query Params:<br/> **'recipient'** (str) - search by email address<br/> **'size'** (int) - limit response hit size<br/> **'page'** (int) - pagination support | **Response**: 200, application/json: a _'messages: [..]'_ array.
+| Get message by ID | GET | **/rest/messages/{id}** | **Response**: 200, application/json: JSON object with summary attributes. |
+| Get original raw message | GET | **/rest/messages/{id}/raw** | **Response**: 200, text/plain: the original MIME message. |
+| Get message text body | GET | **/rest/messages/{id}/text** | **Response**: 200, text/plain: the text body if one was present, 404 otherwise. |
+| Get message HTML body | GET | **/rest/messages/{id}/html** | **Response**: 200, text/html: the HTML body if one was present, HTTP 404 otherwise. Any embedded content in the HTML will be replaced with a URI to the 'embedded content' endpoint (next)  |
+| Get embedded content | GET | **/rest/messages/{id}/content/{cid}** |  **Response**: 200, The embedded content with identifier 'cid' will be served with its related content type |
+| Forward message | POST | **/rest/messages/{id}/forward** | **Request**: application/json: The recipient email, in the format: <code>{"recipient":"herp@derp.com"}</code>. <br/><br/>**Response**: 202 on acceptance. |
+
 ## Configure It
 
 If using the RPM deployment, holdmail will look for an optional file called <code>/etc/holdmail.properties</code> which it will use to override its default configuration.  
 
-*Note: This is the first release of holdmail, so configuration is pretty limited, and is likely to receive some necessary attention in the next release.  Currently, any [Spring Boot](http://projects.spring.io/spring-boot) configuration can be used in this file, but may not be supported as such functionality becomes a first-class configuration option in holdmail.*
+---
+
+&#9889; **Note: Since this is the initial release of holdmail, configuration is somewhat limited and is likely to receive some necessary cleanup/namespacing in the future.  While any [Spring Boot](http://projects.spring.io/spring-boot) configuration is currently supported in this file, it may not be guaranteed to work in future releases.** &#9889;
+
+---
 
 ### Security
 
@@ -62,7 +78,6 @@ This should be good enough for most users, but if you want to use a different RD
    * To use the MySQL configuration above, you'll need to download the [MySQL connector driver JAR](https://dev.mysql.com/downloads/connector/j/5.0.html) yourself.
 
 
-
 ## Build It
 
 The backend is a [Spring Boot](http://projects.spring.io/spring-boot) application, exposing a REST API and SMTP server.
@@ -87,20 +102,18 @@ Most modern Java-aware IDEs should be able to import *build.gradle* and launch t
 	gradle bootRun
 
 	
-## REST API
-
-* SMTP port default is *25000*
-* Webapp available at [http://localhost:8080/](http://localhost:8080/)
-* Following REST endpoints:
-	* GET /rest/messages[?recipient=herp@derp.com] _(list all messages)_
-	* GET /rest/messages/3 _(list info about message 3)_
-	* GET /rest/messages/3/raw _(the original SMTP message)_
-	* GET /rest/messages/3/text _(the text/plain content of the message, 404 if none)_
-	* GET /rest/messages/3/html _(the text/html content of the message, 404 if none)_
-	* GET /rest/messages/3/content/blah _(the inline content 'blah' (if the /html resource returns HTML contianing cid:blah references, they will have been replaced with a URI referencing this resource)_
-
+# Meta
 
 ## License
 
 Holdmail is licensed under the [Apache 2.0](LICENSE) license.  
+
+## Sparta Systems
+
+© Copyright 2016 Sparta Systems Inc. 
+
+[Sparta Systems](http://www.spartasystems.com) helps customers bring products to market safely and efficiently by delivering quality management software solutions that provide control and transparency throughout the enterprise and their critical supplier network. 
+
+Holdmail is a product of Sparta's R&D department, for whom efficient and comprehensive automated testing is a central principle. [Come work with us!](http://www.spartasystems.com/about-us/careers). 
+
 
