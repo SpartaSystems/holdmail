@@ -39,6 +39,11 @@
                     mainCtrl.fetchMessages();
                 };
 
+                mainCtrl.showEmptyMessagesPane = function() {
+
+                    return !this.busy && mainCtrl.items.length < 1;
+                };
+
                 mainCtrl.fetchMessages = function () {
 
                     if (this.busy || this.noMorePages) {

@@ -100,6 +100,29 @@ describe('MessageListController Tests', function () {
 
     });
 
+    describe('| showEmptyMessagesPane', function () {
+
+        it(' - should only return true if not busy and messages present', function () {
+
+            ctrl.busy = false;
+            ctrl.items = [];
+            expect(ctrl.showEmptyMessagesPane()).toBeTruthy();
+
+            ctrl.busy = true;
+            ctrl.items = [];
+            expect(ctrl.showEmptyMessagesPane()).toBeFalsy();
+
+            ctrl.busy = false;
+            ctrl.items = [1,2,3];
+            expect(ctrl.showEmptyMessagesPane()).toBeFalsy();
+
+            ctrl.busy = true;
+            ctrl.items = [1,2,3];
+            expect(ctrl.showEmptyMessagesPane()).toBeFalsy();
+        });
+
+    });
+
     describe('| fetchMessages', function () {
 
         it(' - should do nothing if busy is true', function () {
