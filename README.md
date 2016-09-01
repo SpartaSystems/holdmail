@@ -1,12 +1,13 @@
-# Holdmail
+# HoldMail
 
-*Holdmail is a mail server that doesn't deliver mail!*
+###HoldMail - A fake SMTP relay server.
 
-Instead of spamming real users (or worse - customers) while you test your applications, holdmail offers the following: 
+Instead of spamming real users (or worse - customers) while you test your applications, HoldMail offers the following: 
 
 * An SMTP service that stores mails instead of relaying them for delivery.  
 * A web interface for searching and viewing of those emails.
 * A REST API to query and fetch email content, very useful for testing.
+* The ability to manually release(forward) individually selected mails to the real world.
 
 ## Run It
 
@@ -17,7 +18,7 @@ or
 #&gt; sudo service holdmail start
 </code></pre>
 
-It's now ready to use!  Without any configuration, holdmail does the following:
+It's now ready to use!  Without any configuration, HoldMail does the following:
 
 * It accepts SMTP messages on localhost port **25000**. Configure your application to use this as the outgoing SMTP server.
 * It makes the webapp available at [http://localhost:8080/](http://localhost:8080/). 
@@ -38,7 +39,7 @@ It's now ready to use!  Without any configuration, holdmail does the following:
 
 ## Configure It
 
-If using the RPM deployment, holdmail will look for an optional file called <code>/etc/holdmail.properties</code> which it will use to override its default configuration.  
+If using the RPM deployment, HoldMail will look for an optional file called <code>/etc/holdmail.properties</code> which it will use to override its default configuration.  
 
 ---
 
@@ -46,9 +47,18 @@ If using the RPM deployment, holdmail will look for an optional file called <cod
 
 ---
 
+### Port Numbers
+
+	# HTTP/REST (default is 8080)
+	server.port=5555
+	
+	# SMTP (default is 25000)
+	holdmail.smtp.port=22222
+	
+	
 ### Security
 
-Holdmail is designed to be open.  There are no accounts or mailboxes to configure.  Mail for _any_ recipient will be stored and will be queryable.  This is to facilitate the ease of email testing without requiring test authors/performers to perform mailbox setup in advance.  
+HoldMail is designed to be open.  There are no accounts or mailboxes to configure.  Mail for _any_ recipient will be stored and will be queryable.  This is to facilitate the ease of email testing without requiring test authors/performers to perform mailbox setup in advance.  
 
 If you're going to have to expose the HTTP service to a larger group than desired, you can use spring basic configuration to lock it down:
 
@@ -61,9 +71,7 @@ If you're going to have to expose the HTTP service to a larger group than desire
 
 By default, the application will create a [H2](http://www.h2database.com/html/main.html) database file called <code>holdmail.mv.db</code> in the running user's home directory (this is <code>/opt/holdmail/holdmail.mv.db</code> if you used the RPM intaller).
 
-This should be good enough for most users, but if you want to use a different RDBMS such as MySQL, you can configure your own datasource.
-
- in <code>/etc/holdmail.properties</code> using the relevant [Spring Boot DataSource properties](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html).  The following example shows how to configure to connect to a MySQL DB:
+This should be good enough for most users, but if you want to use a different RDBMS such as MySQL, you can configure your own datasource. Add your configuaration to <code>/etc/holdmail.properties</code> using the relevant [Spring Boot DataSource properties](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html).  The following example shows how to configure to connect to a MySQL DB:
 
 	spring.datasource.driver-class-name=com.mysql.jdbc.Driver
 	spring.datasource.url=jdbc:mysql://mysql-server-host:3306/holdmail?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
@@ -73,14 +81,30 @@ This should be good enough for most users, but if you want to use a different RD
 
 * The app manages its own database, so this user will need to have sufficient provileges to create and modify tables.
 
-* Holdmail doesn't distribute drivers for external databases (for reasons of distributable size, but mostly to avoid farcical licensing complications &#128584;).  
-   * If using the Holdmail RPM distribution, place your driver JAR file in <code>/opt/holdmail/lib</code> and the app will find it automatically.
+* HoldMail doesn't distribute drivers for external databases (for reasons of distributable size, but mostly to avoid farcical licensing complications &#128584;).  
+   * If using the HoldMail RPM distribution, place your driver JAR file in <code>/opt/holdmail/lib</code> and the app will find it automatically.
    * To use the MySQL configuration above, you'll need to download the [MySQL connector driver JAR](https://dev.mysql.com/downloads/connector/j/5.0.html) yourself.
 
 
-## Build It
+### Mail Forwarding
 
-The backend is a [Spring Boot](http://projects.spring.io/spring-boot) application, exposing a REST API and SMTP server.
+To release forwarded mails from HoldMail to the real world, you'll need to configure an external SMTP relay server. By default, HoldMail is configured with itself as the outgoing SMTP relay, so forwarded messages will just end up back in HoldMail!  
+
+&#9889; This feature is in its infancy, and can be temperamental.  Most real-world relays are (and should be) pretty strict and may reject, or worse, silently discard a forwarded email.  A familiar "From" email may be specified, as many relays won't trust arbitrary sender addresses.  Your system/network administrator may be needed to help you trace outbound delivery issues.
+
+	# the outgoing relay hostname (default: localhost)
+	holdmail.outgoing.smtp.server=localhost
+	
+	# the outgoing relay port (default: holdmail's SMTP port)
+	holdmail.outgoing.smtp.port=${holdmail.smtp.port}
+	
+	# the "From" header to be set on a forwarded mail (default: holdmail@localhost.localdomain)
+	holdmail.outgoing.mail.from=holdmail@spartasystems.com
+
+
+## Run It From Source
+
+HoldMail's backend is a [Spring Boot](http://projects.spring.io/spring-boot) application, exposing a REST API and SMTP server.  The UI is an [Angular JS](https://angularjs.org) & [Bootstrap](http://getbootstrap.com) web application. 
 
 ### You'll Need:
 
@@ -106,7 +130,7 @@ Most modern Java-aware IDEs should be able to import *build.gradle* and launch t
 
 ## License
 
-Holdmail is licensed under the [Apache 2.0](LICENSE) license.  
+HoldMail is licensed under the [Apache 2.0](LICENSE) license.  
 
 ## Sparta Systems
 
@@ -114,6 +138,6 @@ Holdmail is licensed under the [Apache 2.0](LICENSE) license.
 
 [Sparta Systems](http://www.spartasystems.com) helps customers bring products to market safely and efficiently by delivering quality management software solutions that provide control and transparency throughout the enterprise and their critical supplier network. 
 
-Holdmail is a product of Sparta's R&D department, for whom efficient and comprehensive automated testing is a central principle. [Come work with us!](http://www.spartasystems.com/about-us/careers). 
+HoldMail is a product of Sparta's R&D department, built to help us test notification systems in [our applications](http://www.spartasystems.com/solutions). Efficient and comprehensive automated testing is an integral feature of how we build software. [Come work with us!](http://www.spartasystems.com/about-us/careers). 
 
 
