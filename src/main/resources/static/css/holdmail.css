@@ -32,6 +32,11 @@ body {
     margin-bottom: 0 !important;
 }
 
+#mailResults .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+    background-color: #efefff;
+    cursor: pointer;
+}
+
 .mail-details-modal .modal-dialog {
     width :40%;
     height: 90%;
@@ -80,11 +85,19 @@ body {
 
 }
 
-.mail-summary-content-raw {
-    margin-top: 10px;
-    height: 430px;
+.navbar {
+    min-height: 40px !important;
 }
 
-img.quail {
-    height: 50px;
+@media screen and (min-width: 768px) {
+    .navbar-nav > li > a {
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
 }
+
+.holdmail-nav i.fa {
+    vertical-align: middle;
+    font-size: 20px;
+}
+

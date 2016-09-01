@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # HoldMail
+=======
+![HoldMail](docs/images/holdmail-header.png "HoldMail")
+>>>>>>> 2eb343e... Add new logo, some minor styling changes.
 
 ###HoldMail - A fake SMTP relay server.
 
