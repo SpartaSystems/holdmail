@@ -4,7 +4,7 @@
 ![HoldMail](docs/images/holdmail-header.png "HoldMail")
 >>>>>>> 2eb343e... Add new logo, some minor styling changes.
 
-###HoldMail - A fake SMTP relay server.
+### HoldMail - A fake SMTP relay server.
 
 Instead of spamming real users (or worse - customers) while you test your applications, HoldMail offers the following: 
 
