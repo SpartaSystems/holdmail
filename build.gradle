@@ -161,6 +161,12 @@ buildRpm {
 }
 
 
+task npmTest(type: NpmTask) {
+    args = ['run', 'test']
+}
+
+
+test.dependsOn npmTest
 compileJava.dependsOn('npmInstall')
 tasks.build.dependsOn('buildRpm')
 
