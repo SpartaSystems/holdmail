@@ -14,7 +14,8 @@
   },
   "scripts": {
     "postinstall": "browserify src/main/resources/static/js/*.js | uglifyjs -c -o src/main/resources/static/js/bundle/holdmail.js",
-    "test": "karma start src/test/js/karma.conf.js"
+    "test": "karma start src/test/js/karma.conf.js",
+    "license-report": "license-report --output=table --only=prod"
   },
   "devDependencies": {
     "angular-mocks": "^1.5.8",
