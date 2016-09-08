@@ -34,6 +34,7 @@ buildscript {
         classpath 'gradle.plugin.org.nosphere.apache:creadur-rat-gradle:0.2.1'
         classpath "gradle.plugin.com.netflix.nebula:gradle-ospackage-plugin:3.6.1"
         classpath "com.moowork.gradle:gradle-node-plugin:0.13"
+        classpath "gradle.plugin.com.github.jk1:gradle-license-report:0.3.5"
     }
 }
 
@@ -50,6 +51,7 @@ apply plugin: 'maven-publish'
 apply plugin: "org.nosphere.apache.rat"
 apply plugin: "nebula.ospackage"
 apply plugin: 'com.moowork.node'
+apply plugin: "com.github.jk1.dependency-license-report"
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -109,8 +111,14 @@ rat {
     ]
 }
 
+licenseReport {
+    outputDir = "$projectDir/build/thirdparty-licenses/thirdparty-licenses"
+}
+
+jar.dependsOn generateLicenseReport
+
 jar {
-    from { ['LICENSE', 'NOTICE'] }
+    from { ['LICENSE', 'NOTICE', "$projectDir/build/thirdparty-licenses"] }
 }
 
 def RPM_INSTALL_DIR = '/opt/holdmail'
