@@ -17,9 +17,7 @@
  ******************************************************************************/
 
 group = 'com.spartasystems.holdmail'
-version = '0.0.1-SNAPSHOT'
 description = 'holdmail'
-
 
 buildscript {
 
@@ -35,6 +33,7 @@ buildscript {
         classpath "gradle.plugin.com.netflix.nebula:gradle-ospackage-plugin:3.6.1"
         classpath "com.moowork.gradle:gradle-node-plugin:0.13"
         classpath "gradle.plugin.com.github.jk1:gradle-license-report:0.3.5"
+        classpath 'net.researchgate:gradle-release:2.4.0'
     }
 }
 
@@ -52,6 +51,8 @@ apply plugin: "org.nosphere.apache.rat"
 apply plugin: "nebula.ospackage"
 apply plugin: 'com.moowork.node'
 apply plugin: "com.github.jk1.dependency-license-report"
+apply plugin: 'net.researchgate.release'
+
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -102,6 +103,7 @@ rat {
             'README.md',
             'src/main/resources/static/js/bundle/holdmail.js',
             'src/main/resources/db/migration/*.sql',
+            'src/main/resources/banner.txt',
             'src/test/resources/mails/**',
             'scripts/rpm/**',
             '**/.gradle/**',
@@ -118,6 +120,13 @@ licenseReport {
 jar.dependsOn generateLicenseReport
 
 jar {
+
+    manifest {
+        attributes("Implementation-Version": project.version)
+        attributes("Implementation-Title": "HoldMail")
+        attributes("Implementation-Vendor": "Sparta Systems Inc.")
+    }
+
     from { ['LICENSE', 'NOTICE', "$projectDir/build/thirdparty-licenses"] }
 }
 
@@ -130,6 +139,7 @@ def RPM_GROUP = 'holdmail'
 ospackage {
     packageName = "${project.name}"
     version = "${project.version}".replace("-SNAPSHOT","")
+    vendor = "Sparta Systems Inc."
     release = 1
     arch = NOARCH
     os = LINUX
@@ -193,3 +203,11 @@ artifacts {
     archives docJAR
 }
 
+// gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=1.0.0 -Prelease.newVersion=1.1.0-SNAPSHOT
+release {
+    preCommitText = '[RELEASE]'
+    preTagCommitMessage = ' - Update to release version: '
+    tagCommitMessage = ' - Tagging release version : '
+    newVersionCommitMessage = ' Update to new dev version: '
+    tagTemplate = '${version}'
+}
