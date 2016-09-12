@@ -2,6 +2,8 @@
 
 ### HoldMail - A fake SMTP relay server.
 
+[![Build Status](https://travis-ci.org/SpartaSystems/holdmail.svg?branch=master)](https://travis-ci.org/SpartaSystems/holdmail)
+
 Instead of spamming real users (or worse - customers) while you test your applications, HoldMail offers the following: 
 
 * An SMTP service that stores mails instead of relaying them for delivery.  
