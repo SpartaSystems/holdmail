@@ -107,9 +107,11 @@ rat {
             'src/test/resources/mails/**',
             'scripts/rpm/**',
             '**/.gradle/**',
-            '**gradle**',
+            'gradle/**',
+            '*gradle*',
             '**/build/**',
-            '**/*.json'
+            '**/*.json',
+            '.travis.yml'
     ]
 }
 
