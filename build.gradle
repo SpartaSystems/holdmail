@@ -34,6 +34,7 @@ buildscript {
         classpath "com.moowork.gradle:gradle-node-plugin:0.13"
         classpath "gradle.plugin.com.github.jk1:gradle-license-report:0.3.5"
         classpath 'net.researchgate:gradle-release:2.4.0'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
     }
 }
 
@@ -52,6 +53,7 @@ apply plugin: "nebula.ospackage"
 apply plugin: 'com.moowork.node'
 apply plugin: "com.github.jk1.dependency-license-report"
 apply plugin: 'net.researchgate.release'
+apply plugin: 'com.jfrog.bintray'
 
 
 sourceCompatibility = '1.8'
@@ -212,4 +214,48 @@ release {
     tagCommitMessage = ' - Tagging release version : '
     newVersionCommitMessage = ' Update to new dev version: '
     tagTemplate = '${version}'
+}
+
+afterReleaseBuild.dependsOn bintrayUpload
+
+publishing {
+    publications {
+        HoldmailPublication(MavenPublication) {
+            from components.java
+            artifact srcJAR
+            artifact docJAR
+            artifactId 'holdmail'
+            groupId project.group
+            version project.version
+        }
+    }
+}
+
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+
+    publications = ['HoldmailPublication']
+
+    filesSpec {
+        from 'build/distributions'
+        into 'rpms'
+    }
+
+
+    pkg {
+        repo = 'HoldMail'
+        name = 'holdmail'
+        userOrg = 'spartasystems'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/spartasystems/holdmail'
+
+        version {
+            gpg {
+                sign = true
+            }
+        }
+    }
+
 }
