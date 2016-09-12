@@ -2,7 +2,7 @@
 
 ### HoldMail - A fake SMTP relay server.
 
-[![Build Status](https://travis-ci.org/SpartaSystems/holdmail.svg?branch=master)](https://travis-ci.org/SpartaSystems/holdmail)
+[![Build Status](https://travis-ci.org/SpartaSystems/holdmail.svg?branch=master)](https://travis-ci.org/SpartaSystems/holdmail) &nbsp; [![Download](https://api.bintray.com/packages/spartasystems/HoldMail/holdmail/images/download.svg) ](https://bintray.com/spartasystems/HoldMail/holdmail/_latestVersion)
 
 Instead of spamming real users (or worse - customers) while you test your applications, HoldMail offers the following: 
 
@@ -13,7 +13,9 @@ Instead of spamming real users (or worse - customers) while you test your applic
 
 ## Run It
 
-If you just want to try it out, grab and install the [RPM](#rpm-link-coming-soon).  After installation, start the **holdmail** service:
+If you just want to try it out, grab and install the RPM from the 'rpm' folder here:  [![Download](https://api.bintray.com/packages/spartasystems/HoldMail/holdmail/images/download.svg) ](https://bintray.com/spartasystems/HoldMail/holdmail/_latestVersion)  
+
+After installation, start the **holdmail** service:
 
 <pre><code>#&gt; sudo /etc/init.d/holdmail start
 or

@@ -1,6 +1,6 @@
 {
   "name": "holdmail",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "holdmail",
   "main": "src/main/resources/static/js/holdmail-app.js",
   "dependencies": {
