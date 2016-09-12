@@ -11,6 +11,14 @@ Instead of spamming real users (or worse - customers) while you test your applic
 * A REST API to query and fetch email content, very useful for testing.
 * The ability to manually release(forward) individually selected mails to the real world.
 
+### Screenshots
+
+[![Mail List](docs/images/screenshots/mail-list-small.png)](docs/images/screenshots/mail-list.png)
+_Mail List_
+
+[![Mail Preview](docs/images/screenshots/html-preview-small.png)](docs/images/screenshots/html-preview.png)
+_HTML Content Preview_
+
 ## Run It
 
 If you just want to try it out, grab and install the RPM from the 'rpm' folder here:  [![Download](https://api.bintray.com/packages/spartasystems/HoldMail/holdmail/images/download.svg) ](https://bintray.com/spartasystems/HoldMail/holdmail/_latestVersion)  
