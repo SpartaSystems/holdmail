@@ -22,6 +22,6 @@ RUN mkdir -p /var/log/holdmail && \
 COPY ./assets/etc/holdmail.properties /etc/holdmail.properties
 COPY ./assets/opt/holdmail/bin/holdmail.conf /opt/holdmail/bin/holdmail.conf
 
-EXPOSE 8080
+EXPOSE 8080 25000
 
 ENTRYPOINT ["./holdmail.jar"]

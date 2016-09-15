@@ -32,5 +32,6 @@ services:
     hostname: holdmail
     ports:
       - "8080:8080"
+      - "25000:25000"
     links:
       - mysql
