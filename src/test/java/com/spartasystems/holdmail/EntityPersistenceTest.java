@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,6 +113,35 @@ public class EntityPersistenceTest extends BaseIntegrationTest {
                   .stream()
                   .filter(recip -> expected.equals(recip.getRecipientEmail()))
         .findFirst().orElseThrow(() -> new AssertionFailure("couldn't find email: " + email1)));
+
+    }
+
+    /* Verify fix for https://github.com/SpartaSystems/holdmail/issues/8
+     *
+     * This test's value is limited to ensuring that the integration suite's
+     * DB of choice isn't hit by this defect (currently h2 which wasn't affected anyway..)
+     *
+     * TxType.NEVER ensures that the save()/load() here actually hits
+     * the DB, so that the load() simply doesn't return the in-memory pending entity.
+     */
+    @Test
+    @Transactional(Transactional.TxType.NEVER)
+    public void shouldSaveWithMillisPrecision_issue8() throws Exception{
+
+        MessageEntity messageEntity = buildBasicEntity();
+
+        // 01 Jan 2017 12:34:56 GMT and 789 millis
+        Date dateWithMillisPrecision = new Date(1483274096789L);
+
+        messageEntity.setReceivedDate(dateWithMillisPrecision);
+
+        long savedId = messageRepository.save(messageEntity).getMessageId();
+
+        MessageEntity loadedEntity = messageRepository.findOne(savedId);
+
+        assertThat(loadedEntity.getReceivedDate().getTime())
+                .as("Received date precision lost after message save")
+                .isEqualTo(dateWithMillisPrecision.getTime());
 
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,6 +90,9 @@ dependencies {
     testCompile(group: 'org.dbunit', name: 'dbunit', version: '2.5.1') {
         exclude(module: 'junit')
     }
+
+    // Our license makes distribution of mysql-connector-java undesirable, uncomment here for local mysql testing
+    // runtime group: 'mysql', name: 'mysql-connector-java', version: '6.0.5'
 }
 
 springBoot {
