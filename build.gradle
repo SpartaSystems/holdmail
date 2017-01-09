@@ -99,6 +99,7 @@ springBoot {
     executable = true
     excludeDevtools = true
     layout = 'ZIP' // puts PropertiesLauncher in manifest, needed to support loader.dir
+    buildInfo()
 }
 
 rat {
