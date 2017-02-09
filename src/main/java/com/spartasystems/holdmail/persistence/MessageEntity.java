@@ -80,7 +80,7 @@ public class MessageEntity {
 
     @NotNull
     @Column(name = "message_body")
-    private String messageBody;
+    private String rawMessage;
 
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "message_id", nullable = false)
@@ -149,12 +149,12 @@ public class MessageEntity {
         this.senderHost = senderHost;
     }
 
-    public String getMessageBody() {
-        return messageBody;
+    public String getRawMessage() {
+        return rawMessage;
     }
 
-    public void setMessageBody(String messageBody) {
-        this.messageBody = messageBody;
+    public void setRawMessage(String rawMessage) {
+        this.rawMessage = rawMessage;
     }
 
     public Set<MessageHeaderEntity> getHeaders() {

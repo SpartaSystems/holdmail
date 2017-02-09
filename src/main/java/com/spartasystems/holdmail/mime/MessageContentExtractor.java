@@ -18,6 +18,8 @@
 
 package com.spartasystems.holdmail.mime;
 
+import com.spartasystems.holdmail.domain.MessageContent;
+import com.spartasystems.holdmail.domain.MessageContentPart;
 import org.apache.james.mime4j.MimeException;
 import org.apache.james.mime4j.parser.AbstractContentHandler;
 import org.apache.james.mime4j.stream.BodyDescriptor;
@@ -26,19 +28,19 @@ import org.apache.james.mime4j.stream.Field;
 import java.io.IOException;
 import java.io.InputStream;
 
-class MimeBodyPartsExtractor extends AbstractContentHandler {
+class MessageContentExtractor extends AbstractContentHandler {
 
-    private MimeBodyParts bodyParts;
-    private MimeBodyPart  nextPotentialPart;
+    private MessageContent     bodyParts;
+    private MessageContentPart nextPotentialPart;
 
-    public MimeBodyPartsExtractor() {
-        bodyParts = new MimeBodyParts();
+    public MessageContentExtractor() {
+        bodyParts = new MessageContent();
         nextPotentialPart = null;
     }
 
     @Override
     public void startHeader() throws MimeException {
-        nextPotentialPart = new MimeBodyPart();
+        nextPotentialPart = new MessageContentPart();
     }
 
     @Override
@@ -55,15 +57,15 @@ class MimeBodyPartsExtractor extends AbstractContentHandler {
     public void body(BodyDescriptor bd, InputStream is) throws MimeException, IOException {
 
         nextPotentialPart.setContent(is);
-        bodyParts.addBodyPart(nextPotentialPart);
+        bodyParts.addPart(nextPotentialPart);
 
     }
 
-    protected MimeBodyPart getNextPotentialPart() {
+    protected MessageContentPart getNextPotentialPart() {
         return nextPotentialPart;
     }
 
-    public MimeBodyParts getParts() {
+    public MessageContent getParts() {
         return bodyParts;
     }
 }

@@ -20,10 +20,9 @@ package com.spartasystems.holdmail.rest;
 
 import com.spartasystems.holdmail.domain.Message;
 import com.spartasystems.holdmail.mapper.MessageSummaryMapper;
-import com.spartasystems.holdmail.mime.MimeBodyPart;
+import com.spartasystems.holdmail.domain.MessageContentPart;
 import com.spartasystems.holdmail.model.MessageForwardCommand;
 import com.spartasystems.holdmail.model.MessageList;
-import com.spartasystems.holdmail.model.MessageListItem;
 import com.spartasystems.holdmail.model.MessageSummary;
 import com.spartasystems.holdmail.service.MessageService;
 import org.hibernate.validator.constraints.Email;
@@ -40,8 +39,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.Date;
-import java.util.List;
 
 import static org.springframework.http.MediaType.TEXT_HTML;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
@@ -101,9 +98,9 @@ public class MessageController {
     public ResponseEntity getMessageContentByPartId(@PathVariable("messageId") long messageId,
                                                 @PathVariable("contentId") String contentId) throws Exception {
 
-        MessageSummary summary = loadMessageSummary(messageId);
+        Message message = messageService.getMessage(messageId);
 
-        MimeBodyPart content = summary.getMessageContentById(contentId);
+        MessageContentPart content = message.getContent().findByContentId(contentId);
 
         return ResponseEntity.ok()
                              .header("Content-Type", content.getContentType())

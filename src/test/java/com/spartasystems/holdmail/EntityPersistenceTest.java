@@ -60,7 +60,7 @@ public class EntityPersistenceTest extends BaseIntegrationTest {
         assertThat(loaded).isNotNull();
         assertThat(loaded.getIdentifier()).isEqualTo(MESSAGE_ID);
         assertThat(loaded.getMessageSize()).isEqualTo(MESSAGE_SIZE);
-        assertThat(loaded.getMessageBody()).isEqualTo(MESSAGE_BODY);
+        assertThat(loaded.getRawMessage()).isEqualTo(MESSAGE_BODY);
         assertThat(loaded.getReceivedDate()).hasSameTimeAs(RECEIVED_DATE);
         assertThat(loaded.getSenderEmail()).isEqualTo(SENDER_EMAIL);
         assertThat(loaded.getSenderHost()).isEqualTo(SENDER_HOST);
@@ -159,7 +159,7 @@ public class EntityPersistenceTest extends BaseIntegrationTest {
         MessageEntity entity = new MessageEntity();
         entity.setIdentifier(MESSAGE_ID);
         entity.setMessageSize(MESSAGE_SIZE);
-        entity.setMessageBody(MESSAGE_BODY);
+        entity.setRawMessage(MESSAGE_BODY);
         entity.setReceivedDate(RECEIVED_DATE);
         entity.setSenderEmail(SENDER_EMAIL);
         entity.setSenderHost(SENDER_HOST);
