@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class MimeUtils {
+
+    private MimeUtils() {
+    }
 
     public static MessageContent parseMessageContent(InputStream in) {
 

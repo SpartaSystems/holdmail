@@ -22,15 +22,12 @@ import com.spartasystems.holdmail.domain.Message;
 import com.spartasystems.holdmail.domain.MessageContent;
 import com.spartasystems.holdmail.model.MessageSummary;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.james.mime4j.MimeException;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
 
 @Component
 public class MessageSummaryMapper {
 
-    public MessageSummary toMessageSummary(Message message) throws MimeException, IOException {
+    public MessageSummary toMessageSummary(Message message) {
 
         MessageContent messageContent = message.getContent();
 

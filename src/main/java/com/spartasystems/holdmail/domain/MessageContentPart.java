@@ -35,9 +35,6 @@ public class MessageContentPart {
     private Map<String, String> headers = new HashMap<>();
     private byte[] content;
 
-    public MessageContentPart() {
-    }
-
     public void setHeader(String header, String value) {
         this.headers.put(header, value);
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,6 +90,7 @@ public class MessageEntity {
     @JoinColumn(name = "message_id", nullable = false)
     private Set<MessageRecipientEntity> recipients = new HashSet<>();
 
+    @SuppressWarnings("unused")
     public MessageEntity() {
     }
 

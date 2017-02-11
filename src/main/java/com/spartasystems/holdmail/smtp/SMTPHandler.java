@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.subethamail.smtp.MessageContext;
 import org.subethamail.smtp.MessageHandler;
-import org.subethamail.smtp.RejectException;
 
 import javax.mail.Header;
 import javax.mail.MessagingException;
@@ -71,20 +70,24 @@ public class SMTPHandler implements MessageHandler {
 
     }
 
-    public void from(String from) throws RejectException {
+    @Override
+    public void from(String from) {
         this.senderEmail = from;
     }
 
-    public void recipient(String recipient) throws RejectException {
+    @Override
+    public void recipient(String recipient) {
 
         this.recipients.add(recipient);
     }
 
+    @Override
     public void data(InputStream is) throws IOException {
 
         data = IOUtils.toByteArray(is);
     }
 
+    @Override
     public void done() {
 
         try {
