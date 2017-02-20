@@ -54,10 +54,10 @@
                 var messageListURI = MESSAGES_ENDPOINT + '?' + params.join('&');
 
                 return $http.get(messageListURI)
-                    .success(function (data) {
-                        messageSvc.messages = data;
+                    .then(function (data) {
+                        return data;
                     })
-                    .error(function (data, status) {
+                    .catch(function (data, status) {
                         logError('Failed GET to ' + messageListURI, data, status);
                     });
             }
@@ -70,10 +70,10 @@
 
                 var messageDetailURI = MESSAGES_ENDPOINT + '/' + messageId;
                 return $http.get(messageDetailURI)
-                    .success(function (data) {
-                        messageSvc.messageDetail = data;
+                    .then(function (data) {
+                        return data;
                     })
-                    .error(function (data, status) {
+                    .catch(function (data, status) {
                         logError('Failed GET to ' + messageDetailURI, data, status);
                     });
 
@@ -91,9 +91,7 @@
                 return $http.post(messageForwardURI, {
                     recipient: recipientEmail
                 })
-                    .success(function () {
-                    })
-                    .error(function (data, status) {
+                    .catch(function (data, status) {
                         logError('Failed POST to ' + messageForwardURI, data, status);
                     });
             }
