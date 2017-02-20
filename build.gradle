@@ -95,6 +95,10 @@ dependencies {
     // runtime group: 'mysql', name: 'mysql-connector-java', version: '6.0.5'
 }
 
+bootRun {
+    addResources = true
+}
+
 springBoot {
     executable = true
     excludeDevtools = true
