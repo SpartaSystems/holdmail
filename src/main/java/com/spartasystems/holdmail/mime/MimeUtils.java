@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,27 +18,35 @@
 
 package com.spartasystems.holdmail.mime;
 
+import com.spartasystems.holdmail.domain.MessageContent;
+import com.spartasystems.holdmail.exception.HoldMailException;
 import org.apache.james.mime4j.MimeException;
 import org.apache.james.mime4j.parser.MimeStreamParser;
 import org.apache.james.mime4j.stream.MimeConfig;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-@Component
-public class MimeBodyParser {
+public class MimeUtils {
 
-    public MimeBodyParts findAllBodyParts(InputStream in) throws IOException, MimeException {
+    private MimeUtils() {
+    }
 
-        MimeBodyPartsExtractor bodyPartExtractor = new MimeBodyPartsExtractor();
+    public static MessageContent parseMessageContent(InputStream in) {
 
-        MimeStreamParser parser = new MimeStreamParser(new MimeConfig());
-        parser.setContentDecoding(true);
-        parser.setContentHandler(bodyPartExtractor);
-        parser.parse(in);
+        try {
+            MessageContentExtractor bodyPartExtractor = new MessageContentExtractor();
 
-        return bodyPartExtractor.getParts();
+            MimeStreamParser parser = new MimeStreamParser(new MimeConfig());
+            parser.setContentDecoding(true);
+            parser.setContentHandler(bodyPartExtractor);
+            parser.parse(in);
+            return bodyPartExtractor.getParts();
+        }
+        catch (MimeException | IOException e) {
+            throw new HoldMailException("Failed to parse body", e);
+        }
+
     }
 
 }

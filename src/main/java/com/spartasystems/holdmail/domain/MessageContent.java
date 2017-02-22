@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.spartasystems.holdmail.mime;
+package com.spartasystems.holdmail.domain;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -26,28 +26,36 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MimeBodyParts {
+public class MessageContent {
 
-    private List<MimeBodyPart> bodyPartList;
+    private List<MessageContentPart> parts;
 
-    public MimeBodyParts() {
-        this.bodyPartList = new ArrayList<>();
+    public MessageContent() {
+        this.parts = new ArrayList<>();
     }
 
-    public void addBodyPart(MimeBodyPart bodyPart) {
-        this.bodyPartList.add(bodyPart);
+    public void addPart(MessageContentPart part) {
+        this.parts.add(part);
     }
 
-    public MimeBodyPart findFirstHTMLBody() {
-        return bodyPartList.stream().filter(MimeBodyPart::isHTML).findFirst().orElse(null);
+    public String findFirstHTMLPart() {
+        return parts.stream()
+                    .filter(MessageContentPart::isHTML)
+                    .map(MessageContentPart::getContentString)
+                    .findFirst()
+                    .orElse(null);
     }
 
-    public MimeBodyPart findFirstTextBody() {
-        return bodyPartList.stream().filter(MimeBodyPart::isText).findFirst().orElse(null);
+    public String findFirstTextPart() {
+        return parts.stream()
+                    .filter(MessageContentPart::isText)
+                    .map(MessageContentPart::getContentString)
+                    .findFirst()
+                    .orElse(null);
     }
 
-    public MimeBodyPart findByContentId(String contentId) {
-        return bodyPartList.stream().filter(b -> b.hasContentId(contentId)).findFirst().orElse(null);
+    public MessageContentPart findByContentId(String contentId) {
+        return parts.stream().filter(b -> b.hasContentId(contentId)).findFirst().orElse(null);
     }
 
     @Override

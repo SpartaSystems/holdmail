@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,7 +80,7 @@ public class MessageEntity {
 
     @NotNull
     @Column(name = "message_body")
-    private String messageBody;
+    private String rawMessage;
 
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "message_id", nullable = false)
@@ -90,6 +90,7 @@ public class MessageEntity {
     @JoinColumn(name = "message_id", nullable = false)
     private Set<MessageRecipientEntity> recipients = new HashSet<>();
 
+    @SuppressWarnings("unused")
     public MessageEntity() {
     }
 
@@ -149,12 +150,12 @@ public class MessageEntity {
         this.senderHost = senderHost;
     }
 
-    public String getMessageBody() {
-        return messageBody;
+    public String getRawMessage() {
+        return rawMessage;
     }
 
-    public void setMessageBody(String messageBody) {
-        this.messageBody = messageBody;
+    public void setRawMessage(String rawMessage) {
+        this.rawMessage = rawMessage;
     }
 
     public Set<MessageHeaderEntity> getHeaders() {

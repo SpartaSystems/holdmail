@@ -19,39 +19,36 @@
 package com.spartasystems.holdmail.model;
 
 import com.google.common.collect.ImmutableMap;
-import com.spartasystems.holdmail.mime.MimeBodyPart;
-import com.spartasystems.holdmail.mime.MimeBodyParts;
-import com.spartasystems.holdmail.mime.MimeHeaders;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.junit.Test;
 
 import java.util.Date;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class MessageSummaryTest {
 
-    public static final int ID = 123;
-    public static final String IDENTIFIER = "mId";
-    public static final String SUBJECT = "mSubj";
-    public static final String SENDER = "mSender";
-    public static final Date RECIEVED = new Date();
-    public static final String SENDERHOST = "mHost";
-    public static final int SIZE = 10000;
-    public static final String RECIPIENTS = "mRecips";
-    public static final String RAW = "mRAW";
-    public static final MimeHeaders HEADERS = new MimeHeaders(ImmutableMap.of("k", "v"));
-    public static final String CONTENT_ID = "derpId";
+    public static final int                 ID         = 123;
+    public static final String              IDENTIFIER = "mId";
+    public static final String              SUBJECT    = "mSubj";
+    public static final String              SENDER     = "mSender";
+    public static final Date                RECIEVED   = new Date();
+    public static final String              SENDERHOST = "mHost";
+    public static final int                 SIZE       = 10000;
+    public static final String              RECIPIENTS = "mRecips";
+    public static final Map<String, String> HEADERS    = ImmutableMap.of("k", "v");
+    public static final String              RAW        = "mRAW";
+    public static final String              HTML       = "<SomeHTML>";
+    public static final String              TEXT       = "someTEXT";
 
     @Test
-    public void shouldSetValuesOnConstruct() throws Exception{
+    public void shouldSetValuesOnConstruct() throws Exception {
 
         MessageSummary summary = new MessageSummary(ID, IDENTIFIER, SUBJECT, SENDER,
                 RECIEVED, SENDERHOST, SIZE, RECIPIENTS, RAW,
-                HEADERS, null);
+                HEADERS, HTML, TEXT);
 
         assertThat(summary.getMessageId()).isEqualTo(ID);
         assertThat(summary.getIdentifier()).isEqualTo(IDENTIFIER);
@@ -64,88 +61,6 @@ public class MessageSummaryTest {
         assertThat(summary.getMessageRaw()).isEqualTo(RAW);
         assertThat(summary.getMessageHeaders()).isEqualTo(HEADERS);
 
-    }
-
-    @Test
-    public void shouldReturnNoHTMLWhenMessageBodyHTMLNotPresent() throws Exception{
-
-        MimeBodyParts parts = mock(MimeBodyParts.class);
-        when(parts.findFirstHTMLBody()).thenReturn(null);
-
-        MessageSummary summary = new MessageSummary(ID, IDENTIFIER, SUBJECT, SENDER,
-                RECIEVED, SENDERHOST, SIZE, RECIPIENTS, RAW,
-                HEADERS, parts);
-
-        assertThat(summary.getMessageHasBodyHTML()).isFalse();
-        assertThat(summary.getMessageBodyHTML()).isNull();
-
-    }
-
-    @Test
-    public void shouldReturnHTMLWhenMessageBodyHTMLPresent() throws Exception{
-
-        MimeBodyPart html = mock(MimeBodyPart.class);
-        when(html.getContentString()).thenReturn("html content");
-
-        MimeBodyParts parts = mock(MimeBodyParts.class);
-        when(parts.findFirstHTMLBody()).thenReturn(html);
-
-        MessageSummary summary = new MessageSummary(ID, IDENTIFIER, SUBJECT, SENDER,
-                RECIEVED, SENDERHOST, SIZE, RECIPIENTS, RAW,
-                HEADERS, parts);
-
-        assertThat(summary.getMessageHasBodyHTML()).isTrue();
-        assertThat(summary.getMessageBodyHTML()).isEqualTo("html content");
-
-    }
-
-
-    @Test
-    public void shouldReturnNoTextWhenMessageBodyTextNotPresent() throws Exception{
-
-        MimeBodyParts parts = mock(MimeBodyParts.class);
-        when(parts.findFirstTextBody()).thenReturn(null);
-
-        MessageSummary summary = new MessageSummary(ID, IDENTIFIER, SUBJECT, SENDER,
-                RECIEVED, SENDERHOST, SIZE, RECIPIENTS, RAW,
-                HEADERS, parts);
-
-        assertThat(summary.getMessageHasBodyText()).isFalse();
-        assertThat(summary.getMessageBodyText()).isNull();
-
-    }
-
-    @Test
-    public void shouldReturnTextWhenMessageBodyTextPresent() throws Exception{
-
-        MimeBodyPart text = mock(MimeBodyPart.class);
-        when(text.getContentString()).thenReturn("text content");
-
-        MimeBodyParts parts = mock(MimeBodyParts.class);
-        when(parts.findFirstTextBody()).thenReturn(text);
-
-        MessageSummary summary = new MessageSummary(ID, IDENTIFIER, SUBJECT, SENDER,
-                RECIEVED, SENDERHOST, SIZE, RECIPIENTS, RAW,
-                HEADERS, parts);
-
-        assertThat(summary.getMessageHasBodyText()).isTrue();
-        assertThat(summary.getMessageBodyText()).isEqualTo("text content");
-
-    }
-
-    @Test
-    public void shouldGetMessageContentById() throws Exception{
-
-        MimeBodyPart expected = mock(MimeBodyPart.class);
-
-        MimeBodyParts parts = mock(MimeBodyParts.class);
-        when(parts.findByContentId(CONTENT_ID)).thenReturn(expected);
-
-        MessageSummary summary = new MessageSummary(ID, IDENTIFIER, SUBJECT, SENDER,
-                RECIEVED, SENDERHOST, SIZE, RECIPIENTS, RAW,
-                HEADERS, parts);
-
-        assertThat(summary.getMessageContentById(CONTENT_ID)).isEqualTo(expected);
     }
 
     @Test

@@ -32,6 +32,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
+import javax.transaction.Transactional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,6 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DatabaseSetup(type = DatabaseOperation.INSERT, value = "/messages.xml")
 @DatabaseTearDown(type = DatabaseOperation.DELETE, value = "/messages.xml")
 @DirtiesContext
+@Transactional
 public class MessageRepositoryTest extends BaseIntegrationTest{
 
 

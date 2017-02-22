@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.spartasystems.holdmail.mime;
+package com.spartasystems.holdmail.domain;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,13 +30,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MimeBodyPart {
+public class MessageContentPart {
 
     private Map<String, String> headers = new HashMap<>();
     private byte[] content;
-
-    public MimeBodyPart() {
-    }
 
     public void setHeader(String header, String value) {
         this.headers.put(header, value);
@@ -58,6 +55,10 @@ public class MimeBodyPart {
     public boolean isText() {
         String type = getContentType();
         return type != null && type.startsWith("text/plain");
+    }
+
+    public boolean isAttachment() {
+        return true;
     }
 
     public boolean hasContentId(String contentId) {

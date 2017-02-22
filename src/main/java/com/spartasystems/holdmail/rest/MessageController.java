@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,10 @@
 package com.spartasystems.holdmail.rest;
 
 import com.spartasystems.holdmail.domain.Message;
+import com.spartasystems.holdmail.domain.MessageContentPart;
 import com.spartasystems.holdmail.mapper.MessageSummaryMapper;
-import com.spartasystems.holdmail.mime.MimeBodyPart;
 import com.spartasystems.holdmail.model.MessageForwardCommand;
 import com.spartasystems.holdmail.model.MessageList;
-import com.spartasystems.holdmail.model.MessageListItem;
 import com.spartasystems.holdmail.model.MessageSummary;
 import com.spartasystems.holdmail.service.MessageService;
 import org.hibernate.validator.constraints.Email;
@@ -40,14 +39,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.Date;
-import java.util.List;
 
 import static org.springframework.http.MediaType.TEXT_HTML;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
 
 @RestController
-@RequestMapping(value="/rest/messages", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/rest/messages", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MessageController {
 
     @Autowired
@@ -61,21 +58,21 @@ public class MessageController {
 
     @RequestMapping()
     public MessageList getMessages(
-            @RequestParam(name="recipient", required = false) @Email String recipientEmail,
+            @RequestParam(name = "recipient", required = false) @Email String recipientEmail,
             Pageable pageRequest) {
 
         return messageService.findMessages(recipientEmail, pageRequest);
     }
 
     @RequestMapping(value = "/{messageId}")
-    public ResponseEntity getMessageContent(@PathVariable("messageId") long messageId) throws Exception {
+    public ResponseEntity getMessageContent(@PathVariable("messageId") long messageId) {
 
         MessageSummary summary = loadMessageSummary(messageId);
         return ResponseEntity.ok().body(summary);
     }
 
     @RequestMapping(value = "/{messageId}/html")
-    public ResponseEntity getMessageContentHTML(@PathVariable("messageId") long messageId) throws Exception {
+    public ResponseEntity getMessageContentHTML(@PathVariable("messageId") long messageId) {
 
         MessageSummary summary = loadMessageSummary(messageId);
         String htmlSubstituted = mimeContentIdPreParser.replaceWithRestPath(messageId, summary.getMessageBodyHTML());
@@ -83,27 +80,26 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/{messageId}/text")
-    public ResponseEntity getMessageContentTEXT(@PathVariable("messageId") long messageId) throws Exception {
+    public ResponseEntity getMessageContentTEXT(@PathVariable("messageId") long messageId) {
 
         MessageSummary summary = loadMessageSummary(messageId);
         return serveContent(summary.getMessageBodyText(), TEXT_PLAIN);
     }
 
     @RequestMapping(value = "/{messageId}/raw")
-    public ResponseEntity getMessageContentRAW(@PathVariable("messageId") long messageId) throws Exception {
+    public ResponseEntity getMessageContentRAW(@PathVariable("messageId") long messageId) {
 
         MessageSummary summary = loadMessageSummary(messageId);
         return serveContent(summary.getMessageRaw(), TEXT_PLAIN);
     }
 
-
     @RequestMapping(value = "/{messageId}/content/{contentId}")
     public ResponseEntity getMessageContentByPartId(@PathVariable("messageId") long messageId,
-                                                @PathVariable("contentId") String contentId) throws Exception {
+            @PathVariable("contentId") String contentId) {
 
-        MessageSummary summary = loadMessageSummary(messageId);
+        Message message = messageService.getMessage(messageId);
 
-        MimeBodyPart content = summary.getMessageContentById(contentId);
+        MessageContentPart content = message.getContent().findByContentId(contentId);
 
         return ResponseEntity.ok()
                              .header("Content-Type", content.getContentType())
@@ -112,25 +108,23 @@ public class MessageController {
 
     @RequestMapping(value = "/{messageId}/forward", method = RequestMethod.POST)
     public ResponseEntity fowardMail(@PathVariable("messageId") long messageId,
-                                     @Valid @RequestBody MessageForwardCommand forwardCommand) throws Exception {
+            @Valid @RequestBody MessageForwardCommand forwardCommand)  {
 
         messageService.forwardMessage(messageId, forwardCommand.getRecipient());
 
         return ResponseEntity.accepted().build();
     }
 
-
-
     // -------------------------- utility ------------------------------------
 
-    protected MessageSummary loadMessageSummary(long messageId) throws Exception {
+    protected MessageSummary loadMessageSummary(long messageId) {
         Message message = messageService.getMessage(messageId);
         return messageSummaryMapper.toMessageSummary(message);
     }
 
-    protected ResponseEntity serveContent(Object data, MediaType mediaType) throws Exception {
+    protected ResponseEntity serveContent(Object data, MediaType mediaType) {
 
-        if(data == null){
+        if (data == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().contentType(mediaType).body(data);

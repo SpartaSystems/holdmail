@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,44 +18,41 @@
 
 package com.spartasystems.holdmail.domain;
 
-import com.spartasystems.holdmail.mime.MimeHeaders;
+import com.spartasystems.holdmail.mime.MimeUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 public class Message {
 
-    private long   messageId;
-    private String identifier;
-    private String subject;
-    private String senderEmail;
-    private Date   receivedDate;
-    private String senderHost;
-    private int    messageSize;
-    private String rawMessage;
-    private List<String> recipients = new ArrayList<>();
-    private MimeHeaders  headers    = new MimeHeaders();
+    private final long           messageId;
+    private final String         identifier;
+    private final String         subject;
+    private final String         senderEmail;
+    private final Date           receivedDate;
+    private final String         senderHost;
+    private final int            messageSize;
+    private final String         rawMessage;
+    private final List<String>   recipients;
+    private final MessageHeaders headers;
 
-    public Message() {
-        this(null);
-    }
 
-    public Message(String identifier) {
-        setIdentifier(identifier);
-    }
 
-    public Message(long messageId, String identifier, String subject, String senderEmail, Date receivedDate,
-                   String senderHost, int messageSize, String rawMessage, List<String> recipients,
-                   MimeHeaders headers) {
+    public Message(long messageId, String identifier, String subject,
+            String senderEmail, Date receivedDate, String senderHost,
+            int messageSize, String rawMessage, List<String> recipients,
+            MessageHeaders headers) {
+
         this.messageId = messageId;
-        this.identifier = identifier;
+        this.identifier = StringUtils.isNotBlank(identifier) ? identifier : UUID.randomUUID().toString();
         this.subject = subject;
         this.senderEmail = senderEmail;
         this.receivedDate = receivedDate;
@@ -66,20 +63,8 @@ public class Message {
         this.headers = headers;
     }
 
-    public void setIdentifier(String identifier) {
-        if (StringUtils.isBlank(identifier)) {
-            this.identifier = UUID.randomUUID().toString();
-        } else {
-            this.identifier = identifier;
-        }
-    }
-
     public long getMessageId() {
         return messageId;
-    }
-
-    public void setMessageId(long messageId) {
-        this.messageId = messageId;
     }
 
     public String getIdentifier() {
@@ -90,64 +75,36 @@ public class Message {
         return subject;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
     public String getSenderEmail() {
         return senderEmail;
-    }
-
-    public void setSenderEmail(String senderEmail) {
-        this.senderEmail = senderEmail;
     }
 
     public Date getReceivedDate() {
         return receivedDate;
     }
 
-    public void setReceivedDate(Date receivedDate) {
-        this.receivedDate = receivedDate;
-    }
-
     public String getSenderHost() {
         return senderHost;
-    }
-
-    public void setSenderHost(String senderHost) {
-        this.senderHost = senderHost;
     }
 
     public int getMessageSize() {
         return messageSize;
     }
 
-    public void setMessageSize(int messageSize) {
-        this.messageSize = messageSize;
-    }
-
     public String getRawMessage() {
         return rawMessage;
-    }
-
-    public void setRawMessageBody(String rawMessageBody) {
-        this.rawMessage = rawMessageBody;
     }
 
     public List<String> getRecipients() {
         return recipients;
     }
 
-    public void setRecipients(List<String> recipients) {
-        this.recipients = recipients;
-    }
-
-    public MimeHeaders getHeaders() {
+    public MessageHeaders getHeaders() {
         return headers;
     }
 
-    public void setHeaders(MimeHeaders headers) {
-        this.headers = headers;
+    public MessageContent getContent() {
+        return MimeUtils.parseMessageContent(IOUtils.toInputStream(getRawMessage(), StandardCharsets.UTF_8));
     }
 
     @Override
@@ -164,4 +121,5 @@ public class Message {
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
+
 }
