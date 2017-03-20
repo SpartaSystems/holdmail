@@ -37,9 +37,10 @@ body {
     cursor: pointer;
 }
 
+.progress-bar-width {
+    width:100%;
+}
 .mail-details-modal .modal-dialog {
-    width :40%;
-    height: 90%;
     min-width: 800px;
     min-height: 400px;
 }
@@ -64,6 +65,9 @@ body {
 
 }
 
+.no-wrap {
+    white-space: nowrap;
+}
 .mail-summary-content {
 
     width: 100%;
@@ -88,7 +92,13 @@ body {
 .navbar {
     min-height: 40px !important;
 }
-
+.tab-link {
+    color: #337ab7;
+    text-decoration: none;
+}
+.react-tabs .tab-link  [role=tab][aria-selected=true]{
+    color: #337ab7;
+}
 @media screen and (min-width: 768px) {
     .navbar-nav > li > a {
         padding-top: 10px !important;
@@ -101,3 +111,7 @@ body {
     font-size: 20px;
 }
 
+.mail-criteria{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
