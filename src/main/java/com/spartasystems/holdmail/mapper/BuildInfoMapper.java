@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,17 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.spartasystems.holdmail.mime;
+package com.spartasystems.holdmail.mapper;
 
-import org.apache.james.mime4j.MimeException;
-import org.apache.james.mime4j.parser.MimeStreamParser;
-import org.apache.james.mime4j.stream.MimeConfig;
+import com.spartasystems.holdmail.model.BuildInfo;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 @Component
-public class MimeBodyParser {
+public class BuildInfoMapper {
 
-    public MimeBodyParts findAllBodyParts(InputStream in) throws IOException, MimeException {
+    public BuildInfo fromProperties(BuildProperties properties) {
 
-        MimeBodyPartsExtractor bodyPartExtractor = new MimeBodyPartsExtractor();
-
-        MimeStreamParser parser = new MimeStreamParser(new MimeConfig());
-        parser.setContentDecoding(true);
-        parser.setContentHandler(bodyPartExtractor);
-        parser.parse(in);
-
-        return bodyPartExtractor.getParts();
+        return new BuildInfo(properties.getVersion(), properties.getTime());
     }
-
 }
-

@@ -18,6 +18,9 @@
 
 package com.spartasystems.holdmail.mime;
 
+import com.spartasystems.holdmail.domain.MessageContent;
+import com.spartasystems.holdmail.exception.HoldMailException;
+import org.apache.james.mime4j.MimeException;
 import org.apache.james.mime4j.parser.MimeStreamParser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,15 +30,18 @@ import org.omg.CORBA.portable.InputStream;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ MimeBodyParser.class })
-public class MimeBodyParserTest {
+@PrepareForTest({ MimeUtils.class })
+public class MimeUtilsTest {
 
     @Mock
     private InputStream inputStreamMock;
@@ -44,23 +50,51 @@ public class MimeBodyParserTest {
     private MimeStreamParser mimeStreamParserMock;
 
     @Mock
-    private MimeBodyPartsExtractor mimeBodyPartsExtractorMock;
+    private MessageContentExtractor messageContentExtractorMock;
 
     @Test
     public void shouldFindAllBodyParts() throws Exception {
 
-        MimeBodyParts expectedParts = mock(MimeBodyParts.class);
+        MessageContent expectedParts = mock(MessageContent.class);
         whenNew(MimeStreamParser.class).withAnyArguments().thenReturn(mimeStreamParserMock);
-        whenNew(MimeBodyPartsExtractor.class).withNoArguments().thenReturn(mimeBodyPartsExtractorMock);
-        when(mimeBodyPartsExtractorMock.getParts()).thenReturn(expectedParts);
+        whenNew(MessageContentExtractor.class).withNoArguments().thenReturn(messageContentExtractorMock);
+        when(messageContentExtractorMock.getParts()).thenReturn(expectedParts);
 
-        MimeBodyParts actualParts = new MimeBodyParser().findAllBodyParts(inputStreamMock);
+        MessageContent actualParts = MimeUtils.parseMessageContent(inputStreamMock);
 
         InOrder inOrder = inOrder(mimeStreamParserMock);
         inOrder.verify(mimeStreamParserMock).setContentDecoding(true);
-        inOrder.verify(mimeStreamParserMock).setContentHandler(mimeBodyPartsExtractorMock);
+        inOrder.verify(mimeStreamParserMock).setContentHandler(messageContentExtractorMock);
         inOrder.verify(mimeStreamParserMock).parse(inputStreamMock);
         assertThat(actualParts).isEqualTo(expectedParts);
+    }
+
+    @Test
+    public void shouldRethrowMimeException() throws Exception {
+
+        MimeException mimeException = new MimeException("mimeError");
+        whenNew(MessageContentExtractor.class).withNoArguments()
+                                              .thenThrow(mimeException);
+
+        assertThatThrownBy(() -> MimeUtils.parseMessageContent(inputStreamMock))
+                .isInstanceOf(HoldMailException.class)
+                .hasMessage("Failed to parse body")
+                .hasCause(mimeException);
+
+    }
+
+    @Test
+    public void shouldRethrowIOException() throws Exception {
+
+        IOException ioException = new IOException("ioError");
+        whenNew(MessageContentExtractor.class).withNoArguments()
+                                              .thenThrow(ioException);
+
+        assertThatThrownBy(() -> MimeUtils.parseMessageContent(inputStreamMock))
+                .isInstanceOf(HoldMailException.class)
+                .hasMessage("Failed to parse body")
+                .hasCause(ioException);
+
     }
 
 }

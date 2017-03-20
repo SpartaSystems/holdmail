@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,22 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.spartasystems.holdmail.integration;
+package com.spartasystems.holdmail.model;
 
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
+import org.junit.Test;
 
-import java.net.URL;
+public class BuildInfoTest {
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public abstract class BaseIntegrationTest {
+    @Test
+    public void shouldHaveValidEqualsHashcode() throws Exception {
 
-    @Value("${local.server.port}")
-    private int port;
+        EqualsVerifier.forClass(BuildInfo.class)
+                      .suppress(Warning.STRICT_INHERITANCE)
+                      .verify();
 
-    protected URL base;
-
-    @Before
-    public void setUp() throws Exception {
-        this.base = new URL("http://localhost:" + port + "/");
     }
 
-}
 
+}

@@ -19,8 +19,9 @@
 package com.spartasystems.holdmail.rest;
 
 import com.spartasystems.holdmail.domain.Message;
+import com.spartasystems.holdmail.domain.MessageContent;
 import com.spartasystems.holdmail.mapper.MessageSummaryMapper;
-import com.spartasystems.holdmail.mime.MimeBodyPart;
+import com.spartasystems.holdmail.domain.MessageContentPart;
 import com.spartasystems.holdmail.model.MessageForwardCommand;
 import com.spartasystems.holdmail.model.MessageList;
 import com.spartasystems.holdmail.model.MessageListItem;
@@ -146,12 +147,16 @@ public class MessageControllerTest {
         final String CONTENT_TYPE = "some/type";
         final InputStream CONTENT_STREAM = mock(InputStream.class);
 
-        MimeBodyPart contentMock = mock(MimeBodyPart.class);
-        when(contentMock.getContentType()).thenReturn(CONTENT_TYPE);
-        when(contentMock.getContentStream()).thenReturn(CONTENT_STREAM);
+        MessageContentPart contentPartMock = mock(MessageContentPart.class);
+        when(contentPartMock.getContentType()).thenReturn(CONTENT_TYPE);
+        when(contentPartMock.getContentStream()).thenReturn(CONTENT_STREAM);
 
-        MessageSummary summaryMock = setupSpyToLoadMessageSummaryMock(MSG_ID, null, null, null);
-        when(summaryMock.getMessageContentById(PART_ID)).thenReturn(contentMock);
+        Message messageMock = mock(Message.class);
+        when(messageServiceMock.getMessage(MSG_ID)).thenReturn(messageMock);
+
+        MessageContent contentMock = mock(MessageContent.class);
+        when(messageMock.getContent()).thenReturn(contentMock);
+        when(contentMock.findByContentId(PART_ID)).thenReturn(contentPartMock);
 
         ResponseEntity response = messageControllerSpy.getMessageContentByPartId(MSG_ID, PART_ID);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,7 @@ public final class MessageHeaderEntity {
     @Column(name = "header_value")
     private String headerValue;
 
+    @SuppressWarnings("unused")
     public MessageHeaderEntity() {
     }
 

@@ -18,34 +18,33 @@
 
 package com.spartasystems.holdmail.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.spartasystems.holdmail.mime.MimeBodyPart;
-import com.spartasystems.holdmail.mime.MimeBodyParts;
-import com.spartasystems.holdmail.mime.MimeHeaders;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Date;
+import java.util.Map;
 
 public class MessageSummary {
 
-    private long   messageId;
-    private String identifier;
-    private String subject;
-    private String senderEmail;
-    private Date   receivedDate;
-    private String senderHost;
-    private int    messageSize;
-    private String recipients;
-    private String messageRaw;
-    private MimeHeaders messageHeaders;
-    private MimeBodyParts mimeBodyParts;
+    private long                messageId;
+    private String              identifier;
+    private String              subject;
+    private String              senderEmail;
+    private Date                receivedDate;
+    private String              senderHost;
+    private int                 messageSize;
+    private String              recipients;
+    private String              messageRaw;
+    private Map<String, String> messageHeaders;
+    private String              messageBodyText;
+    private String              messageBodyHTML;
 
     public MessageSummary(long messageId, String identifier, String subject, String senderEmail,
             Date receivedDate, String senderHost, int messageSize, String recipients, String messageRaw,
-            MimeHeaders messageHeaders, MimeBodyParts mimeBodyParts) {
+            Map<String, String> messageHeaders, String messageBodyText, String messageBodyHTML) {
         this.messageId = messageId;
         this.identifier = identifier;
         this.subject = subject;
@@ -56,7 +55,8 @@ public class MessageSummary {
         this.recipients = recipients;
         this.messageRaw = messageRaw;
         this.messageHeaders = messageHeaders;
-        this.mimeBodyParts = mimeBodyParts;
+        this.messageBodyText = messageBodyText;
+        this.messageBodyHTML = messageBodyHTML;
     }
 
     public long getMessageId() {
@@ -91,36 +91,30 @@ public class MessageSummary {
         return recipients;
     }
 
-    public MimeHeaders getMessageHeaders() {
-        return messageHeaders;
-    }
-
     public String getMessageRaw() {
         return messageRaw;
     }
 
-    public String getMessageBodyHTML() {
-        MimeBodyPart mime = mimeBodyParts.findFirstHTMLBody();
-        return mime == null ? null : mime.getContentString();
+    public Map<String, String> getMessageHeaders() {
+        return messageHeaders;
     }
 
     public String getMessageBodyText() {
-        MimeBodyPart mime = mimeBodyParts.findFirstTextBody();
-        return mime == null ? null : mime.getContentString();
+        return messageBodyText;
+    }
+
+    public String getMessageBodyHTML() {
+        return messageBodyHTML;
     }
 
     public boolean getMessageHasBodyHTML() {
-        return getMessageBodyHTML() != null;
+        return StringUtils.isNotBlank(messageBodyHTML);
     }
 
     public boolean getMessageHasBodyText() {
-        return getMessageBodyText() != null;
+        return StringUtils.isNotBlank(messageBodyText);
     }
 
-    @JsonIgnore
-    public MimeBodyPart getMessageContentById(String contentId) {
-        return mimeBodyParts.findByContentId(contentId);
-    }
 
     @Override
     public boolean equals(Object other) {

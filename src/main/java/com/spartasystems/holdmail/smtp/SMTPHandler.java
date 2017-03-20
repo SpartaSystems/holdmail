@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 package com.spartasystems.holdmail.smtp;
 
 import com.spartasystems.holdmail.domain.Message;
-import com.spartasystems.holdmail.mime.MimeHeaders;
+import com.spartasystems.holdmail.domain.MessageHeaders;
 import com.spartasystems.holdmail.service.MessageService;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.CharEncoding;
@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.subethamail.smtp.MessageContext;
 import org.subethamail.smtp.MessageHandler;
-import org.subethamail.smtp.RejectException;
 
 import javax.mail.Header;
 import javax.mail.MessagingException;
@@ -40,9 +39,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -51,41 +52,42 @@ public class SMTPHandler implements MessageHandler {
 
     private Logger logger = LoggerFactory.getLogger(SMTPHandler.class);
 
-    private Message message;
-
     @Autowired
     private MessageService messageService;
 
-    private byte[] data;
+    private byte[] data = {};
+    private String senderHost;
+    private String senderEmail;
+    private List<String> recipients = new ArrayList<>();
 
     public SMTPHandler() {
     }
 
     public SMTPHandler(MessageContext ctx) {
 
-        InetSocketAddress senderHost = (InetSocketAddress) ctx.getRemoteAddress();
-
-        message = new Message();
-        message.setSenderHost(senderHost.getAddress().getHostAddress());
-        message.setReceivedDate(new Date());
+        InetSocketAddress hostAddr = (InetSocketAddress) ctx.getRemoteAddress();
+        this.senderHost = hostAddr.getAddress().getHostAddress();
 
     }
 
-    public void from(String from) throws RejectException {
-        message.setSenderEmail(from);
+    @Override
+    public void from(String from) {
+        this.senderEmail = from;
     }
 
-    public void recipient(String recipient) throws RejectException {
-        message.getRecipients().add(recipient);
+    @Override
+    public void recipient(String recipient) {
+
+        this.recipients.add(recipient);
     }
 
+    @Override
     public void data(InputStream is) throws IOException {
 
         data = IOUtils.toByteArray(is);
-        message.setMessageSize(data.length);
-        message.setRawMessageBody(IOUtils.toString(data, CharEncoding.UTF_8));
     }
 
+    @Override
     public void done() {
 
         try {
@@ -94,11 +96,19 @@ public class SMTPHandler implements MessageHandler {
             MimeMessage mimeMsg = new MimeMessage(s, new ByteArrayInputStream(data));
 
             // set any data from the mimemessage itself
-            MimeHeaders headers = getHeaders(mimeMsg);
+            MessageHeaders headers = getHeaders(mimeMsg);
 
-            message.setIdentifier(mimeMsg.getMessageID());
-            message.setSubject(headers.get("Subject"));
-            message.setHeaders(headers);
+            Message message = new Message(0,
+                    mimeMsg.getMessageID(),
+                    headers.get("Subject"),
+                    this.senderEmail,
+                    new Date(),
+                    senderHost,
+                    this.data.length,
+                    IOUtils.toString(data, CharEncoding.UTF_8),
+                    this.recipients,
+                    headers
+            );
 
             messageService.saveMessage(message);
 
@@ -114,7 +124,7 @@ public class SMTPHandler implements MessageHandler {
 
     }
 
-    protected MimeHeaders getHeaders(MimeMessage message) throws MessagingException {
+    protected MessageHeaders getHeaders(MimeMessage message) throws MessagingException {
 
         Map<String, String> headerMap = new HashMap<>();
 
@@ -129,7 +139,7 @@ public class SMTPHandler implements MessageHandler {
 
         }
 
-        return new MimeHeaders(headerMap);
+        return new MessageHeaders(headerMap);
     }
 
 }

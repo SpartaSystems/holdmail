@@ -18,6 +18,8 @@
 
 package com.spartasystems.holdmail.mime;
 
+import com.spartasystems.holdmail.domain.MessageContent;
+import com.spartasystems.holdmail.domain.MessageContentPart;
 import org.apache.commons.io.IOUtils;
 import org.apache.james.mime4j.stream.Field;
 import org.junit.Test;
@@ -32,32 +34,32 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-public class MimeBodyPartsExtractorTest {
+public class MessageContentExtractorTest {
 
     @Test
     public void shouldInitializeOnConstructor() throws Exception {
 
-        MimeBodyPartsExtractor extractor = new MimeBodyPartsExtractor();
+        MessageContentExtractor extractor = new MessageContentExtractor();
 
-        assertThat(extractor.getParts()).isEqualTo(new MimeBodyParts());
+        assertThat(extractor.getParts()).isEqualTo(new MessageContent());
         assertThat(extractor.getNextPotentialPart()).isNull();
     }
 
     @Test
     public void shouldStartHeader() throws Exception{
 
-        MimeBodyPartsExtractor extractor = new MimeBodyPartsExtractor();
+        MessageContentExtractor extractor = new MessageContentExtractor();
         assertThat(extractor.getNextPotentialPart()).isNull();
 
         extractor.startHeader();
-        assertThat(extractor.getNextPotentialPart()).isEqualTo(new MimeBodyPart());
+        assertThat(extractor.getNextPotentialPart()).isEqualTo(new MessageContentPart());
 
     }
 
     @Test
     public void shouldNotHandleFieldIfNoPart() throws Exception{
 
-        MimeBodyPartsExtractor extractor = new MimeBodyPartsExtractor();
+        MessageContentExtractor extractor = new MessageContentExtractor();
 
         extractor.field(mock(Field.class));
         assertThat(extractor.getNextPotentialPart()).isNull();
@@ -71,12 +73,12 @@ public class MimeBodyPartsExtractorTest {
         when(fieldMock.getName()).thenReturn("fName");
         when(fieldMock.getBody()).thenReturn("fBody");
 
-        MimeBodyPartsExtractor extractor = new MimeBodyPartsExtractor();
+        MessageContentExtractor extractor = new MessageContentExtractor();
 
         extractor.startHeader(); // initialize a 'nextPotentialPart'
         extractor.field(fieldMock);
 
-        MimeBodyPart nextPart = extractor.getNextPotentialPart();
+        MessageContentPart nextPart = extractor.getNextPotentialPart();
         assertThat(nextPart.getHeaders().get("fName")).isEqualTo("fBody");
 
     }
@@ -86,16 +88,16 @@ public class MimeBodyPartsExtractorTest {
 
         InputStream inputStreamMock = new ByteArrayInputStream("hello".getBytes());
 
-        MimeBodyPartsExtractor extractor = new MimeBodyPartsExtractor();
+        MessageContentExtractor extractor = new MessageContentExtractor();
 
         extractor.startHeader(); // initialize a 'nextPotentialPart'
         extractor.body(null, inputStreamMock);
 
-        MimeBodyPart nextPart = extractor.getNextPotentialPart();
+        MessageContentPart nextPart = extractor.getNextPotentialPart();
         assertThat(IOUtils.contentEquals(nextPart.getContentStream(), inputStreamMock));
 
-        MimeBodyParts expectedParts = new MimeBodyParts();
-        expectedParts.addBodyPart(nextPart);
+        MessageContent expectedParts = new MessageContent();
+        expectedParts.addPart(nextPart);
 
         assertThat(extractor.getParts()).isEqualTo(expectedParts);
     }

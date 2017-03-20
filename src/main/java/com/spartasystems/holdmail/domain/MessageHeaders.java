@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.spartasystems.holdmail.mime;
+package com.spartasystems.holdmail.domain;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -27,15 +27,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MimeHeaders {
+public class MessageHeaders {
 
     private Map<String, String> headerMap;
 
-    public MimeHeaders() {
+    public MessageHeaders() {
         headerMap = new HashMap<>();
     }
 
-    public MimeHeaders(Map<String, String> otherMap) {
+    public MessageHeaders(Map<String, String> otherMap) {
         headerMap = new HashMap<>(otherMap);
     }
 

@@ -19,11 +19,13 @@
 package com.spartasystems.holdmail.mapper;
 
 import com.spartasystems.holdmail.domain.Message;
+import com.spartasystems.holdmail.domain.MessageHeaders;
 import com.spartasystems.holdmail.persistence.MessageEntity;
 import com.spartasystems.holdmail.persistence.MessageHeaderEntity;
 import com.spartasystems.holdmail.persistence.MessageRecipientEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -39,9 +41,9 @@ public class MessageMapper {
         entity.setReceivedDate(message.getReceivedDate());
         entity.setSenderHost(message.getSenderHost());
         entity.setMessageSize(message.getMessageSize());
-        entity.setMessageBody(message.getRawMessage());
-
-        message.getHeaders().asMap().forEach((k,v) -> entity.getHeaders().add(new MessageHeaderEntity(k, v)));
+        entity.setRawMessage(message.getRawMessage());
+        message.getHeaders().asMap().forEach((k, v)
+                -> entity.getHeaders().add(new MessageHeaderEntity(k, v)));
 
         entity.setRecipients(message.getRecipients()
                                     .stream()
@@ -51,30 +53,28 @@ public class MessageMapper {
 
     }
 
-
     public Message toDomain(MessageEntity entity) {
 
-        Message model = new Message();
-        model.setMessageId(entity.getMessageId());
-        model.setIdentifier(entity.getIdentifier());
-        model.setSubject(entity.getSubject());
-        model.setSenderEmail(entity.getSenderEmail());
-        model.setReceivedDate(entity.getReceivedDate());
-        model.setSenderHost(entity.getSenderHost());
-        model.setMessageSize(entity.getMessageSize());
-        model.setRawMessageBody(entity.getMessageBody());
+        MessageHeaders headers = new MessageHeaders();
+        entity.getHeaders().forEach(h -> headers.put(h.getHeaderName(), h.getHeaderValue()));
 
-        entity.getHeaders().forEach(h -> model.getHeaders().put(h.getHeaderName(), h.getHeaderValue()));
+        List<String> recipients = entity.getRecipients()
+                                        .stream()
+                                        .map(MessageRecipientEntity::getRecipientEmail)
+                                        .collect(Collectors.toList());
 
-        model.setRecipients(entity.getRecipients()
-                                  .stream()
-                                  .map(MessageRecipientEntity::getRecipientEmail)
-                                  .collect(Collectors.toList()));
+        return new Message(entity.getMessageId(),
+                entity.getIdentifier(),
+                entity.getSubject(),
+                entity.getSenderEmail(),
+                entity.getReceivedDate(),
+                entity.getSenderHost(),
+                entity.getMessageSize(),
+                entity.getRawMessage(),
+                recipients,
+                headers
+        );
 
-        return model;
     }
-
-
-
 
 }

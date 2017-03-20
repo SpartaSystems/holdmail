@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ public class EntityPersistenceTest extends BaseIntegrationTest {
         assertThat(loaded).isNotNull();
         assertThat(loaded.getIdentifier()).isEqualTo(MESSAGE_ID);
         assertThat(loaded.getMessageSize()).isEqualTo(MESSAGE_SIZE);
-        assertThat(loaded.getMessageBody()).isEqualTo(MESSAGE_BODY);
+        assertThat(loaded.getRawMessage()).isEqualTo(MESSAGE_BODY);
         assertThat(loaded.getReceivedDate()).hasSameTimeAs(RECEIVED_DATE);
         assertThat(loaded.getSenderEmail()).isEqualTo(SENDER_EMAIL);
         assertThat(loaded.getSenderHost()).isEqualTo(SENDER_HOST);
@@ -116,6 +116,35 @@ public class EntityPersistenceTest extends BaseIntegrationTest {
 
     }
 
+    /* Verify fix for https://github.com/SpartaSystems/holdmail/issues/8
+     *
+     * This test's value is limited to ensuring that the integration suite's
+     * DB of choice isn't hit by this defect (currently h2 which wasn't affected anyway..)
+     *
+     * TxType.NEVER ensures that the save()/load() here actually hits
+     * the DB, so that the load() simply doesn't return the in-memory pending entity.
+     */
+    @Test
+    @Transactional(Transactional.TxType.NEVER)
+    public void shouldSaveWithMillisPrecision_issue8() throws Exception{
+
+        MessageEntity messageEntity = buildBasicEntity();
+
+        // 01 Jan 2017 12:34:56 GMT and 789 millis
+        Date dateWithMillisPrecision = new Date(1483274096789L);
+
+        messageEntity.setReceivedDate(dateWithMillisPrecision);
+
+        long savedId = messageRepository.save(messageEntity).getMessageId();
+
+        MessageEntity loadedEntity = messageRepository.findOne(savedId);
+
+        assertThat(loadedEntity.getReceivedDate().getTime())
+                .as("Received date precision lost after message save")
+                .isEqualTo(dateWithMillisPrecision.getTime());
+
+    }
+
     private void assertHeaderPresent(MessageEntity entity, String expectedName, String expectedValue) {
 
         MessageHeaderEntity foundHeader = entity.getHeaders().stream()
@@ -130,7 +159,7 @@ public class EntityPersistenceTest extends BaseIntegrationTest {
         MessageEntity entity = new MessageEntity();
         entity.setIdentifier(MESSAGE_ID);
         entity.setMessageSize(MESSAGE_SIZE);
-        entity.setMessageBody(MESSAGE_BODY);
+        entity.setRawMessage(MESSAGE_BODY);
         entity.setReceivedDate(RECEIVED_DATE);
         entity.setSenderEmail(SENDER_EMAIL);
         entity.setSenderHost(SENDER_HOST);
