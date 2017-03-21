@@ -10,25 +10,46 @@
     "angular-ui-bootstrap": "2.5.0",
     "angular-growl-v2": "0.7.5",
     "angular-route": "1.6.2",
-    "ng-infinite-scroll": "1.3.0"
+    "ng-infinite-scroll": "1.3.0",
+    "moment": "^2.17.1",
+    "react-modal-bootstrap": "^1.1.0",
+    "react-tabs": "^0.8.2"
   },
   "scripts": {
     "postinstall": "browserify src/main/resources/static/js/*.js | uglifyjs -c -o src/main/resources/static/js/bundle/holdmail.js",
     "test": "karma start src/test/js/karma.conf.js",
-    "license-report": "license-report --output=table --only=prod"
+    "license-report": "license-report --output=table --only=prod",
+    "buildReact": "watchify src/main/resources/static/js/react/app.js -o src/main/resources/static/js/bundle/babelify.js -t [ babelify --presets [ es2015 react ] ]"
   },
   "devDependencies": {
     "angular-mocks": "^1.5.8",
+    "babel-jest": "^19.0.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
+    "babelify": "^7.3.0",
     "browserify": "^14.1.0",
     "uglify-js": "^2.7.3",
     "jasmine-core": "^2.4.1",
+    "jest": "^19.0.2",
+    "jest-enzyme": "^2.1.2",
     "karma": "^1.2.0",
-    "karma-jasmine": "^1.0.2",
-    "karma-jasmine-jquery": "^0.1.1",
     "karma-browserify": "^5.1.0",
     "karma-chrome-launcher": "^2.0.0",
+    "karma-jasmine": "^1.0.2",
+    "karma-jasmine-jquery": "^0.1.1",
     "karma-phantomjs-launcher": "^1.0.1",
-    "karma-spec-reporter": "^0.0.26"
+    "karma-spec-reporter": "^0.0.26",
+    "react-test-renderer": "^15.4.2",
+    "uglify-js": "^2.7.3",
+    "watchify": "^3.9.0"
+  },
+  "jest": {
+    "scriptPreprocessor": "/node_modules/babel-jest",
+    "unmockedModulePathPatterns": [
+      "react",
+      "react-dom",
+      "enzyme"
+    ]
   },
   "author": "Barry O'Neill / Sparta Systems",
   "license": "Apache-2.0"
