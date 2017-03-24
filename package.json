@@ -20,7 +20,7 @@
   },
   "scripts": {
     "postinstall": "browserify src/main/resources/static/js/*.js | uglifyjs -c -o src/main/resources/static/js/bundle/holdmail.js",
-    "test": "jest",
+    "test": "karma start src/test/js/karma.conf.js",
     "license-report": "license-report --output=table --only=prod",
     "buildReact": "watchify src/main/resources/static/js/react/app.js -o src/main/resources/static/js/bundle/babelify.js -t [ babelify --presets [ es2015 react ] ]",
     "test-debug": "./node_modules/.bin/node-debug ./node_modules/.bin/jest -i --watch"
