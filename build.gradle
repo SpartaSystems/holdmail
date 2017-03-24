@@ -99,7 +99,8 @@ rat {
             '*gradle*',
             '**/build/**',
             '**/*.json',
-            '.travis.yml'
+            '.travis.yml',
+            '.babelrc'
     ]
 }
 

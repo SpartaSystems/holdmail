@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 import React from "react";
 import Header from "./Header";
 import MailView from "./MailView";
@@ -40,8 +41,8 @@ export default class HoldMail extends React.Component {
                 <div className="container">
                     <div className="row">
                         <div id="mailCriteriaAndResults" className="col-lg-12">
-                            <SearchBar/>
-                            <MailView/>
+                            <SearchBar  messages={this.state.messages} />
+                            <MailView messages={this.state.messages} />
                         </div>
                     </div>
                 </div>

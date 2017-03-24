@@ -18,9 +18,42 @@
 import React from "react";
 
 export default class SearchBar extends React.Component {
-    clearAndFetchMessages() {
-        this.setState(prevState => ({}));
+    constructor(props){
+        super(props);
 
+        this.state = {
+            messages: props.messages,
+            searchText:'',
+            loading: true,
+            error: null
+        };
+    }
+    clearAndFetchMessages() {
+
+        fetch(`http://localhost:8080/rest/messages?size=${this.props.size}&page=${this.props.page}&recipient=${this.state.searchText}`)
+            .then(response => {
+                response.json().then(json => {
+                    this.setState({
+                        loading: true,
+                        messages: json.messages
+                    });
+                })
+            })
+            .catch(err => {
+                // Something went wrong. Save the error in state and re-render.
+                this.setState({
+                    loading: false,
+                    error: err
+                });
+                return new Error("Fetching messages failed");
+            });
+
+    }
+    handleChange(event){
+        this.setState({
+            searchText: event.target.value
+        });
+        event.preventDefault();
     }
 
     render() {
@@ -34,9 +67,10 @@ export default class SearchBar extends React.Component {
                     </div>
 
                     <input id="mainSearchTxt" type="text" className="form-control"
-                           placeholder="Enter full email address: e.g. homer@simpson.com"/>
+                           placeholder="Enter full email address: e.g. homer@simpson.com"
+                           value={this.state.searchText} onChange={this.handleChange.bind(this)} />
 
-                        <span className="input-group-btn">
+                    <span className="input-group-btn">
                             <button id="mainSearchBut" className="btn btn-success" type="button"
                                     onClick={this.clearAndFetchMessages.bind(this)}>
                                 <span className="glyphicon glyphicon-search" aria-hidden="true"/> Search!

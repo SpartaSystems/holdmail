@@ -16,13 +16,28 @@
  * limitations under the License.
  ******************************************************************************/
 
-import ReactDOM from 'react-dom';
 import React from 'react';
-import HoldMail from './HoldMail';
+import {shallow} from 'enzyme';
+import MailModal from '../../../../main/resources/static/js/react/MailModal';
 
+test('MailModal constructor state defaults ', () =>{
+    debugger;
+    let message = {
+        messageId:1,
+        senderEmail: 'foo@bar.com',
+        recipients: 'test , me',
+        receivedDate: 'I need to format the date'
+    };
 
-// boostrap the react app
-ReactDOM.render(
-    <HoldMail/>,
-    document.getElementById('root')
-);
+    const mailModal = new MailModal({message:message});
+    expect(mailModal.state.loading).toEqual(true);
+    expect(mailModal.state.messageMetaData).toEqual({});
+    expect(mailModal.state.error).toEqual(null);
+
+});
+
+test('MailModal will render', () => {
+    const mailModal = shallow(<MailModal/>);
+    expect(mailModal.text().trim()).toEqual('GitHub');
+});
+
