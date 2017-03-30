@@ -1,18 +1,21 @@
 # Contributing
 
-When contributing to this repository, please first discuss the change you wish to make via issue,
-email, or any other method with the owners of this repository before making a change. 
+When contributing to this repository, please first discuss the change you wish to make [by creating an issue](https://github.com/SpartaSystems/holdmail/issues/new)
 
 Please note we have a code of conduct, please follow it in all your interactions with the project.
 
 ## Pull Request Process
 
-1. Ensure any install or build dependencies are removed before the end of the layer when doing a 
-   build.
-2. Update the README.md with details of changes to the interface, this includes new environment 
+1. Ensure that all changes have proper test coverage.
+2. Ensure that new dependencies match our licensing requirements.
+   - New dependencies must be complementary to the Apache License, v2.
+3. Update the README.md with details of changes to the interface, this includes new environment 
    variables, exposed ports, useful file locations and container parameters.
-3. You may merge the Pull Request in once you have the sign-off of two other developers, or if you 
-   do not have permission to do that, you may request the second reviewer to merge it for you.
+4. Be open to discussing your changes.  Make sure the maintainers understand your reasoning
+   and respond appropriately to comments made.
+5. A maintainer will merge your pull request once all tests pass in Travis,
+   the quality is confirmed, and we there are no unresolved issues.  Feel free
+   to ping if you've not heard from us recently.
 
 ## Code of Conduct
 
@@ -71,7 +74,7 @@ further defined and clarified by project maintainers.
 ### Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team at [INSERT EMAIL ADDRESS]. All
+reported by contacting the project team at *[INSERT EMAIL ADDRESS]*. All
 complaints will be reviewed and investigated and will result in a response that
 is deemed necessary and appropriate to the circumstances. The project team is
 obligated to maintain confidentiality with regard to the reporter of an incident.
