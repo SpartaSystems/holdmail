@@ -88,6 +88,8 @@ rat {
             'node_modules/**',
             '.idea/**',
             'README.md',
+            'CONTRIBUTING.md',
+            '.github/*',
             'docker/',
             'src/main/resources/static/js/bundle/holdmail.js',
             'src/main/resources/db/migration/*.sql',
