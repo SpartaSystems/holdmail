@@ -4,6 +4,31 @@ When contributing to this repository, please first discuss the change you wish t
 
 Please note we have a code of conduct, please follow it in all your interactions with the project.
 
+## Contribution Process
+
+We welcome all contributions to our code base from outisde parties.  We do require a few things with your contribution.
+
+1. All Contributions are made under the Apache License, v2.
+2. Our headers must be applied to all source files added to the codebase
+```
+ Copyright $year Sparta Systems, Inc
+ 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+ http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ implied.
+ 
+ See the License for the specific language governing permissions and
+ limitations under the License.
+```
+3. Contributors waive copyright claims to their contributions.
+
 ## Pull Request Process
 
 1. Ensure that all changes have proper test coverage.
