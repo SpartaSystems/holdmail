@@ -34,6 +34,47 @@ export default class HoldMail extends React.Component {
             error: null
         };
     }
+
+    clearAndFetchMessages(searchText) {
+
+        this.setState({
+            loading: true
+        });
+
+        let recipient = '';
+
+        if (searchText) {
+            recipient = `&recipient=${searchText}`;
+        }
+
+        const url = `http://localhost:8080/rest/messages?size=${this.props.size}&page=${this.props.page}${recipient}`;
+
+        fetch(url)
+            .then(response => {
+                response.json().then(json => {
+
+                    this.setState({
+                        loading: false,
+                        messages: json.messages
+                    });
+                })
+            })
+            .catch(err => {
+                // Something went wrong. Save the error in state and re-render.
+                this.setState({
+                    loading: false,
+                    error: err
+                });
+                return new Error("Fetching messages failed");
+            });
+
+    }
+
+    componentWillMount() {
+        this.clearAndFetchMessages('');
+    }
+
+
     render() {
         return (
             <div>
@@ -41,8 +82,10 @@ export default class HoldMail extends React.Component {
                 <div className="container">
                     <div className="row">
                         <div id="mailCriteriaAndResults" className="col-lg-12">
-                            <SearchBar  messages={this.state.messages} />
-                            <MailView messages={this.state.messages} />
+                            <SearchBar size={this.props.size} page={this.props.page}
+                                       clearAndFetchMessages={this.clearAndFetchMessages.bind(this)}/>
+                            <MailView size={this.props.size} page={this.props.page} messages={this.state.messages}
+                                      loading={this.state.loading}/>
                         </div>
                     </div>
                 </div>
@@ -50,4 +93,10 @@ export default class HoldMail extends React.Component {
         );
     }
 }
+
+
+HoldMail.defaultProps = {
+    page: 0,
+    size: 40
+};
 

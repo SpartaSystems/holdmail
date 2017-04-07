@@ -16,8 +16,21 @@
  * limitations under the License.
  ******************************************************************************/
 
-/**
- * Used to mock es6 fetch
- */
+import {formatMediumDate, isEmailAddress} from "../../../../main/resources/static/js/react/Utils";
 
-global.fetch = require('jest-fetch-mock');
+describe('Utils', () => {
+    test('formatMediumDate ', () => {
+        let mediumDate = formatMediumDate(new Date("Tue, 04 Apr 2017 20:30:13"));
+        expect(mediumDate).toBe('Apr 2, 2017 8:30:13 PM');
+    });
+    describe('isEmailAddress', () => {
+        test('should return true if the email address is valid', () => {
+            let mediumDate = isEmailAddress('test@test.com');
+            expect(mediumDate).toBe(true);
+        });
+        test('should return false if the email address is not valid', () => {
+            let mediumDate = isEmailAddress('test bad email address');
+            expect(mediumDate).toBe(false);
+        });
+    });
+});

@@ -17,20 +17,28 @@
  ******************************************************************************/
 
 import React from "react";
-import {shallow} from "enzyme";
-//
-test('SearchBar constructor state defaults ', () => {
-//     const searchBar = new SearchBar();
-//     expect(searchBar.state).toEqual(undefined);
-});
-//
-// test('SearchBar will render', () => {
-//     const searchBar = shallow(<SearchBar/>);
-//     expect(searchBar.text()).toEqual('Recipient Email Search!');
-// });
-//
-// test('SearchBar will render', () => {
-//     const searchBar = shallow(<SearchBar/>);
-//     expect(searchBar.text()).toEqual('Recipient Email Search!');
-// });
+import {mount} from "enzyme";
+import SearchBar from "../../../../main/resources/static/js/react/SearchBar";
+describe('SearchBar Component ', () => {
+    test('SearchBar constructor state defaults ', () => {
+        const searchBar = new SearchBar();
+        expect(searchBar.state).toEqual({"error": null, "loading": true, "searchText": ""});
+    });
 
+    test('SearchBar will render', () => {
+
+        const clearAndFetchMessages = jest.fn();
+
+        const searchBar = mount(<SearchBar size={0} page={40} clearAndFetchMessages={clearAndFetchMessages}/>);
+        let formControl = searchBar.find('#mainSearchTxt');
+
+        expect(searchBar.text()).toEqual('Recipient Email Search!');
+        formControl.simulate('change', {target: {value: 'test@test.com'}});
+
+        let button = searchBar.find('#mainSearchBut');
+        button.simulate('click');
+
+        expect(clearAndFetchMessages).toHaveBeenCalled();
+    });
+
+});

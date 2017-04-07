@@ -15,7 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-import React from "react";
+import React from 'react';
+import {formatMediumDate} from './Utils';
 
 export default class ModalForm extends React.Component {
     constructor(props) {
@@ -37,7 +38,7 @@ export default class ModalForm extends React.Component {
                     </div>
                     <label className="col-sm-2 control-label">Sent</label>
                     <div className="col-sm-10">
-                        <p className="form-control-static">{this.props.message.receivedDate/* | date:'medium'*/}</p>
+                        <p className="form-control-static">{formatMediumDate(this.props.message.receivedDate)}</p>
                     </div>
                 </div>
             </form>

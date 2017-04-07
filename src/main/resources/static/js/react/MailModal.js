@@ -17,8 +17,10 @@
  ******************************************************************************/
 import React from "react";
 import ModalForm from "./ModalForm";
-import {Modal, ModalHeader, ModalTitle, ModalClose, ModalBody, ModalFooter} from "react-modal-bootstrap";
-import {Tab, Tabs, TabList, TabPanel} from "react-tabs";
+import {Modal, ModalBody, ModalClose, ModalFooter, ModalHeader, ModalTitle} from "react-modal-bootstrap";
+import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
+import {isEmailAddress} from "./Utils";
+import Alert from "react-s-alert";
 
 export default class MailModal extends React.Component {
     constructor(props) {
@@ -26,7 +28,7 @@ export default class MailModal extends React.Component {
         this.state = {
             loading: true,
             error: null,
-            messageMetaData: {}
+            messageMetaData: {},
         };
 
     }
@@ -39,7 +41,6 @@ export default class MailModal extends React.Component {
     componentWillMount() {
         fetch(`http://localhost:8080/rest/messages/${this.props.message.messageId}`)
             .then(response => {
-                console.log('this.props.message ', this.props.message);
                 response.json().then(json => {
 
                     this.setState({
@@ -61,21 +62,64 @@ export default class MailModal extends React.Component {
 
     forwardMail() {
 
-        //TODO: finish real forward
-        alert('message sent');
+        let messageId = this.props.message.messageId;
+        let recipient = this.state.forwardText;
+        const data = JSON.stringify({recipient: recipient});
+
+        fetch(`http://localhost:8080/rest/messages/${messageId}/forward`, {
+            method: 'post',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: data
+        }).then((response) => {
+            if (response.ok) {
+
+                Alert.success(`Mail ${messageId} successfully sent to <b> ${recipient} </b>`, {
+                    position: 'top-right'
+                });
+
+                this.setState({
+                    alertVisible: response.ok
+                });
+            }
+
+            return response.text().then((text) => {
+                return text ? JSON.parse(text) : {}
+            });
+        }).catch((error) => {
+            console.error('Request failed', error)
+        });
+
+    }
+
+    handleChange(event) {
+        const EMAIL_ADDRESS = event.target.value;
+        let forwardButtonDisabled = 'disabled';
+        if (isEmailAddress(EMAIL_ADDRESS)) {
+            forwardButtonDisabled = ''
+        }
+
+        this.setState({
+            forwardText: EMAIL_ADDRESS,
+            forwardButtonDisabled: forwardButtonDisabled
+        });
+
+        event.preventDefault();
     }
 
     render() {
         let tabList = [];
         let tabContent = [];
 
-        if (this.state.messageMetaData ) {
+        if (this.state.messageMetaData) {
             if (this.state.messageMetaData.messageHasBodyHTML) {
                 tabList.push(<Tab key="HTML Body" className="tab-link">HTML Body</Tab>);
 
                 tabContent.push(<TabPanel key="HTML Body"><ModalForm message={this.props.message}/>
                     <iframe className="mail-summary-content mail-summary-content-html"
-                            src={this.getMessageHTMLURI()}></iframe>
+                            src={this.getMessageHTMLURI()}/>
                 </TabPanel>);
 
             }
@@ -90,6 +134,7 @@ export default class MailModal extends React.Component {
             }
         }
 
+
         return (
             <Modal className="mail-details-modal"
                    size='modal-lg'
@@ -98,6 +143,7 @@ export default class MailModal extends React.Component {
                 <ModalBody>
                     <ModalHeader>
                         <h3 className="modal-title">{this.props.message.subject}</h3>
+                        <Alert/>
                     </ModalHeader>
                     <div className="modal-body">
                         <div className="mail-summary ng-isolate-scope">
@@ -109,7 +155,8 @@ export default class MailModal extends React.Component {
                                 </TabList>
                                 {tabContent}
                                 <TabPanel>
-                                    <div className="mail-summary-content mail-summary-content-pre mail-summary-content-raw">{this.state.messageMetaData.messageRaw}</div>
+                                    <div
+                                        className="mail-summary-content mail-summary-content-pre mail-summary-content-raw">{this.state.messageMetaData.messageRaw}</div>
                                 </TabPanel>
                             </Tabs>
                         </div>
@@ -124,11 +171,13 @@ export default class MailModal extends React.Component {
                                     <input id="forwardRecipientTxt" type="email"
                                            className="form-control ng-pristine ng-untouched ng-empty ng-valid-email ng-invalid ng-invalid-required"
                                            placeholder="Forward To: e.g. homer@simpson.com"
-                                           required=""/>
+                                           required=""
+                                           value={this.state.searchText}
+                                           onChange={this.handleChange.bind(this)}/>
                                     <span className="input-group-btn">
                                                 <button id="mainSearchBut" className="btn btn-primary" type="button"
-                                                        onClick={this.forwardMail}
-                                                        disabled="disabled">
+                                                        onClick={this.forwardMail.bind(this)}
+                                                        disabled={this.state.forwardButtonDisabled}>
                                                     Forward <span className="glyphicon glyphicon-forward"
                                                                   aria-hidden="true"/>
                                                 </button>
@@ -157,4 +206,11 @@ MailModal
     message: React.PropTypes.object,
     messageMetaData: React.PropTypes.object,
     hideModal: React.PropTypes.func,
+    forwardButtonDisabled: React.PropTypes.string,
+    alertVisible: React.PropTypes.bool
+};
+
+MailModal.defaultProps = {
+    forwardButtonDisabled: 'disabled',
+    alertVisible: false
 };

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,14 @@
  * limitations under the License.
  ******************************************************************************/
 
-import React from 'react';
-import {shallow} from 'enzyme';
-import Loading from '../../../../main/resources/static/js/react/Loading';
+import Moment from 'Moment';
+export function formatMediumDate(date) {
+    return Moment(date).format('MMM d, YYYY h:mm:ss A');
+}
 
-test('loading constructor state defaults ', () =>{
-    const loading = new Loading();
-    expect(loading.state).toEqual(undefined);
-});
+export function isEmailAddress(emailAddress) {
+    const EMAIL_PATTERN = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+    return String(emailAddress).search(EMAIL_PATTERN) != -1;
+}
 
-test('loading will render', () => {
-    const loading = shallow(<Loading/>);
-    expect(loading.text()).toEqual('Fetching...');
-});
 

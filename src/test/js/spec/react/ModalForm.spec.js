@@ -19,16 +19,24 @@
 import React from "react";
 import {shallow} from "enzyme";
 import ModalForm from "../../../../main/resources/static/js/react/ModalForm";
+import Moment from 'Moment';
 
 
 describe('<ModalForm>', ()=>{
 let message;
     beforeEach(()=>{
 
+        jest.mock('../../../../main/resources/static/js/react/Utils'); // this happens automatically with automocking
+        const utils = require('../../../../main/resources/static/js/react/Utils');
+
+        const currDate = new Date();
+
+        utils.formatMediumDate(() => currDate);
+
         message = {
             senderEmail: 'foo@bar.com',
             recipients: 'test , me',
-            receivedDate: 'I need to format the date'
+            receivedDate: currDate
         };
     });
     test('ModalForm constructor state defaults ', () => {
@@ -47,7 +55,7 @@ let message;
         expect(expected.length).toBe(3);
         expect(expected[0].props.children).toEqual(message.senderEmail);
         expect(expected[1].props.children).toEqual(message.recipients);
-        expect(expected[2].props.children).toEqual(message.receivedDate);
+        expect(expected[2].props.children).toEqual(Moment(message.receivedDate).format('MMM d, YYYY h:mm:ss A'));
 
     });
 

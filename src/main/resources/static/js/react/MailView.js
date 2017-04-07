@@ -27,38 +27,14 @@ export default class MailView extends React.Component {
 
         this.state = {
             messages: [],
-            messageMetaData:{},
+            messageMetaData: {},
             showModal: false,
             loading: true,
             error: null
         };
 
         this.handleHideModal = this.handleHideModal.bind(this);
-
     }
-
-    componentWillMount() {
-        //TODO:move to service/data store
-        fetch(`http://localhost:8080/rest/messages?size=${this.props.size}&page=${this.props.page}`)
-            .then(response => {
-                response.json().then(json => {
-                    this.setState({
-                        loading: false,
-                        messages: json.messages
-                    });
-                })
-            })
-            .catch(err => {
-                // Something went wrong. Save the error in state and re-render.
-                this.setState({
-                    loading: false,
-                    error: err
-                });
-                return new Error("Fetching messages failed");
-            });
-    }
-
-
 
     handleShowModal(message) {
 
@@ -75,13 +51,13 @@ export default class MailView extends React.Component {
     }
 
     render() {
-        if (this.state.loading) {
+        if (this.props.loading) {
             return (
                 <Loading/>
             );
         }
 
-        const messageList = this.state.messages.sort((messageA, messageB) => messageA.messageId - messageB.messageId)
+        const messageList = this.props.messages.sort((messageA, messageB) => messageA.messageId - messageB.messageId)
             .map(message => {
                 return (
                     <MessageItem key={message.messageId}
