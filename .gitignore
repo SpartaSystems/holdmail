@@ -10,4 +10,5 @@ out/
 *.iml
 node_modules/
 holdmail-deps.js
+coverage/
 

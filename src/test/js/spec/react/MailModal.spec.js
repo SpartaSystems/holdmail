@@ -31,7 +31,9 @@ describe('MailModal Component ', () => {
             receivedDate: 'I need to format the date'
         };
     });
-
+    afterEach(()=>{
+        fetchMock.restore();
+    });
     test('MailModal constructor state defaults ', () => {
         fetchMock.mock('http://localhost:8080/rest/messages/1/forward', 200, JSON.stringify(message));
 
@@ -58,6 +60,8 @@ describe('MailModal Component ', () => {
     });
 
     test('MailModal forwardMail post fetch', () => {
+        fetchMock.mock('http://localhost:8080/rest/messages/1', 200, JSON.stringify(message));
+
         const forwardFunction = MailModal.prototype.forwardMail;
         MailModal.prototype.forwardMail = jest.fn();
 

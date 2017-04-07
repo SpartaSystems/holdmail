@@ -51,6 +51,10 @@ describe('HoldMail Component ', () => {
         });
     });
 
+    afterEach(()=>{
+        fetchMock.restore();
+    });
+
     test('HoldMail constructor state defaults ', () => {
         const holdMail = new HoldMail();
         expect(holdMail.state.error).toEqual(null);
