@@ -22,10 +22,19 @@ import com.spartasystems.holdmail.domain.Message;
 import com.spartasystems.holdmail.domain.MessageContent;
 import com.spartasystems.holdmail.model.MessageSummary;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MessageSummaryMapper {
+
+    @Value("${holdmail.message.summary.enableraw:false}")
+    private boolean enableRaw;
+
+    // this support disappears in v2 (https://github.com/SpartaSystems/holdmail/issues/14)
+    boolean getEnableRaw() {
+        return enableRaw;
+    }
 
     public MessageSummary toMessageSummary(Message message) {
 
@@ -40,11 +49,10 @@ public class MessageSummaryMapper {
                 message.getSenderHost(),
                 message.getMessageSize(),
                 StringUtils.join(message.getRecipients(), ","),
-                message.getRawMessage(),
+                getEnableRaw() ? message.getRawMessage() : null,
                 message.getHeaders().asMap(),
                 messageContent.findFirstTextPart(),
                 messageContent.findFirstHTMLPart());
 
     }
-
 }

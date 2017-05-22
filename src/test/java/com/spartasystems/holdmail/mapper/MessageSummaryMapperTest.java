@@ -22,9 +22,11 @@ import com.spartasystems.holdmail.domain.Message;
 import com.spartasystems.holdmail.domain.MessageContent;
 import com.spartasystems.holdmail.domain.MessageHeaders;
 import com.spartasystems.holdmail.model.MessageSummary;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Date;
@@ -42,42 +44,64 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class MessageSummaryMapperTest {
 
-    public static final  long                MESSAGE_ID   = 1233;
-    public static final  String              IDENTIFIER   = "mesgId";
-    public static final  String              SUBJECT      = "msgSubj";
-    public static final  String              SENDER_MAIL  = "msgSenderMail";
-    public static final  Date                RECEIVED     = new Date();
-    public static final  String              SENDER_HOST  = "msgSenderHost";
-    public static final  int                 MESSAGE_SIZE = 4534;
-    public static final  String              RAW_CONTENT  = "rawText";
-    public static final  List<String>        RECIPIENTS   = asList("recip1", "recip2");
-    public static final  Map<String, String> HEADER_VALS  = of("k1", "v1", "k2", "v2");
-    public static final  MessageHeaders      HEADERS      = new MessageHeaders(HEADER_VALS);
+    private static final long                MESSAGE_ID   = 1233;
+    private static final String              IDENTIFIER   = "mesgId";
+    private static final String              SUBJECT      = "msgSubj";
+    private static final String              SENDER_MAIL  = "msgSenderMail";
+    private static final Date                RECEIVED     = new Date();
+    private static final String              SENDER_HOST  = "msgSenderHost";
+    private static final int                 MESSAGE_SIZE = 4534;
+    private static final String              RAW_CONTENT  = "rawText";
+    private static final List<String>        RECIPIENTS   = asList("recip1", "recip2");
+    private static final Map<String, String> HEADER_VALS  = of("k1", "v1", "k2", "v2");
+    private static final MessageHeaders      HEADERS      = new MessageHeaders(HEADER_VALS);
     private static final String              CONTENT_TXT  = "content_text";
     private static final String              CONTENT_HTML = "content_html";
 
+    private static final Message MESSAGE_SPY = spy(new Message(MESSAGE_ID, IDENTIFIER, SUBJECT, SENDER_MAIL,
+            RECEIVED, SENDER_HOST, MESSAGE_SIZE, RAW_CONTENT, RECIPIENTS, HEADERS));
+
+    private static final MessageContent CONTENT_MOCK = mock(MessageContent.class);
+
+    @Spy
     @InjectMocks
-    private MessageSummaryMapper messageSummaryMapper;
+    private MessageSummaryMapper messageSummaryMapperSpy;
+
+    @Before
+    public void setUp() throws Exception {
+        when(CONTENT_MOCK.findFirstHTMLPart()).thenReturn(CONTENT_HTML);
+        when(CONTENT_MOCK.findFirstTextPart()).thenReturn(CONTENT_TXT);
+        doReturn(CONTENT_MOCK).when(MESSAGE_SPY).getContent();
+    }
 
     @Test
-    public void shouldMapToMessageSummary() throws Exception {
-
-        Message messageSpy = spy(new Message(MESSAGE_ID, IDENTIFIER, SUBJECT, SENDER_MAIL,
-                RECEIVED, SENDER_HOST, MESSAGE_SIZE,
-                RAW_CONTENT, RECIPIENTS, HEADERS));
-
-        MessageContent contentMock = mock(MessageContent.class);
-        when(contentMock.findFirstHTMLPart()).thenReturn(CONTENT_HTML);
-        when(contentMock.findFirstTextPart()).thenReturn(CONTENT_TXT);
-        doReturn(contentMock).when(messageSpy).getContent();
+    public void shouldMapToMessageSummaryWithRAW() throws Exception {
 
         MessageSummary expected = new MessageSummary(MESSAGE_ID, IDENTIFIER, SUBJECT, SENDER_MAIL,
                 RECEIVED, SENDER_HOST, MESSAGE_SIZE, "recip1,recip2",
                 RAW_CONTENT, HEADER_VALS, CONTENT_TXT, CONTENT_HTML);
 
-        MessageSummary actual = messageSummaryMapper.toMessageSummary(messageSpy);
+        doReturn(true).when(messageSummaryMapperSpy).getEnableRaw();
+
+        MessageSummary actual = messageSummaryMapperSpy.toMessageSummary(MESSAGE_SPY);
 
         assertThat(actual).isEqualTo(expected);
+
+    }
+
+    @Test
+    public void shouldMapToMessageSummaryWithoutRAW() throws Exception {
+
+        MessageSummary expected = new MessageSummary(MESSAGE_ID, IDENTIFIER, SUBJECT, SENDER_MAIL,
+                RECEIVED, SENDER_HOST, MESSAGE_SIZE, "recip1,recip2",
+                null, HEADER_VALS, CONTENT_TXT, CONTENT_HTML);
+
+        doReturn(false).when(messageSummaryMapperSpy).getEnableRaw();
+
+        MessageSummary actual = messageSummaryMapperSpy.toMessageSummary(MESSAGE_SPY);
+
+        assertThat(actual).isEqualTo(expected);
+
 
     }
 
