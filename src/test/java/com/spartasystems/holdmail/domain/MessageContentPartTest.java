@@ -35,6 +35,9 @@ public class MessageContentPartTest {
 
     public static final String CONTENT_ID = "Content-ID";
 
+    public static final String CONTENT_DISPOSITION = "Content-Disposition";
+
+
     // "Association of sub-ordinate officials of the head office management of the Danube steamboat electrical services"
     public static final String NON_ASCII_STR = "Donaudampfschiffahrtselektrizitätenhauptbetriebswerkbauunterbeamtengesellschaft";
 
@@ -109,6 +112,8 @@ public class MessageContentPartTest {
 
     }
 
+
+
     @Test
     public void shouldSetContent() throws Exception {
 
@@ -146,15 +151,55 @@ public class MessageContentPartTest {
     }
 
     @Test
+    public void shouldReturnIsAttachmentTrueWhenDispositionIsInline() throws Exception {
+
+        MessageContentPart messageContentPart = new MessageContentPart();
+        messageContentPart.setHeader(CONTENT_DISPOSITION, "inline");
+
+        assertThat(messageContentPart.isAttachment()).isTrue();
+    }
+
+    @Test
+    public void shouldReturnIsAttachmentTrueWhenDispositionIsAttachment() throws Exception {
+
+        MessageContentPart messageContentPart = new MessageContentPart();
+        messageContentPart.setHeader(CONTENT_DISPOSITION, "attachment");
+
+        assertThat(messageContentPart.isAttachment()).isTrue();
+    }
+
+    @Test
+    public void shouldReturnIsAttachmentFalseWhenDispositionAnythingElse() throws Exception {
+
+        // not set at all
+        MessageContentPart messageContentPart = new MessageContentPart();
+        messageContentPart.getHeaders().remove(CONTENT_DISPOSITION);
+        assertThat(messageContentPart.isAttachment()).isFalse();
+
+        // blank
+        messageContentPart.setHeader(CONTENT_DISPOSITION, "");
+        assertThat(messageContentPart.isAttachment()).isFalse();
+
+        // garbage
+        messageContentPart.setHeader(CONTENT_DISPOSITION, "poop");
+        assertThat(messageContentPart.isAttachment()).isFalse();
+
+        // case sensitive?
+        messageContentPart.setHeader(CONTENT_DISPOSITION, "iNlINe");
+        assertThat(messageContentPart.isAttachment()).isFalse();
+
+    }
+
+    @Test
     public void shouldHaveToString() throws Exception {
 
         MessageContentPart messageContentPart = new MessageContentPart();
-        assertThat(messageContentPart.toString()).isEqualTo("BodyPart[headers={}, content=null]");
+        assertThat(messageContentPart.toString()).isEqualTo("MessageContentPart[headers={}, content=null]");
 
         messageContentPart.setContent(new ByteArrayInputStream("hello".getBytes()));
         messageContentPart.setHeader("k", "v");
 
-        assertThat(messageContentPart.toString()).isEqualTo("BodyPart[headers={k=v}, content=5b]");
+        assertThat(messageContentPart.toString()).isEqualTo("MessageContentPart[headers={k=v}, content=5b]");
     }
 
     @Test

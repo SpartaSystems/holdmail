@@ -22,6 +22,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.james.mime4j.dom.field.FieldName;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class MessageContentPart {
     }
 
     public String getContentType() {
-        return headers.get("Content-Type");
+        return headers.get(FieldName.CONTENT_TYPE);
     }
 
     public boolean isHTML() {
@@ -58,12 +59,13 @@ public class MessageContentPart {
     }
 
     public boolean isAttachment() {
-        return true;
+        String disposition = headers.get(FieldName.CONTENT_DISPOSITION);
+        return disposition != null && (disposition.equals("inline") || disposition.equals("attachment"));
     }
 
     public boolean hasContentId(String contentId) {
 
-        String mailCID = headers.get("Content-ID");
+        String mailCID = headers.get(FieldName.CONTENT_ID);
         return !StringUtils.isBlank(mailCID) && mailCID.contains(contentId);
 
     }
@@ -92,7 +94,7 @@ public class MessageContentPart {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("BodyPart[");
+        final StringBuilder sb = new StringBuilder("MessageContentPart[");
         sb.append("headers=").append(headers);
         sb.append(", content=").append(content == null ? "null" : content.length + "b");
         sb.append(']');
