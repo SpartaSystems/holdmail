@@ -20,15 +20,19 @@ package com.spartasystems.holdmail.mapper;
 
 import com.spartasystems.holdmail.domain.Message;
 import com.spartasystems.holdmail.domain.MessageContent;
+import com.spartasystems.holdmail.domain.MessageContentPart;
 import com.spartasystems.holdmail.domain.MessageHeaders;
+import com.spartasystems.holdmail.model.MessageAttachment;
 import com.spartasystems.holdmail.model.MessageSummary;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +65,10 @@ public class MessageSummaryMapperTest {
     private static final Message MESSAGE_SPY = spy(new Message(MESSAGE_ID, IDENTIFIER, SUBJECT, SENDER_MAIL,
             RECEIVED, SENDER_HOST, MESSAGE_SIZE, RAW_CONTENT, RECIPIENTS, HEADERS));
 
-    private static final MessageContent CONTENT_MOCK = mock(MessageContent.class);
+    private MessageContent messageContentMock;
+
+    @Mock
+    private AttachmentMapper attachmentMapperMock;
 
     @Spy
     @InjectMocks
@@ -69,9 +76,12 @@ public class MessageSummaryMapperTest {
 
     @Before
     public void setUp() throws Exception {
-        when(CONTENT_MOCK.findFirstHTMLPart()).thenReturn(CONTENT_HTML);
-        when(CONTENT_MOCK.findFirstTextPart()).thenReturn(CONTENT_TXT);
-        doReturn(CONTENT_MOCK).when(MESSAGE_SPY).getContent();
+
+        messageContentMock = mock(MessageContent.class);
+
+        when(messageContentMock.findFirstHTMLPart()).thenReturn(CONTENT_HTML);
+        when(messageContentMock.findFirstTextPart()).thenReturn(CONTENT_TXT);
+        doReturn(messageContentMock).when(MESSAGE_SPY).getContent();
     }
 
     @Test
@@ -79,7 +89,7 @@ public class MessageSummaryMapperTest {
 
         MessageSummary expected = new MessageSummary(MESSAGE_ID, IDENTIFIER, SUBJECT, SENDER_MAIL,
                 RECEIVED, SENDER_HOST, MESSAGE_SIZE, "recip1,recip2",
-                RAW_CONTENT, HEADER_VALS, CONTENT_TXT, CONTENT_HTML);
+                RAW_CONTENT, HEADER_VALS, CONTENT_TXT, CONTENT_HTML, Collections.emptyList());
 
         doReturn(true).when(messageSummaryMapperSpy).getEnableRaw();
 
@@ -94,13 +104,33 @@ public class MessageSummaryMapperTest {
 
         MessageSummary expected = new MessageSummary(MESSAGE_ID, IDENTIFIER, SUBJECT, SENDER_MAIL,
                 RECEIVED, SENDER_HOST, MESSAGE_SIZE, "recip1,recip2",
-                null, HEADER_VALS, CONTENT_TXT, CONTENT_HTML);
+                null, HEADER_VALS, CONTENT_TXT, CONTENT_HTML, Collections.emptyList());
 
         doReturn(false).when(messageSummaryMapperSpy).getEnableRaw();
 
         MessageSummary actual = messageSummaryMapperSpy.toMessageSummary(MESSAGE_SPY);
 
         assertThat(actual).isEqualTo(expected);
+
+
+    }
+
+    @Test
+    public void shouldMapAttachments() throws Exception{
+
+        MessageContentPart attContentMock1 = mock(MessageContentPart.class);
+        MessageContentPart attContentMock2 = mock(MessageContentPart.class);
+
+        MessageAttachment attachmentMock1 = mock(MessageAttachment.class);
+        MessageAttachment attachmentMock2 = mock(MessageAttachment.class);
+
+        when(messageContentMock.findAllAttachments()).thenReturn(asList(attContentMock1, attContentMock2));
+        when(attachmentMapperMock.fromMessageContentPart(attContentMock1)).thenReturn(attachmentMock1);
+        when(attachmentMapperMock.fromMessageContentPart(attContentMock2)).thenReturn(attachmentMock2);
+
+        MessageSummary actual = messageSummaryMapperSpy.toMessageSummary(MESSAGE_SPY);
+
+        assertThat(actual.getAttachments()).containsExactly(attachmentMock1, attachmentMock2);
 
 
     }

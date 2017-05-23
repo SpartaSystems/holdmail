@@ -19,7 +19,7 @@
 package com.spartasystems.holdmail.domain;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.james.mime4j.dom.field.FieldName;
@@ -33,40 +33,69 @@ import java.util.Map;
 
 public class MessageContentPart {
 
-    private Map<String, String> headers = new HashMap<>();
+    private Map<String, HeaderValue> headers = new HashMap<>();
     private byte[] content;
+    private int    sequence;
 
-    public void setHeader(String header, String value) {
-        this.headers.put(header, value);
+    public int getSequence() {
+        return sequence;
     }
 
-    public Map<String, String> getHeaders() {
+    public void setSequence(int sequence) {
+        this.sequence = sequence;
+    }
+
+    public void setHeader(String header, String value) {
+        this.headers.put(header, new HeaderValue(value));
+    }
+
+    public Map<String, HeaderValue> getHeaders() {
         return headers;
     }
 
     public String getContentType() {
-        return headers.get(FieldName.CONTENT_TYPE);
+
+        HeaderValue contentHeader = headers.get(FieldName.CONTENT_TYPE);
+        return contentHeader == null ? null : contentHeader.getValue();
     }
 
     public boolean isHTML() {
         String type = getContentType();
-        return type != null && type.startsWith("text/html");
+        return type != null && type.equals("text/html");
     }
 
     public boolean isText() {
         String type = getContentType();
-        return type != null && type.startsWith("text/plain");
+        return type != null && type.equals("text/plain");
     }
 
     public boolean isAttachment() {
-        String disposition = headers.get(FieldName.CONTENT_DISPOSITION);
-        return disposition != null && (disposition.equals("inline") || disposition.equals("attachment"));
+        HeaderValue disposition = headers.get(FieldName.CONTENT_DISPOSITION);
+        return disposition != null && (disposition.hasValue("inline") || disposition.hasValue("attachment"));
+    }
+
+    public String getAttachmentFilename() {
+
+        if (!isAttachment()) {
+            return null;
+        }
+
+        HeaderValue disposition = headers.get(FieldName.CONTENT_DISPOSITION);
+        HeaderValue contentType = headers.get(FieldName.CONTENT_TYPE);
+
+        String disposFilename = disposition == null ? null : disposition.getParamValue("filename");
+        String ctypeFilename = contentType == null ? null : contentType.getParamValue("name");
+
+        /* we _could_ just generate a default filename, but then we'd have to figure out the
+         * extension for the media type. Better to not even attempt to do that, and let smarter
+         * browsers do a better job of it than we could */
+        return ObjectUtils.firstNonNull(disposFilename, ctypeFilename);
     }
 
     public boolean hasContentId(String contentId) {
 
-        String mailCID = headers.get(FieldName.CONTENT_ID);
-        return !StringUtils.isBlank(mailCID) && mailCID.contains(contentId);
+        HeaderValue mailCID = headers.get(FieldName.CONTENT_ID);
+        return mailCID != null && mailCID.getValue().contains(contentId);
 
     }
 
@@ -80,6 +109,10 @@ public class MessageContentPart {
 
     public InputStream getContentStream() {
         return this.content == null ? null : new ByteArrayInputStream(content);
+    }
+
+    public int getSize() {
+        return this.content == null ? 0 : content.length;
     }
 
     @Override
@@ -96,7 +129,8 @@ public class MessageContentPart {
     public String toString() {
         final StringBuilder sb = new StringBuilder("MessageContentPart[");
         sb.append("headers=").append(headers);
-        sb.append(", content=").append(content == null ? "null" : content.length + "b");
+        sb.append(", sequence=").append(sequence);
+        sb.append(", content=").append(content == null ? "null" : content.length + " bytes");
         sb.append(']');
         return sb.toString();
     }

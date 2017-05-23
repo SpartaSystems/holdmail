@@ -20,16 +20,25 @@ package com.spartasystems.holdmail.mapper;
 
 import com.spartasystems.holdmail.domain.Message;
 import com.spartasystems.holdmail.domain.MessageContent;
+import com.spartasystems.holdmail.model.MessageAttachment;
 import com.spartasystems.holdmail.model.MessageSummary;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Component
 public class MessageSummaryMapper {
 
     @Value("${holdmail.message.summary.enableraw:false}")
     private boolean enableRaw;
+
+    @Autowired
+    private AttachmentMapper attachmentMapper;
 
     // this support disappears in v2 (https://github.com/SpartaSystems/holdmail/issues/14)
     boolean getEnableRaw() {
@@ -39,6 +48,11 @@ public class MessageSummaryMapper {
     public MessageSummary toMessageSummary(Message message) {
 
         MessageContent messageContent = message.getContent();
+
+        List<MessageAttachment> attachments = messageContent.findAllAttachments()
+                                                            .stream()
+                                                            .map(attachmentMapper::fromMessageContentPart)
+                                                            .collect(toList());
 
         return new MessageSummary(
                 message.getMessageId(),
@@ -52,7 +66,8 @@ public class MessageSummaryMapper {
                 getEnableRaw() ? message.getRawMessage() : null,
                 message.getHeaders().asMap(),
                 messageContent.findFirstTextPart(),
-                messageContent.findFirstHTMLPart());
+                messageContent.findFirstHTMLPart(),
+                attachments);
 
     }
 }

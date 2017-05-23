@@ -25,9 +25,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.powermock.reflect.Whitebox;
-
-import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,8 +65,7 @@ public class MessageContentTest {
 
         MessageContent messageContent = new MessageContent();
 
-        List<MessageContentPart> parts = Whitebox.getInternalState(messageContent, "parts");
-        assertThat(parts).isEmpty();
+        assertThat(messageContent.getParts()).isEmpty();
 
     }
 
@@ -80,8 +76,7 @@ public class MessageContentTest {
         messageContent.addPart(part1Mock);
         messageContent.addPart(part2Mock);
 
-        List<MessageContentPart> parts = Whitebox.getInternalState(messageContent, "parts");
-        assertThat(parts).isEqualTo(asList(part1Mock, part2Mock));
+        assertThat(messageContent.getParts()).isEqualTo(asList(part1Mock, part2Mock));
     }
 
     @Test
@@ -121,6 +116,20 @@ public class MessageContentTest {
     }
 
     @Test
+    public void shouldFindAllAttachments() throws Exception {
+
+        when(part1Mock.isAttachment()).thenReturn(false);
+        when(part2Mock.isAttachment()).thenReturn(true);
+        when(part3Mock.isAttachment()).thenReturn(false);
+        when(part4Mock.isAttachment()).thenReturn(true);
+
+        MessageContent messageContent = buildMimeBodyPartsWith4Parts();
+
+        assertThat(messageContent.findAllAttachments()).containsExactly(part2Mock, part4Mock);
+
+    }
+
+    @Test
     public void shouldNotFindByContentId() throws Exception {
 
         MessageContent messageContent = buildMimeBodyPartsWith4Parts();
@@ -139,6 +148,24 @@ public class MessageContentTest {
     }
 
     @Test
+    public void shouldNotFindBySequenceId() throws Exception {
+
+        MessageContent messageContent = buildMimeBodyPartsWith4Parts();
+        assertThat(messageContent.findBySequenceId(555)).isNull();
+    }
+
+    @Test
+    public void shouldFindBySequenceId() throws Exception {
+
+        when(part4Mock.getSequence()).thenReturn(54);
+
+        MessageContent messageContent = buildMimeBodyPartsWith4Parts();
+
+        assertThat(messageContent.findBySequenceId(54)).isEqualTo(part4Mock);
+
+    }
+
+    @Test
     public void shouldHaveToString() throws Exception {
 
         when(part1Mock.toString()).thenReturn("mbp1");
@@ -150,6 +177,21 @@ public class MessageContentTest {
 
         assertThat(messageContent.toString()).isEqualTo("MessageContent[parts=[mbp1, mbp2, mbp3, mbp4]]");
 
+    }
+
+    @Test
+    public void shouldGetSize() throws Exception {
+
+        MessageContent parts0 = new MessageContent();
+        assertThat(parts0.size()).isEqualTo(0);
+
+        MessageContent parts2 = new MessageContent();
+        parts2.addPart(part1Mock);
+        parts2.addPart(part4Mock);
+        assertThat(parts2.size()).isEqualTo(2);
+
+        MessageContent parts4 = buildMimeBodyPartsWith4Parts();
+        assertThat(parts4.size()).isEqualTo(4);
     }
 
     @Test

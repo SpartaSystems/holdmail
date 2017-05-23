@@ -21,6 +21,7 @@ package com.spartasystems.holdmail.domain;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.apache.commons.io.IOUtils;
+import org.apache.james.mime4j.dom.field.FieldName;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
@@ -28,6 +29,8 @@ import java.io.ByteArrayInputStream;
 
 import static com.google.common.collect.ImmutableMap.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 public class MessageContentPartTest {
 
@@ -36,7 +39,6 @@ public class MessageContentPartTest {
     public static final String CONTENT_ID = "Content-ID";
 
     public static final String CONTENT_DISPOSITION = "Content-Disposition";
-
 
     // "Association of sub-ordinate officials of the head office management of the Danube steamboat electrical services"
     public static final String NON_ASCII_STR = "Donaudampfschiffahrtselektrizitätenhauptbetriebswerkbauunterbeamtengesellschaft";
@@ -48,13 +50,15 @@ public class MessageContentPartTest {
         assertThat(messageContentPart.getHeaders()).isEmpty();
 
         messageContentPart.setHeader("a", "aval");
-        assertThat(messageContentPart.getHeaders()).isEqualTo(of("a", "aval"));
+        assertThat(messageContentPart.getHeaders()).isEqualTo(of("a", new HeaderValue("aval")));
 
         messageContentPart.setHeader("b", "bval");
-        assertThat(messageContentPart.getHeaders()).isEqualTo(of("a", "aval", "b", "bval"));
+        assertThat(messageContentPart.getHeaders()).isEqualTo(of("a", new HeaderValue("aval"),
+                "b", new HeaderValue("bval")));
 
         messageContentPart.setHeader("b", "newBVal");
-        assertThat(messageContentPart.getHeaders()).isEqualTo(of("a", "aval", "b", "newBVal"));
+        assertThat(messageContentPart.getHeaders())
+                .isEqualTo(of("a", new HeaderValue("aval"), "b", new HeaderValue("newBVal")));
     }
 
     @Test
@@ -112,8 +116,6 @@ public class MessageContentPartTest {
 
     }
 
-
-
     @Test
     public void shouldSetContent() throws Exception {
 
@@ -148,6 +150,17 @@ public class MessageContentPartTest {
         messageContentPart.setContent(new ByteArrayInputStream(bytes));
         assertThat(IOUtils.contentEquals(messageContentPart.getContentStream(), new ByteArrayInputStream(bytes)));
 
+    }
+
+    @Test
+    public void shouldGetSize() throws Exception {
+
+        MessageContentPart part = new MessageContentPart();
+        assertThat(part.getSize()).isEqualTo(0);
+
+        byte[] bytes = NON_ASCII_STR.getBytes("UTF-8");
+        part.setContent(new ByteArrayInputStream(bytes));
+        assertThat(part.getSize()).isEqualTo(bytes.length);
     }
 
     @Test
@@ -188,18 +201,68 @@ public class MessageContentPartTest {
         messageContentPart.setHeader(CONTENT_DISPOSITION, "iNlINe");
         assertThat(messageContentPart.isAttachment()).isFalse();
 
+        // valid, but doesn't start with
+        messageContentPart.setHeader(CONTENT_DISPOSITION, "blah inline");
+        assertThat(messageContentPart.isAttachment()).isFalse();
+
+    }
+
+    @Test
+    public void shouldReturnNullAttachmentFilenameIfNotAttachment() throws Exception {
+
+        MessageContentPart partSpy = spy(new MessageContentPart());
+        doReturn(false).when(partSpy).isAttachment();
+
+        assertThat(partSpy.getAttachmentFilename()).isNull();
+    }
+
+    @Test
+    public void shouldReturnAttachmentFilenameFromDisposition() throws Exception {
+
+        MessageContentPart part = new MessageContentPart();
+        part.setHeader(FieldName.CONTENT_DISPOSITION, "inline; filename=myfile.pdf");
+        part.setHeader(FieldName.CONTENT_TYPE, "text/blah; name=should-no-use-this.pdf");
+
+        assertThat(part.getAttachmentFilename()).isEqualTo("myfile.pdf");
+
+    }
+
+    @Test
+    public void shouldReturnAttachmentFilenameFromContentTypeFallback() throws Exception {
+
+        MessageContentPart part = new MessageContentPart();
+        part.setHeader(FieldName.CONTENT_DISPOSITION, "inline; a=b;"); // no 'filename' param
+        part.setHeader(FieldName.CONTENT_TYPE, "text/blah; name=ctype-fallback.pdf");
+
+        assertThat(part.getAttachmentFilename()).isEqualTo("ctype-fallback.pdf");
+
+    }
+
+    @Test
+    public void shouldReturnNullAttachmentFilenameFallback() throws Exception {
+
+        MessageContentPart part = new MessageContentPart();
+        part.setHeader(FieldName.CONTENT_DISPOSITION, "inline; a=b;"); // no 'filename' param
+        part.setHeader(FieldName.CONTENT_TYPE, "text/blah; c=d;"); // no 'name' param
+
+        assertThat(part.getAttachmentFilename()).isNull();
     }
 
     @Test
     public void shouldHaveToString() throws Exception {
 
         MessageContentPart messageContentPart = new MessageContentPart();
-        assertThat(messageContentPart.toString()).isEqualTo("MessageContentPart[headers={}, content=null]");
+        messageContentPart.setSequence(9);
+
+        assertThat(messageContentPart.toString()).isEqualTo("MessageContentPart[headers={}, sequence=9, content=null]");
 
         messageContentPart.setContent(new ByteArrayInputStream("hello".getBytes()));
         messageContentPart.setHeader("k", "v");
 
-        assertThat(messageContentPart.toString()).isEqualTo("MessageContentPart[headers={k=v}, content=5b]");
+        String hVal = messageContentPart.getHeaders().get("k").toString();
+
+        assertThat(messageContentPart.toString()).isEqualTo("MessageContentPart[headers={k=" + hVal
+                + "}, sequence=9, content=5 bytes]");
     }
 
     @Test

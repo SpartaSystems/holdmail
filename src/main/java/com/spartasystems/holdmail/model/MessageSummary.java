@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,26 +25,29 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class MessageSummary {
 
-    private long                messageId;
-    private String              identifier;
-    private String              subject;
-    private String              senderEmail;
-    private Date                receivedDate;
-    private String              senderHost;
-    private int                 messageSize;
-    private String              recipients;
-    private String              messageRaw;
-    private Map<String, String> messageHeaders;
-    private String              messageBodyText;
-    private String              messageBodyHTML;
+    private final long                    messageId;
+    private final String                  identifier;
+    private final String                  subject;
+    private final String                  senderEmail;
+    private final Date                    receivedDate;
+    private final String                  senderHost;
+    private final int                     messageSize;
+    private final String                  recipients;
+    private final String                  messageRaw;
+    private final Map<String, String>     messageHeaders;
+    private final String                  messageBodyText;
+    private final String                  messageBodyHTML;
+    private final List<MessageAttachment> attachments;
 
     public MessageSummary(long messageId, String identifier, String subject, String senderEmail,
             Date receivedDate, String senderHost, int messageSize, String recipients, String messageRaw,
-            Map<String, String> messageHeaders, String messageBodyText, String messageBodyHTML) {
+            Map<String, String> messageHeaders, String messageBodyText, String messageBodyHTML,
+            List<MessageAttachment> attachments) {
         this.messageId = messageId;
         this.identifier = identifier;
         this.subject = subject;
@@ -57,6 +60,7 @@ public class MessageSummary {
         this.messageHeaders = messageHeaders;
         this.messageBodyText = messageBodyText;
         this.messageBodyHTML = messageBodyHTML;
+        this.attachments = attachments;
     }
 
     public long getMessageId() {
@@ -99,6 +103,10 @@ public class MessageSummary {
         return messageHeaders;
     }
 
+    public List<MessageAttachment> getAttachments() {
+        return attachments;
+    }
+
     public String getMessageBodyText() {
         return messageBodyText;
     }
@@ -114,7 +122,6 @@ public class MessageSummary {
     public boolean getMessageHasBodyText() {
         return StringUtils.isNotBlank(messageBodyText);
     }
-
 
     @Override
     public boolean equals(Object other) {

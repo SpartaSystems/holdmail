@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ class MessageContentExtractor extends AbstractContentHandler {
     @Override
     public void startHeader() throws MimeException {
         nextPotentialPart = new MessageContentPart();
+        nextPotentialPart.setSequence(bodyParts.size()+1);
     }
 
     @Override

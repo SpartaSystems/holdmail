@@ -25,6 +25,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MessageContent {
 
@@ -36,6 +37,10 @@ public class MessageContent {
 
     public void addPart(MessageContentPart part) {
         this.parts.add(part);
+    }
+
+    public List<MessageContentPart> getParts() {
+        return parts;
     }
 
     public String findFirstHTMLPart() {
@@ -54,8 +59,22 @@ public class MessageContent {
                     .orElse(null);
     }
 
+    public List<MessageContentPart> findAllAttachments() {
+        return parts.stream()
+                    .filter(MessageContentPart::isAttachment)
+                    .collect(Collectors.toList());
+    }
+
     public MessageContentPart findByContentId(String contentId) {
         return parts.stream().filter(b -> b.hasContentId(contentId)).findFirst().orElse(null);
+    }
+
+    public MessageContentPart findBySequenceId(int seqId) {
+        return parts.stream().filter(b -> b.getSequence() == seqId).findFirst().orElse(null);
+    }
+
+    public int size() {
+        return parts.size();
     }
 
     @Override
