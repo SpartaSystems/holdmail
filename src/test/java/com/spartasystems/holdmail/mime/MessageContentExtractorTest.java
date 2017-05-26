@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,11 @@
 
 package com.spartasystems.holdmail.mime;
 
+import com.spartasystems.holdmail.domain.HeaderValue;
 import com.spartasystems.holdmail.domain.MessageContent;
 import com.spartasystems.holdmail.domain.MessageContentPart;
 import org.apache.commons.io.IOUtils;
+import org.apache.james.mime4j.stream.BodyDescriptor;
 import org.apache.james.mime4j.stream.Field;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +30,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -52,7 +56,9 @@ public class MessageContentExtractorTest {
         assertThat(extractor.getNextPotentialPart()).isNull();
 
         extractor.startHeader();
-        assertThat(extractor.getNextPotentialPart()).isEqualTo(new MessageContentPart());
+        MessageContentPart expected = new MessageContentPart();
+        expected.setSequence(1);
+        assertThat(extractor.getNextPotentialPart()).isEqualTo(expected);
 
     }
 
@@ -79,7 +85,7 @@ public class MessageContentExtractorTest {
         extractor.field(fieldMock);
 
         MessageContentPart nextPart = extractor.getNextPotentialPart();
-        assertThat(nextPart.getHeaders().get("fName")).isEqualTo("fBody");
+        assertThat(nextPart.getHeaders().get("fName")).isEqualTo(new HeaderValue("fBody"));
 
     }
 
@@ -100,5 +106,33 @@ public class MessageContentExtractorTest {
         expectedParts.addPart(nextPart);
 
         assertThat(extractor.getParts()).isEqualTo(expectedParts);
+    }
+
+    @Test
+    public void shouldSetSequenceWithEachNewPart() throws Exception{
+
+        BodyDescriptor bodyMock = mock(BodyDescriptor.class);
+        ByteArrayInputStream streamMock = new ByteArrayInputStream(new byte[] {});
+
+        MessageContentExtractor extractor = new MessageContentExtractor();
+
+        extractor.startHeader();
+        extractor.body(bodyMock, streamMock);
+        assertThat(getCurrentSequence(extractor)).containsExactly(1);
+
+        extractor.startHeader();
+        extractor.body(bodyMock, streamMock);
+        assertThat(getCurrentSequence(extractor)).containsExactly(1, 2);
+
+        extractor.startHeader();
+        extractor.body(bodyMock, streamMock);
+        assertThat(getCurrentSequence(extractor)).containsExactly(1, 2, 3);
+    }
+
+    private List<Integer> getCurrentSequence(MessageContentExtractor extractor) {
+        return extractor.getParts().getParts()
+                        .stream()
+                        .map(MessageContentPart::getSequence)
+                        .collect(Collectors.toList());
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ package com.spartasystems.holdmail.rest;
 
 import com.spartasystems.holdmail.domain.Message;
 import com.spartasystems.holdmail.domain.MessageContent;
-import com.spartasystems.holdmail.mapper.MessageSummaryMapper;
 import com.spartasystems.holdmail.domain.MessageContentPart;
+import com.spartasystems.holdmail.mapper.MessageSummaryMapper;
 import com.spartasystems.holdmail.model.MessageForwardCommand;
 import com.spartasystems.holdmail.model.MessageList;
 import com.spartasystems.holdmail.model.MessageListItem;
@@ -71,6 +71,10 @@ public class MessageControllerTest {
     @Spy
     @InjectMocks
     private MessageController messageControllerSpy;
+    public static final int MSG_ID = 55;
+    public static final int SEQ_ID = 4523;
+    public static final String CONTENT_TYPE = "attach/type";
+    public static final String FILE_NAME = "wibble.pdf";
 
     @Test
     public void shouldGetMessages() throws Exception {
@@ -163,6 +167,50 @@ public class MessageControllerTest {
         assertThat(response.getHeaders().get("Content-Type")).hasSize(1).contains(CONTENT_TYPE);
         assertThat(response.getBody()).isEqualTo(new InputStreamResource(CONTENT_STREAM));
 
+    }
+
+    @Test
+    public void shouldGetMessageAttachmentBySequenceId() throws Exception{
+
+        final InputStream streamMock = mock(InputStream.class);
+
+        setupForFetchAttachment(streamMock, FILE_NAME);
+
+        String expectedDisposition = "attachment; filename=\"" + FILE_NAME + "\";";
+
+        ResponseEntity response = messageControllerSpy.getMessageContentByAttachmentId(MSG_ID, SEQ_ID);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getHeaders().get("Content-Type")).hasSize(1).contains(CONTENT_TYPE);
+        assertThat(response.getHeaders().get("Content-Disposition")).hasSize(1).contains(expectedDisposition);
+        assertThat(response.getBody()).isEqualTo(new InputStreamResource(streamMock));
+
+    }
+
+    @Test
+    public void shouldNotSetFilenameDispositionWhenFilenameNull() throws Exception{
+
+        final InputStream streamMock = mock(InputStream.class);
+        setupForFetchAttachment(streamMock, null);
+
+        ResponseEntity response = messageControllerSpy.getMessageContentByAttachmentId(MSG_ID, SEQ_ID);
+        assertThat(response.getHeaders().get("Content-Disposition")).hasSize(1).contains("attachment;");
+
+    }
+
+
+    private void setupForFetchAttachment(InputStream streamMock, String attachmentName) {
+
+        MessageContentPart contentPartMock = mock(MessageContentPart.class);
+        when(contentPartMock.getAttachmentFilename()).thenReturn(attachmentName);
+        when(contentPartMock.getContentType()).thenReturn(CONTENT_TYPE);
+        when(contentPartMock.getContentStream()).thenReturn(streamMock);
+
+        Message messageMock = mock(Message.class);
+        when(messageServiceMock.getMessage(MSG_ID)).thenReturn(messageMock);
+
+        MessageContent contentMock = mock(MessageContent.class);
+        when(messageMock.getContent()).thenReturn(contentMock);
+        when(contentMock.findBySequenceId(SEQ_ID)).thenReturn(contentPartMock);
     }
 
     @Test
