@@ -5,3 +5,5 @@ jdk:
 # default 'install' discovers package.json, triggering npm.  Gradle build already runs npm, so preventing dup run.
 install: "echo 'suppressing default install goal'"
 
+# uncomment this to enable verbose output in the case of failure
+# script: ./gradlew test -i
