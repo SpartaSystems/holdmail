@@ -51,7 +51,7 @@ public class MessageEntity {
     private Long messageId;
 
     @NotNull
-    @Size(max = 100)
+    @Size(max = 255)
     @Column(name = "identifier")
     private String identifier;
 

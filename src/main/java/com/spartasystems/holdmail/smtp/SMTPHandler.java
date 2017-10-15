@@ -106,8 +106,11 @@ public class SMTPHandler implements MessageHandler {
 
             messageService.saveMessage(message);
 
-            logger.info("Stored SMTP message from " + message.getSenderEmail()
-                    + " to " + StringUtils.join(message.getRecipients(), ","));
+            logger.info(String.format("Stored SMTP message '%s' from %s to: %s",
+                    message.getIdentifier(),
+                    message.getSenderEmail(),
+                    StringUtils.join(message.getRecipients(), ","))
+            );
 
         } catch (Exception e) {
 

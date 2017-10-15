@@ -37,7 +37,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 public class EntityPersistenceTest extends BaseIntegrationTest {
 
-    private static final String MESSAGE_ID = "derpID";
+    // this long identifier is because of TravisCI: https://github.com/SpartaSystems/holdmail/issues/34
+    private static final String MESSAGE_ID = "<1634459428.1.1508097151907.JavaMail.travis@travis-job.spartasystems.holdmail.288293575.travisci.net>";
     private static final int    MESSAGE_SIZE  = 1234;
     private static final String MESSAGE_BODY = "herp derp this is the text body";
     private static final String SENDER_EMAIL  = "sender@domain.com";
