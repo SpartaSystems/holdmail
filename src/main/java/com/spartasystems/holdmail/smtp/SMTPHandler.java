@@ -22,7 +22,6 @@ import com.spartasystems.holdmail.domain.Message;
 import com.spartasystems.holdmail.domain.MessageHeaders;
 import com.spartasystems.holdmail.service.MessageService;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,13 +38,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @Component
 public class SMTPHandler implements MessageHandler {
@@ -105,7 +99,7 @@ public class SMTPHandler implements MessageHandler {
                     new Date(),
                     senderHost,
                     this.data.length,
-                    IOUtils.toString(data, CharEncoding.UTF_8),
+                    IOUtils.toString(data, StandardCharsets.UTF_8.name()),
                     this.recipients,
                     headers
             );
@@ -115,8 +109,7 @@ public class SMTPHandler implements MessageHandler {
             logger.info("Stored SMTP message from " + message.getSenderEmail()
                     + " to " + StringUtils.join(message.getRecipients(), ","));
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
             logger.error("Couldn't handle message: " + e.getMessage(), e);
 
