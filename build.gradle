@@ -176,6 +176,12 @@ task npmTest(type: NpmTask) {
     args = ['run', 'test']
 }
 
+test {
+    testLogging {
+        // default test failure logging doesn't show assertion failure detail (unless gradle -i is used)
+        exceptionFormat = 'full'
+    }
+}
 
 test.dependsOn npmTest
 compileJava.dependsOn('npmInstall')
