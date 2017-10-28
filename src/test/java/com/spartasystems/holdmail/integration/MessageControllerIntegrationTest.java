@@ -168,12 +168,14 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
     public void shouldFetchMessageSummaryForAliasEmails() throws Exception {
 
         long startTime = currentTimeMillis();
-        final String EMAIL = "testrecipient+alias@testdomain.com";
+        final String email = "testrecipient+alias@testdomain.com";
 
-        smtpClient.sendResourceEmail("mails/multipart-sample-2.txt", FROM_EMAIL, EMAIL, "multipart mail");
+        smtpClient.sendResourceEmail("mails/multipart-sample-2.txt", FROM_EMAIL, email, "multipart mail");
 
         // should only be one message for this recipient, get the ID from the list API
-        int messageId = get(ENDPOINT_MESSAGES + "?recipient=" + EMAIL).then()
+
+
+        int messageId = get(ENDPOINT_MESSAGES + "?recipient=" + email).then()
                 .assertThat().body("messages.size()", equalTo(1))
                 .extract().path("messages.get(0).messageId");
 
@@ -185,7 +187,7 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
                 .body("senderEmail", equalTo(FROM_EMAIL))
                 .body("messageHeaders.size()", equalTo(9))
                 .body("messageHeaders.User-Agent", startsWith("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11;"))
-                .body("messageHeaders.To", equalTo(EMAIL))
+                .body("messageHeaders.To", equalTo(email))
                 .body("messageHeaders.From", equalTo(FROM_EMAIL))
                 .body("messageHeaders.Subject", equalTo("multipart mail"))
                 .body("messageHeaders.MIME-Version", equalTo("1.0"))

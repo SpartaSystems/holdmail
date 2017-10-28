@@ -49,7 +49,7 @@
 
                 var params = ['size=' + size, 'page=' + page];
                 if (recipientEmail) {
-                    params.push('recipient=' + recipientEmail);
+                    params.push('recipient=' + encodeURIComponent(recipientEmail));
                 }
                 var messageListURI = MESSAGES_ENDPOINT + '?' + params.join('&');
 
