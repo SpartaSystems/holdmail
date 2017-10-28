@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -160,7 +160,19 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
                 .body("messageBodyHTML", containsString("<h1>This is a header</h1>"))
                 .body("messageBodyText", containsString("This is the text content."))
                 .body("messageHasBodyHTML", equalTo(true))
-                .body("messageHasBodyText", equalTo(true));
+                .body("messageHasBodyText", equalTo(true))
+                .body("attachments.size()", equalTo(2))
+                .body("attachments.get(0).sequence", equalTo(3))
+                .body("attachments.get(0).disposition", equalTo("inline"))
+                .body("attachments.get(0).filename", equalTo("seal of approval.jpg"))
+                .body("attachments.get(0).size", equalTo(43549))
+                .body("attachments.get(0).contentType", equalTo("image/jpeg"))
+                .body("attachments.get(1).sequence", equalTo(4))
+                .body("attachments.get(1).disposition", equalTo("attachment"))
+                .body("attachments.get(1).filename", equalTo("cheerio-challenge.jpg"))
+                .body("attachments.get(1).size", equalTo(21561))
+                .body("attachments.get(1).contentType", equalTo("image/jpeg"));
+
 
     }
 
@@ -199,10 +211,12 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
 
     }
 
+    // TODO: integration coverage for
     // TODO: message TEXT fetch
     // TODO: message HTML fetch
     // TODO: message RAW fetch
     // TODO: message ContentId fetch
+    // TODO: attachment content fetch
 
     protected List<Pair<String, String>> sendMailToRandomRecipients(int numMails) {
 

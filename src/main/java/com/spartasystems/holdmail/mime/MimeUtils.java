@@ -22,7 +22,6 @@ import com.spartasystems.holdmail.domain.MessageContent;
 import com.spartasystems.holdmail.exception.HoldMailException;
 import org.apache.james.mime4j.MimeException;
 import org.apache.james.mime4j.parser.MimeStreamParser;
-import org.apache.james.mime4j.stream.MimeConfig;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,13 +36,12 @@ public class MimeUtils {
         try {
             MessageContentExtractor bodyPartExtractor = new MessageContentExtractor();
 
-            MimeStreamParser parser = new MimeStreamParser(new MimeConfig());
+            MimeStreamParser parser = new MimeStreamParser();
             parser.setContentDecoding(true);
             parser.setContentHandler(bodyPartExtractor);
             parser.parse(in);
             return bodyPartExtractor.getParts();
-        }
-        catch (MimeException | IOException e) {
+        } catch (MimeException | IOException e) {
             throw new HoldMailException("Failed to parse body", e);
         }
 

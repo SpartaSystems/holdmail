@@ -25,6 +25,7 @@ import com.spartasystems.holdmail.model.MessageForwardCommand;
 import com.spartasystems.holdmail.model.MessageList;
 import com.spartasystems.holdmail.model.MessageSummary;
 import com.spartasystems.holdmail.service.MessageService;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -103,6 +104,26 @@ public class MessageController {
 
         return ResponseEntity.ok()
                              .header("Content-Type", content.getContentType())
+                             .body(new InputStreamResource(content.getContentStream()));
+    }
+
+    @RequestMapping(value = "/{messageId}/att/{attId}")
+    public ResponseEntity getMessageContentByAttachmentId(@PathVariable("messageId") long messageId,
+            @PathVariable("attId") int attId) {
+
+        Message message = messageService.getMessage(messageId);
+
+        MessageContentPart content = message.getContent().findBySequenceId(attId);
+
+        String disposition = "attachment;";
+
+        if(StringUtils.isNotBlank(content.getAttachmentFilename())) {
+            disposition += " filename=\"" + content.getAttachmentFilename() + "\";";
+        }
+
+        return ResponseEntity.ok()
+                             .header("Content-Type", content.getContentType())
+                             .header("Content-Disposition", disposition)
                              .body(new InputStreamResource(content.getContentStream()));
     }
 

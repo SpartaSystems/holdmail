@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2017 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,12 @@ import nl.jqno.equalsverifier.Warning;
 import org.junit.Test;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class MessageSummaryTest {
 
@@ -42,13 +45,13 @@ public class MessageSummaryTest {
     public static final String              RAW        = "mRAW";
     public static final String              HTML       = "<SomeHTML>";
     public static final String              TEXT       = "someTEXT";
+    public static final List<MessageAttachment>  ATTACHMENTS = asList(
+                                            mock(MessageAttachment.class), mock(MessageAttachment.class));
 
     @Test
     public void shouldSetValuesOnConstruct() throws Exception {
 
-        MessageSummary summary = new MessageSummary(ID, IDENTIFIER, SUBJECT, SENDER,
-                RECIEVED, SENDERHOST, SIZE, RECIPIENTS, RAW,
-                HEADERS, HTML, TEXT);
+        MessageSummary summary = buildSummary(HTML, TEXT);
 
         assertThat(summary.getMessageId()).isEqualTo(ID);
         assertThat(summary.getIdentifier()).isEqualTo(IDENTIFIER);
@@ -60,7 +63,30 @@ public class MessageSummaryTest {
         assertThat(summary.getRecipients()).isEqualTo(RECIPIENTS);
         assertThat(summary.getMessageRaw()).isEqualTo(RAW);
         assertThat(summary.getMessageHeaders()).isEqualTo(HEADERS);
+        assertThat(summary.getAttachments()).isEqualTo(ATTACHMENTS);
 
+    }
+
+    @Test
+    public void shouldIndicateWhenMessageHasHTML() throws Exception{
+
+        assertThat(buildSummary(HTML, TEXT).getMessageHasBodyHTML()).isTrue();
+        assertThat(buildSummary(null, TEXT).getMessageHasBodyHTML()).isFalse();
+        assertThat(buildSummary("", TEXT).getMessageHasBodyHTML()).isFalse();
+    }
+
+    @Test
+    public void shouldIndicateWhenMessageHasText() throws Exception{
+
+        assertThat(buildSummary(HTML, TEXT).getMessageHasBodyText()).isTrue();
+        assertThat(buildSummary(HTML, null).getMessageHasBodyText()).isFalse();
+        assertThat(buildSummary(HTML, "").getMessageHasBodyText()).isFalse();
+    }
+
+    private MessageSummary buildSummary(String html, String text) {
+        return new MessageSummary(ID, IDENTIFIER, SUBJECT, SENDER,
+                RECIEVED, SENDERHOST, SIZE, RECIPIENTS, RAW,
+                HEADERS, text, html, ATTACHMENTS);
     }
 
     @Test
