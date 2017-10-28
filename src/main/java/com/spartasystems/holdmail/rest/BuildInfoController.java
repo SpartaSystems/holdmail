@@ -30,16 +30,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/rest/buildInfo", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BuildInfoController {
 
-//    @Autowired
-//    private BuildProperties buildProperties;
-//
-//    @Autowired
-//    private BuildInfoMapper buildInfoMapper;
-//
+    @Autowired
+    private BuildProperties buildProperties;
+
+    @Autowired
+    private BuildInfoMapper buildInfoMapper;
+
     @RequestMapping()
     public BuildInfo getBuildInfo() {
-            return null;
-//        return buildInfoMapper.fromProperties(buildProperties);
+
+        return buildInfoMapper.fromProperties(buildProperties);
     }
 
 }
