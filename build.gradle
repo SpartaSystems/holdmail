@@ -85,16 +85,31 @@ springBoot {
 
 rat {
     excludes = [
-            'node_modules/**',
+            'client/node_modules/**',
+            'client/dist/**',
+            'client/.babelrc',
+            'client/.editorconfig',
+            'client/.eslintignore',
+            'client/.eslintrc.js',
+            'client/.postcssrc.js',
+            'client/README.md',
+            'client/config/',
+            'client/static/.gitkeep',
+            'client/test/unit/.eslintrc',
+            'client/test/unit/coverage/',
+            'client/test/e2e/custom-assertions/elementCount.js',
+            'client/test/e2e/nightwatch.conf.js',
+            'client/test/e2e/runner.js',
+            'client/test/e2e/specs/test.js',
             '.idea/**',
             '**/*.iml',
             'README.md',
             'CONTRIBUTING.md',
             '.github/*',
             'docker/',
-            'src/main/resources/static/js/bundle/holdmail.js',
             'src/main/resources/db/migration/*.sql',
             'src/main/resources/banner.txt',
+            'src/main/resources/static/**',
             'src/test/resources/mails/**',
             'scripts/rpm/**',
             '**/.gradle/**',
@@ -171,9 +186,25 @@ buildRpm {
     link('/etc/init.d/holdmail', RPM_INSTALL_DIR + '/bin/holdmail.jar')
 }
 
+task runNpmInstall(type: NpmTask) {
+  workingDir = file("${project.projectDir}/client")
 
-task npmTest(type: NpmTask) {
-    args = ['run', 'test']
+  args = ['install']
+}
+
+task compileUI(type: NpmTask) {
+  dependsOn 'runNpmInstall'
+
+  workingDir = file("${project.projectDir}/client")
+
+  args = ['run', 'ci']
+}
+
+task buildUI(type: Copy) {
+  dependsOn 'compileUI'
+
+  from "${project.projectDir}/client/dist"
+  into "${project.projectDir}/src/main/resources/static"
 }
 
 test {
@@ -183,8 +214,7 @@ test {
     }
 }
 
-test.dependsOn npmTest
-compileJava.dependsOn('npmInstall')
+compileJava.dependsOn('buildUI')
 tasks.build.dependsOn('buildRpm')
 
 task srcJAR(type: Jar) {
