@@ -200,14 +200,7 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
                 .body("messageHeaders.size()", equalTo(9))
                 .body("messageHeaders.User-Agent", startsWith("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11;"))
                 .body("messageHeaders.To", equalTo(email))
-                .body("messageHeaders.From", equalTo(FROM_EMAIL))
-                .body("messageHeaders.Subject", equalTo("multipart mail"))
-                .body("messageHeaders.MIME-Version", equalTo("1.0"))
-                .body("messageHeaders.Content-Type", startsWith("multipart/mixed;"))
-                .body("messageBodyHTML", containsString("<h1>This is a header</h1>"))
-                .body("messageBodyText", containsString("This is the text content."))
-                .body("messageHasBodyHTML", equalTo(true))
-                .body("messageHasBodyText", equalTo(true));
+                .body("messageHeaders.From", equalTo(FROM_EMAIL));
 
     }
 
