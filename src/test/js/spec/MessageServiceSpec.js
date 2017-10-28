@@ -60,7 +60,7 @@ describe('Message Service Tests', function () {
             var page = 101;
             var user = 'herp@derp.com';
 
-            httpBackend.whenGET('/rest/messages?size=' + size + '&page=' + page + '&recipient=' + user).respond({
+            httpBackend.whenGET('/rest/messages?size=' + size + '&page=' + page + '&recipient=' + encodeURIComponent(user)).respond({
                 messages: ['a', 'b', 'c']
             });
             MessageService.getMessageList(size, page, user).then(function (response) {

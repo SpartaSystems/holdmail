@@ -63,4 +63,10 @@ public class MessageRepositoryTest extends BaseIntegrationTest{
         assertThat(first150BySenderEmail.collect(Collectors.toList())).hasSize(25);
 
     }
+
+    @Test
+    public void shouldFindEmailsBySenderWithAlias() throws Exception {
+        Stream<MessageEntity> oneEmailFound = messageRepository.findBySenderEmail("someone+alias@example.org",new PageRequest(0,150));
+        assertThat(oneEmailFound.collect(Collectors.toList())).hasSize(1);
+    }
 }

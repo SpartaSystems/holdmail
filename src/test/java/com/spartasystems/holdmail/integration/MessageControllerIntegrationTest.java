@@ -176,6 +176,34 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
 
     }
 
+    @Test
+    public void shouldFetchMessageSummaryForAliasEmails() throws Exception {
+
+        long startTime = currentTimeMillis();
+        final String email = "testrecipient+alias@testdomain.com";
+
+        smtpClient.sendResourceEmail("mails/multipart-sample-2.txt", FROM_EMAIL, email, "multipart mail");
+
+        // should only be one message for this recipient, get the ID from the list API
+
+
+        int messageId = get(ENDPOINT_MESSAGES + "?recipient=" + email).then()
+                .assertThat().body("messages.size()", equalTo(1))
+                .extract().path("messages.get(0).messageId");
+
+        get(ENDPOINT_MESSAGES + "/" + messageId)
+                .then().assertThat()
+                .body("messageId", equalTo(messageId))
+                .body("identifier", notNullValue())
+                .body("subject", equalTo("multipart mail"))
+                .body("senderEmail", equalTo(FROM_EMAIL))
+                .body("messageHeaders.size()", equalTo(9))
+                .body("messageHeaders.User-Agent", startsWith("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11;"))
+                .body("messageHeaders.To", equalTo(email))
+                .body("messageHeaders.From", equalTo(FROM_EMAIL));
+
+    }
+
     // TODO: integration coverage for
     // TODO: message TEXT fetch
     // TODO: message HTML fetch

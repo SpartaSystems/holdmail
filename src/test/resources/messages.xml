@@ -43,4 +43,5 @@
     <message message_id="900023" identifier="ac31095d-222f-45ae-963b-cce0f9e6af0a" subject="Hello" sender_email="someone@example.org" received_date="2016-06-06 06:06:06" sender_host="mail.example.org" message_size="123" message_body="We've got a lovely bunch of coconuts" />
     <message message_id="900024" identifier="faa99a0a-dfc6-491f-9b56-e60312029db1" subject="This is it" sender_email="someone@example.org" received_date="2016-06-06 06:06:06" sender_host="mail.example.org" message_size="123" message_body="We've got a lovely bunch of coconuts" />
     <message message_id="900025" identifier="4975eff1-d2dd-4b53-9437-88dd37d1b52a" subject="This is it" sender_email="someone@example.org" received_date="2016-06-06 06:06:06" sender_host="mail.example.org" message_size="123" message_body="We've got a lovely bunch of coconuts" />
+    <message message_id="900026" identifier="4975eff1-d2dd-4b53-9437-88dd37d1b5aa" subject="This is it with alias" sender_email="someone+alias@example.org" received_date="2016-06-06 06:06:06" sender_host="mail.example.org" message_size="123" message_body="We've got a lovely bunch of coconuts" />
 </dataset>
