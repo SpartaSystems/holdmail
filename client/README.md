@@ -1,12 +1,15 @@
-# Vue.js UI for [HoldMail](https://github.com/spartasystems/holdmail)
-This project is used as an educational tool for understanding the Vue.js ecosystem. This project replicates all of the UI features that HoldMail (using Angular) has today. This project is meant to compare UI technologies and learn more about [Vue.js](https://vuejs.org/v2/guide).
+# Vue.js UI
 
-## Setup
-- Check-out [HoldMail](https://github.com/spartasystems/holdmail) and follow instructions to run the server.
-- Run `npm install` to setup the dependencies for this project.
-- Run `npm run dev` to run the Vue.js UI.
+The UI for holdmail.
 
 ## Build Setup
+
+### Production
+
+Please refer to the project's main README file for building the entire application for production.
+
+
+### Development
 
 ``` bash
 # install dependencies
