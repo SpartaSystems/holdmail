@@ -1,0 +1,34 @@
+To: testrecipient+alias@testdomain.com
+From: Test Sender <testsender@testdomain.com>
+Subject: This is a basic HTML and Text message
+Message-ID: <b77c3b76-7948-d53e-a431-14d27a1675b2@testdomain.com>
+Date: Tue, 2 Aug 2016 21:32:22 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:45.0) Gecko/20100101 Thunderbird/45.2.0
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="------------13D064742F8BA8DF5152F25F"
+
+This is a multi-part message in MIME format.
+--------------13D064742F8BA8DF5152F25F
+Content-Type: multipart/alternative;
+ boundary="------------DC2D9C9C78ADF54A5296ED2E"
+
+
+--------------DC2D9C9C78ADF54A5296ED2E
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+this is the boring plaintext content!
+
+--------------DC2D9C9C78ADF54A5296ED2E
+Content-Type: multipart/related;
+ boundary="------------B4E74E9915C0C0534B02161F"
+
+
+--------------B4E74E9915C0C0534B02161F
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+<html><body><h1>This is the exciting html content!</h1></body></html>
+
+--------------13D064742F8BA8DF5152F25F--
