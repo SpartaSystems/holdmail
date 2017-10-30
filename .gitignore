@@ -1,6 +1,6 @@
 src/main/resources/static/
 target/
-build/
+/build/
 out/
 .project
 .classpath
