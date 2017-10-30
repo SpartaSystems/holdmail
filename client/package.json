@@ -1,7 +1,7 @@
 {
-  "name": "mailhold-ui-vue",
+  "name": "holdmail-ui-vue",
   "version": "1.0.0",
-  "description": "Vue.js UI for Mailhold",
+  "description": "Vue.js UI for Holdmail",
   "author": "Tim Sneed <timothy.sneed@spartasystems.com>",
   "private": true,
   "scripts": {
