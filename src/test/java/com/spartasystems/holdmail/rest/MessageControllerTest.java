@@ -133,10 +133,13 @@ public class MessageControllerTest {
     @Test
     public void shouldGetMessageContextRAW() throws Exception {
 
-        MessageSummary summaryMock = setupSpyToLoadMessageSummaryMock(129, "raw_msg", null, null);
+        String raw = "original-mime-message";
+
+        Message domainMock = mock(Message.class);
+        when(domainMock.getRawMessage()).thenReturn(raw);
+        when(messageServiceMock.getMessage(129)).thenReturn(domainMock);
 
         ResponseEntity expectedResponse = mock(ResponseEntity.class);
-        String raw = summaryMock.getMessageRaw();
         doReturn(expectedResponse).when(messageControllerSpy).serveContent(raw, TEXT_PLAIN);
 
         assertThat(messageControllerSpy.getMessageContentRAW(129)).isEqualTo(expectedResponse);

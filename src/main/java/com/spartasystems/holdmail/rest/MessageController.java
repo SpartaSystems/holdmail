@@ -90,8 +90,8 @@ public class MessageController {
     @RequestMapping(value = "/{messageId}/raw")
     public ResponseEntity getMessageContentRAW(@PathVariable("messageId") long messageId) {
 
-        MessageSummary summary = loadMessageSummary(messageId);
-        return serveContent(summary.getMessageRaw(), TEXT_PLAIN);
+        Message message = messageService.getMessage(messageId);
+        return serveContent(message.getRawMessage(), TEXT_PLAIN);
     }
 
     @RequestMapping(value = "/{messageId}/content/{contentId}")
