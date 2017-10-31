@@ -76,21 +76,24 @@ describe('MessageTable.vue', () => {
     })
 
     it('renders list of messages', (done) => {
-      var stub = stubMessageListSuccess(msgs)
+      const stub = stubMessageListSuccess(msgs)
 
       comp = getComponent()
+
+      const msg1Date = comp.$options.filters.date(msgs[0].receivedDate, '%b %-d, %Y %r')
+      const msg2Date = comp.$options.filters.date(msgs[1].receivedDate, '%b %-d, %Y %r')
 
       setTimeout(function () {
         var messages = comp.$el.querySelectorAll('#mailResults table tbody tr')
 
         expect(messages.length).to.equal(2)
         expect(messages[0].querySelector('.item-id').textContent).to.equal('57')
-        expect(messages[0].querySelector('.item-received-date').textContent).to.equal('Mar 20, 2017 02:40:47 PM')
+        expect(messages[0].querySelector('.item-received-date').textContent).to.equal(msg1Date)
         expect(messages[0].querySelector('.item-sender-mail').textContent).to.equal('holdmail@spartasystems.com')
         expect(messages[0].querySelector('.item-recipients').textContent).to.equal('test@test.com')
         expect(messages[0].querySelector('.item-subject').textContent).to.equal('TEST')
         expect(messages[1].querySelector('.item-id').textContent).to.equal('58')
-        expect(messages[1].querySelector('.item-received-date').textContent).to.equal('Mar 20, 2017 02:40:47 PM')
+        expect(messages[1].querySelector('.item-received-date').textContent).to.equal(msg2Date)
         expect(messages[1].querySelector('.item-sender-mail').textContent).to.equal('holdmail@spartasystems.com')
         expect(messages[1].querySelector('.item-recipients').textContent).to.equal('test@test.com')
         expect(messages[1].querySelector('.item-subject').textContent).to.equal('TEST')
