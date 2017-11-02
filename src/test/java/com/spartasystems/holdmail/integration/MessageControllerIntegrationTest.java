@@ -21,6 +21,7 @@ package com.spartasystems.holdmail.integration;
 import com.spartasystems.holdmail.util.TestMailClient;
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import io.restassured.module.mockmvc.response.MockMvcResponse;
 import io.restassured.module.mockmvc.response.ValidatableMockMvcResponse;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -36,16 +37,15 @@ import java.util.List;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.get;
 import static java.lang.System.currentTimeMillis;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.startsWith;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.nullValue;
 
 public class MessageControllerIntegrationTest extends BaseIntegrationTest {
 
-    public static final String ENDPOINT_MESSAGES = "/rest/messages";
-    public static final String FROM_EMAIL        = "john.doe@senderdomain.org";
-    public static final String TEXT_BODY         = "whatever";
+    private static final String ENDPOINT_MESSAGES = "/rest/messages";
+    private static final String FROM_EMAIL = "john.doe@senderdomain.org";
+    private static final String TEXT_BODY = "whatever";
 
     @Value("${holdmail.smtp.port:25000}")
     private int smtpServerPort;
@@ -81,38 +81,38 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
             Pair<String, String> recipAndSubject = expectedMessages.get(numMailsToSend - i - 1);
 
             resp.body("messages.get(" + i + ").senderEmail", equalTo(FROM_EMAIL))
-                .body("messages.get(" + i + ").recipients", equalTo(recipAndSubject.getLeft()))
-                .body("messages.get(" + i + ").subject", equalTo(recipAndSubject.getRight()));
+                    .body("messages.get(" + i + ").recipients", equalTo(recipAndSubject.getLeft()))
+                    .body("messages.get(" + i + ").subject", equalTo(recipAndSubject.getRight()));
         }
 
     }
 
     @Test
-    public void shouldAcceptAndListMailsByRecipientEmail() throws Exception {
+    public void shouldFindMailsForSpecificRecipient() throws Exception {
 
-        final String EMAIL = "listTestRecipient" + currentTimeMillis() + "@example.org";
+        final String email = generateRecipient("find-by-recipient");
 
-        final String queryURIForRecipient = ENDPOINT_MESSAGES + "?recipient=" + EMAIL;
+        final String queryURIForRecipient = ENDPOINT_MESSAGES + "?recipient=" + email;
 
         get(queryURIForRecipient).then().assertThat().body("messages.size()", equalTo(0));
 
         // send a bunch of mails to random recips, but 3 to our target user too
-        smtpClient.sendTextEmail(FROM_EMAIL, EMAIL, "mail one", TEXT_BODY);
+        smtpClient.sendTextEmail(FROM_EMAIL, email, "mail one", TEXT_BODY);
         sendMailToRandomRecipients(2);
-        smtpClient.sendTextEmail(FROM_EMAIL, EMAIL, "mail two", TEXT_BODY);
+        smtpClient.sendTextEmail(FROM_EMAIL, email, "mail two", TEXT_BODY);
         sendMailToRandomRecipients(3);
-        smtpClient.sendTextEmail(FROM_EMAIL, EMAIL, "mail three", TEXT_BODY);
+        smtpClient.sendTextEmail(FROM_EMAIL, email, "mail three", TEXT_BODY);
         sendMailToRandomRecipients(1);
 
         get(queryURIForRecipient).then().assertThat()
-                                 .body("messages.size()", equalTo(3))
-                                 // mails are listed most recently accepted first
-                                 .body("messages.get(0).recipients", equalTo(EMAIL))
-                                 .body("messages.get(0).subject", equalTo("mail three"))
-                                 .body("messages.get(1).recipients", equalTo(EMAIL))
-                                 .body("messages.get(1).subject", equalTo("mail two"))
-                                 .body("messages.get(2).recipients", equalTo(EMAIL))
-                                 .body("messages.get(2).subject", equalTo("mail one"));
+                .body("messages.size()", equalTo(3))
+                // mails are listed most recently accepted first
+                .body("messages.get(0).recipients", equalTo(email))
+                .body("messages.get(0).subject", equalTo("mail three"))
+                .body("messages.get(1).recipients", equalTo(email))
+                .body("messages.get(1).subject", equalTo("mail two"))
+                .body("messages.get(2).recipients", equalTo(email))
+                .body("messages.get(2).subject", equalTo("mail one"));
     }
 
     @Test
@@ -122,27 +122,21 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
         sendMailToRandomRecipients(3);
 
         get(ENDPOINT_MESSAGES).then()
-                              .assertThat()
-                              .contentType(ContentType.JSON)
-                              .statusCode(200)
-                              .body(matchesJsonSchemaInClasspath("jsonschema/message-list.json"));
+                .assertThat()
+                .contentType(ContentType.JSON)
+                .statusCode(200)
+                .body(matchesJsonSchemaInClasspath("jsonschema/message-list.json"));
 
     }
-
-
 
     @Test
     public void shouldFetchMessageSummary() throws Exception {
 
-        long startTime = currentTimeMillis();
-        final String EMAIL = "messageSummaryTest" + startTime + "@example.org";
+        String recipient = generateRecipient("msg-summary");
 
-        smtpClient.sendResourceEmail("mails/multipart-sample-1.txt", FROM_EMAIL, EMAIL, "multipart mail");
+        smtpClient.sendResourceEmail("mails/multipart-with-attachments.txt", FROM_EMAIL, recipient, "multipart mail");
 
-        // should only be one message for this recipient, get the ID from the list API
-        int messageId = get(ENDPOINT_MESSAGES + "?recipient=" + EMAIL).then()
-                                                                      .assertThat().body("messages.size()", equalTo(1))
-                                                                      .extract().path("messages.get(0).messageId");
+        final int messageId = verifySingleHitAndGetMessageId(recipient);
 
         get(ENDPOINT_MESSAGES + "/" + messageId)
                 .then().assertThat()
@@ -152,13 +146,14 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
                 .body("senderEmail", equalTo(FROM_EMAIL))
                 .body("messageHeaders.size()", equalTo(9))
                 .body("messageHeaders.User-Agent", startsWith("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11;"))
-                .body("messageHeaders.To", equalTo(EMAIL))
+                .body("messageHeaders.To", equalTo(recipient))
                 .body("messageHeaders.From", equalTo(FROM_EMAIL))
                 .body("messageHeaders.Subject", equalTo("multipart mail"))
                 .body("messageHeaders.MIME-Version", equalTo("1.0"))
                 .body("messageHeaders.Content-Type", startsWith("multipart/mixed;"))
                 .body("messageBodyHTML", containsString("<h1>This is a header</h1>"))
                 .body("messageBodyText", containsString("This is the text content."))
+                .body("messageRaw", nullValue()) // attrib going away in v2: https://github.com/SpartaSystems/holdmail/issues/14
                 .body("messageHasBodyHTML", equalTo(true))
                 .body("messageHasBodyText", equalTo(true))
                 .body("attachments.size()", equalTo(2))
@@ -176,42 +171,44 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
 
     }
 
+
     @Test
-    public void shouldFetchMessageSummaryForAliasEmails() throws Exception {
+    public void shouldFetchIndividualContentTypesForMsg() throws Exception {
 
-        long startTime = currentTimeMillis();
-        final String email = "testrecipient+alias@testdomain.com";
+        final String CONTENT_PLAIN = "this is the boring plaintext content!";
+        final String CONTENT_HTML = "<html><body><h1>This is the exciting html content!</h1></body></html>";
 
-        smtpClient.sendResourceEmail("mails/multipart-sample-2.txt", FROM_EMAIL, email, "multipart mail");
+        final String recipient = generateRecipient("html-text-and-raw");
+        smtpClient.sendResourceEmail("mails/basic-text-and-html.txt", FROM_EMAIL, recipient, "multipart mail");
+        final int messageId = verifySingleHitAndGetMessageId(recipient);
 
-        // should only be one message for this recipient, get the ID from the list API
+        // text
+        MockMvcResponse resp = get(ENDPOINT_MESSAGES + "/" + messageId + "/text");
+        assertThat(resp.contentType()).isEqualTo("text/plain");
+        assertThat(resp.body().asString().trim()).isEqualTo(CONTENT_PLAIN);
 
+        // html
+        resp = get(ENDPOINT_MESSAGES + "/" + messageId + "/html");
+        assertThat(resp.contentType()).isEqualTo("text/html");
+        assertThat(resp.body().asString().trim()).isEqualTo(CONTENT_HTML);
 
-        int messageId = get(ENDPOINT_MESSAGES + "?recipient=" + email).then()
-                .assertThat().body("messages.size()", equalTo(1))
-                .extract().path("messages.get(0).messageId");
-
-        get(ENDPOINT_MESSAGES + "/" + messageId)
-                .then().assertThat()
-                .body("messageId", equalTo(messageId))
-                .body("identifier", notNullValue())
-                .body("subject", equalTo("multipart mail"))
-                .body("senderEmail", equalTo(FROM_EMAIL))
-                .body("messageHeaders.size()", equalTo(9))
-                .body("messageHeaders.User-Agent", startsWith("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11;"))
-                .body("messageHeaders.To", equalTo(email))
-                .body("messageHeaders.From", equalTo(FROM_EMAIL));
+        // raw
+        resp = get(ENDPOINT_MESSAGES + "/" + messageId + "/raw");
+        assertThat(resp.contentType()).isEqualTo("text/plain");
+        // a little difficult to match on whole message (dynamic headers), so just check some relevant pieces
+        String rawBody = resp.body().asString();
+        assertThat(rawBody).contains("boundary=\"------------13D064742F8BA8DF5152F25F\"");
+        assertThat(rawBody).contains("This is a multi-part message in MIME format.");
+        assertThat(rawBody).contains(CONTENT_PLAIN);
+        assertThat(rawBody).contains(CONTENT_HTML);
 
     }
 
     // TODO: integration coverage for
-    // TODO: message TEXT fetch
-    // TODO: message HTML fetch
-    // TODO: message RAW fetch
     // TODO: message ContentId fetch
     // TODO: attachment content fetch
 
-    protected List<Pair<String, String>> sendMailToRandomRecipients(int numMails) {
+    private List<Pair<String, String>> sendMailToRandomRecipients(int numMails) {
 
         List<Pair<String, String>> recipientAndSubjectList = new ArrayList<>();
 
@@ -226,4 +223,21 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
         return recipientAndSubjectList;
     }
 
+    /**
+     * Get the message ID if there was a single message found for the specified recipient,
+     * otherwise throw an assertion error.
+     */
+    private int verifySingleHitAndGetMessageId(String recipient) {
+
+        return get(ENDPOINT_MESSAGES + "?recipient=" + recipient).then()
+                .assertThat().body("messages.size()", equalTo(1))
+                .extract().path("messages.get(0).messageId");
+    }
+
+    private String generateRecipient(String useCaseKey) {
+
+        // include a subadress alias to provide coverage for issue #31
+        return String.format("%s_test+alias_%d@testdomain.com", useCaseKey, System.currentTimeMillis());
+
+    }
 }
