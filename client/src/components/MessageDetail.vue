@@ -46,16 +46,16 @@
           </tr>
       </table>
       <b-tabs :no-fade="true" ref="tabs">
-        <b-tab id="original-message" title="Original Message">
-          <div class="mail-summary-content mail-summary-content-pre mail-summary-content-raw">{{ message.messageRaw }}</div>
-        </b-tab>
         <b-tab id="html-body" title="HTML Body" :disabled="!message.messageHasBodyHTML">
             <!-- <mail-metadata :message="message"></mail-metadata> -->
             <iframe class="mail-summary-content mail-summary-content-html" :srcdoc="messageHTML"></iframe>
         </b-tab>
         <b-tab id="html-text" title="Text Body" :disabled="!message.messageHasBodyText">
             <!-- <mail-metadata :message="message"></mail-metadata> -->
-            <div class="mail-summary-content mail-summary-content-pre mail-summary-content-raw">{{message.messageBodyText}}</div>
+            <div class="mail-summary-content mail-summary-content-pre">{{message.messageBodyText}}</div>
+        </b-tab>
+        <b-tab id="original-message" title="Original Content">
+          <iframe class="mail-summary-content mail-summary-content-pre mail-summary-content-raw" :src="messageRawEndpoint"></iframe>
         </b-tab>
       </b-tabs>
     </b-card>
@@ -95,11 +95,8 @@ export default {
   },
   watch: {
     message () {
-      if (this.message.messageHasBodyHTML) {
-        this.setTab(1)
-      } else {
-        this.setTab(0)
-      }
+      let selectedTab = this.message.messageHasBodyHTML ? 0 : this.message.messageHasBodyText ? 1 : 2
+      this.setTab(selectedTab)
     }
   },
   computed: {
@@ -124,6 +121,9 @@ export default {
     receivedDate () {
       const receivedDate = this.message && this.message.receivedDate
       return receivedDate || 0
+    },
+    messageRawEndpoint () {
+      return messagesApi.getMessageRAWEndpoint(this.message.messageId)
     }
   },
   methods: {
