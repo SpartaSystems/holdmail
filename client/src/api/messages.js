@@ -35,6 +35,9 @@ export default {
 
     return axios.get(url)
   },
+  getMessageRAWEndpoint (messageId) {
+    return `${MESSAGES_ENDPOINT}/${messageId}/raw`
+  },
   forwardMessage (messageId, recipientEmail) {
     const url = `${MESSAGES_ENDPOINT}/${messageId}/forward`
 
