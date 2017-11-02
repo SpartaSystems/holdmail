@@ -21,11 +21,19 @@ package com.spartasystems.holdmail.rest;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MimeContentIdPreParser {
+public class HTMLPreprocessor {
 
-    public String replaceWithRestPath(long messageId, String input) {
+    private String REST_FMT = "/rest/messages/%d/content/";
 
-        return input.replaceAll("cid:", "/rest/messages/" + messageId + "/content/");
+    public String preprocess(long messageId, String input) {
+
+        if (input == null) {
+            return null;
+        }
+
+        /* Right now, the only pre-processing of HTML we do is to replace any 'cid:IDENTIFIER' references
+         * in the HTML with a REST URI that will serve the associated content for that IDENTIFIER. */
+        return input.replaceAll("cid:", String.format(REST_FMT, messageId));
     }
 
 }

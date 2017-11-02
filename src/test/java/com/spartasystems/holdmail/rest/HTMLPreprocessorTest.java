@@ -22,26 +22,34 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MimeContentIdPreParserTest {
+public class HTMLPreprocessorTest {
 
     @Test
-    public void shouldReplaceWithRestPath() throws Exception{
+    public void shouldReplaceCIDWithRestPath() throws Exception{
 
-        MimeContentIdPreParser preParser = new MimeContentIdPreParser();
+        HTMLPreprocessor preParser = new HTMLPreprocessor();
 
-        assertThat(preParser.replaceWithRestPath(10, "")).isEqualTo("");
-        assertThat(preParser.replaceWithRestPath(20, "aaaaaaa")).isEqualTo("aaaaaaa");
+        assertThat(preParser.preprocess(10, "")).isEqualTo("");
+        assertThat(preParser.preprocess(20, "aaaaaaa")).isEqualTo("aaaaaaa");
 
-        assertThat(preParser.replaceWithRestPath(30, "cid:aaaaaaa"))
+        assertThat(preParser.preprocess(30, "cid:aaaaaaa"))
                             .isEqualTo("/rest/messages/30/content/aaaaaaa");
 
-        assertThat(preParser.replaceWithRestPath(40, "aaaaaaacid:"))
+        assertThat(preParser.preprocess(40, "aaaaaaacid:"))
                             .isEqualTo("aaaaaaa/rest/messages/40/content/");
 
-        assertThat(preParser.replaceWithRestPath(50, "aaaaaaacid:aaaaaaa"))
+        assertThat(preParser.preprocess(50, "aaaaaaacid:aaaaaaa"))
                             .isEqualTo("aaaaaaa/rest/messages/50/content/aaaaaaa");
 
 
     }
 
+    @Test
+    public void shouldPassThroughNulls() throws Exception {
+
+        HTMLPreprocessor preParser = new HTMLPreprocessor();
+
+        assertThat(preParser.preprocess(1234, null)).isNull();
+
+    }
 }
