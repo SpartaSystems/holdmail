@@ -22,6 +22,7 @@ import com.spartasystems.holdmail.domain.Message;
 import com.spartasystems.holdmail.domain.MessageContent;
 import com.spartasystems.holdmail.model.MessageAttachment;
 import com.spartasystems.holdmail.model.MessageSummary;
+import com.spartasystems.holdmail.rest.HTMLPreprocessor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +40,9 @@ public class MessageSummaryMapper {
 
     @Autowired
     private AttachmentMapper attachmentMapper;
+
+    @Autowired
+    private HTMLPreprocessor htmlPreprocessor;
 
     // this support disappears in v2 (https://github.com/SpartaSystems/holdmail/issues/14)
     boolean getEnableRaw() {
@@ -66,7 +70,7 @@ public class MessageSummaryMapper {
                 getEnableRaw() ? message.getRawMessage() : null,
                 message.getHeaders().asMap(),
                 messageContent.findFirstTextPart(),
-                messageContent.findFirstHTMLPart(),
+                htmlPreprocessor.preprocess(message.getMessageId(), messageContent.findFirstHTMLPart()),
                 attachments);
 
     }
