@@ -66,9 +66,9 @@ describe('MessageDetail.vue', () => {
       Vue.nextTick(() => {
         var tabs = comp.$el.querySelectorAll('.tabs .nav-tabs .nav-item')
 
-        expect(tabs[0].querySelector('a').textContent).to.equal('Original Message')
-        expect(tabs[1].querySelector('a').textContent).to.equal('HTML Body')
-        expect(tabs[2].querySelector('a').textContent).to.equal('Text Body')
+        expect(tabs[0].querySelector('a').textContent).to.equal('HTML Body')
+        expect(tabs[1].querySelector('a').textContent).to.equal('Text Body')
+        expect(tabs[2].querySelector('a').textContent).to.equal('Original Content')
 
         done()
       })
@@ -82,7 +82,7 @@ describe('MessageDetail.vue', () => {
       Vue.nextTick(() => {
         var tabs = comp.$el.querySelectorAll('.tabs .nav-tabs .nav-link')
 
-        expect(tabs[1].classList.contains('disabled')).to.be.true
+        expect(tabs[0].classList.contains('disabled')).to.be.true
 
         done()
       })
@@ -96,9 +96,44 @@ describe('MessageDetail.vue', () => {
       Vue.nextTick(() => {
         var tabs = comp.$el.querySelectorAll('.tabs .nav-tabs .nav-link')
 
-        expect(tabs[2].classList.contains('disabled')).to.be.true
+        expect(tabs[1].classList.contains('disabled')).to.be.true
 
         done()
+      })
+    })
+
+    describe('tab selection', () => {
+      var expectSelectedTab = function (msgHasHTML, msgHasText, expectedTabText, done) {
+        stubMessageDetailSuccess(
+          Object.assign({}, message1, {
+            'messageHasBodyHTML': msgHasHTML,
+            'messageHasBodyText': msgHasText
+          }))
+
+        comp = getMountedComponent()
+
+        setTimeout(() => {
+          var activeTab = comp.$el.querySelector('.nav-link.active')
+          expect(activeTab.text).to.equal(expectedTabText)
+
+          done()
+        }, 0)
+      }
+
+      it('should select html tab if html and text present', (done) => {
+        expectSelectedTab(true, true, 'HTML Body', done)
+      })
+
+      it('should select html tab if html but no text present', (done) => {
+        expectSelectedTab(true, false, 'HTML Body', done)
+      })
+
+      it('should select text tab if text but no html present', (done) => {
+        expectSelectedTab(false, true, 'Text Body', done)
+      })
+
+      it('should select original tab neither text nor html present', (done) => {
+        expectSelectedTab(false, false, 'Original Content', done)
       })
     })
   })

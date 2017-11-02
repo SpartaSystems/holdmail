@@ -52,4 +52,10 @@ describe('messages api', () => {
 
     stub.restore()
   })
+
+  it('getMessageRAWEndpoint()', () => {
+    var uri = messagesApi.getMessageRAWEndpoint('33')
+
+    expect(uri).to.equal('/rest/messages/33/raw')
+  })
 })
