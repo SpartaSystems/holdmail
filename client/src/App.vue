@@ -26,11 +26,11 @@
         </a>
       </router-link>
       <b-collapse is-nav id="nav_collapse">
-          <b-nav is-nav-bar class="ml-auto">
+          <b-navbar-nav class="ml-auto">
               <b-nav-item href="https://github.com/spartasystems/holdmail">
                 <i class="holdmail-nav-link fa fa-github"></i> GitHub
               </b-nav-item>
-          </b-nav>
+          </b-navbar-nav>
       </b-collapse>
     </b-navbar>
     <div class="container">
