@@ -11,12 +11,18 @@ Please refer to the project's main README file for building the entire applicati
 
 ### Development
 
+- From the project root folder, run `gradle bootRun` to start the server.
+- From the `/client` folder, run `npm start` to start the development server for the UI.
+
+
+### NPM Scripts
+
 ``` bash
 # install dependencies
 npm install
 
 # serve with hot reload at localhost:8080
-npm run dev
+npm start
 
 # build for production with minification
 npm run build

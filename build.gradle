@@ -197,7 +197,15 @@ task compileUI(type: NpmTask) {
 
   workingDir = file("${project.projectDir}/client")
 
-  args = ['run', 'ci']
+  args = ['run', 'build']
+}
+
+task testUI(type: NpmTask) {
+  dependsOn 'runNpmInstall'
+
+  workingDir = file("${project.projectDir}/client")
+
+  args = ['run', 'test']
 }
 
 task buildUI(type: Copy) {
@@ -214,6 +222,7 @@ test {
     }
 }
 
+test.dependsOn testUI
 compileJava.dependsOn('buildUI')
 tasks.build.dependsOn('buildRpm')
 

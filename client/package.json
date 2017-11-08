@@ -5,14 +5,13 @@
   "author": "Tim Sneed <timothy.sneed@spartasystems.com>",
   "private": true,
   "scripts": {
-    "ci": "npm run lint && npm run unit && npm run build",
     "dev": "node build/dev-server.js",
     "start": "npm run dev",
     "build": "node build/build.js",
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run --browsers ChromeHeadless",
     "unit-debug": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js",
     "e2e": "node test/e2e/runner.js",
-    "test": "npm run unit && npm run e2e",
+    "test": "npm run lint && npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
