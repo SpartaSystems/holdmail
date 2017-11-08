@@ -21,18 +21,27 @@
     <b-alert id="forward-alert" :show="dismissCountDown" variant="success" @dismiss-count-down="countDownChanged">
       Mail {{ message.messageId }} successfully sent to <strong>{{ forwardRecipient }}</strong>
     </b-alert>
+    <b-alert id="forward-error" :show="validationError" variant="danger">
+      {{errors.first('forwardEmail')}}
+    </b-alert>
     <b-card header-tag="header" class="details-container">
-      <div slot="header" class="p-1">
-        <b-button id="fwdButton" class="pull-left" size="sm" variant="primary" onclick="history.back()">
-          <span class="fa fa-arrow-left" aria-hidden="true"></span>
-        </b-button>
-        <h4 class="pl-2 pull-left message-subject">{{ message.subject }}</h4>
-        <div class="btn-group pull-right">
-          <b-button id="fwdButton" size="sm" variant="primary">
+      <div slot="header" class="d-flex flex-row p-1">
+        <router-link to="/" class="d-flex">
+          <b-button id="backButton" size="sm" variant="primary">
+            <span class="fa fa-arrow-left" aria-hidden="true"></span>
+          </b-button>
+        </router-link>
+        <h4 class="pl-2 message-subject">{{ message.subject }}</h4>
+        <div>
+        <div class="forward-group input-group">
+          <input v-model="forwardRecipient" v-validate="'email'"
+            type="email" name="forwardEmail" placeholder="Forward to..." class="form-control"></input>
+          <b-button id="fwdButton" size="sm" variant="primary" @click="forwardMail">
             Forward
             <span class="fa fa-forward" aria-hidden="true"></span>
           </b-button>
         </div>
+      </div>
       </div>
       <table class="table table-sm table-condensed addresses">
           <tr>
@@ -77,9 +86,11 @@ export default {
     return {
       message: {},
       dismissCountDown: null,
+      showForwarding: false,
       busyForwarding: false,
       forwardRecipient: '',
-      errorContent: null
+      errorContent: null,
+      validationError: false
     }
   },
   mounted () {
@@ -97,6 +108,9 @@ export default {
     message () {
       let selectedTab = this.message.messageHasBodyHTML ? 0 : this.message.messageHasBodyText ? 1 : 2
       this.setTab(selectedTab)
+    },
+    forwardRecipient () {
+      this.validationError = false
     }
   },
   computed: {
@@ -127,16 +141,12 @@ export default {
     }
   },
   methods: {
-
     forwardMail () {
       this.$validator.validateAll()
 
       if (this.errors.has('forwardEmail')) {
-        this.errorContent = this.errors && this.errors.first('forwardEmail')
-        this.$refs.valPopover._toolpop.show()
+        this.validationError = true
       } else {
-        this.$refs.valPopover._toolpop.hide()
-
         this.busyForwarding = true
 
         messagesApi.forwardMessage(this.message.messageId, this.forwardRecipient)
@@ -162,6 +172,25 @@ export default {
 </script>
 
 <style scoped lang="less">
+
+.message-subject {
+  flex-grow: 1;
+  margin-bottom: 0;
+  line-height: 1.6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.forward-group {
+  input {
+    min-width: 200px;
+  }
+}
+
+.nav.nav-tabs {
+  padding-left: 3px;
+}
 
 .details-container {
   .card-header {

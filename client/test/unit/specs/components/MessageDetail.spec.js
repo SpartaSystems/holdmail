@@ -138,31 +138,22 @@ describe('MessageDetail.vue', () => {
     })
   })
 
-  describe.skip('Behavior', () => {
-    it('manually hides the validation popover on modal hide', () => {
-      comp = getComponent({message: message2})
-
-      var stub = sandbox.stub(comp.$refs.valPopover, 'hidePopover')
-
-      comp.$root.$emit('hidden::modal', 'modal1')
-
-      expect(stub.calledOnce).to.be.true
-    })
-
+  describe('Behavior', () => {
     describe('Forwarding', () => {
       it('can forward an email to another address', (done) => {
+        stubMessageDetailSuccess(message2)
         var stub = stubForwardMessageSuccess()
 
-        comp = getComponent({message: message2})
+        comp = getMountedComponent()
         comp.forwardRecipient = 'test@test.com'
 
         comp.$nextTick(() => {
-          var forwardInput = comp.$el.querySelector('#forwardRecipientTxt')
+          var forwardInput = comp.$el.querySelector('input[name="forwardEmail"]')
           expect(forwardInput.value).to.equal('test@test.com')
 
-          triggerEvent(comp, '#forwardBut', 'click')
+          triggerEvent(comp, '#fwdButton', 'click')
 
-          expect(stub.calledWith(63, 'test@test.com'))
+          expect(stub.getCall(0).args).to.deep.equal([63, 'test@test.com'])
 
           setTimeout(function () {
             var alert = comp.$el.querySelector('#forward-alert')
@@ -177,15 +168,20 @@ describe('MessageDetail.vue', () => {
 
       describe('Validation', () => {
         it('displays error message if not a valid email', (done) => {
-          comp = getComponent({message: message2})
+          stubMessageDetailSuccess(message2)
+          comp = getMountedComponent()
           comp.forwardRecipient = 'not valid email'
 
           comp.$nextTick(() => {
-            var popup = comp.$el.querySelector('.popover-content-wrapper span')
+            triggerEvent(comp, '#fwdButton', 'click')
 
-            expect(popup.textContent).to.equal('The forwardEmail field must be a valid email.')
+            comp.$nextTick(() => {
+              var alert = comp.$el.querySelector('#forward-error')
 
-            done()
+              expect(alert.textContent.trim()).to.equal('The forwardEmail field must be a valid email.')
+
+              done()
+            })
           })
         })
       })
