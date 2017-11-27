@@ -142,11 +142,11 @@ public class OutgoingMailSenderTest {
 
         Whitebox.setInternalState(mailSenderSpy, "outgoingServer", "outserver");
         Whitebox.setInternalState(mailSenderSpy, "outgoingPort", 999);
-        Whitebox.setInternalState(mailSenderSpy, "senderFrom", "from@host.tld");
+        Whitebox.setInternalState(mailSenderSpy, "senderFrom", "parse@host.tld");
 
         assertThat(mailSenderSpy.getOutgoingServer()).isEqualTo("outserver");
         assertThat(mailSenderSpy.getOutgoingPort()).isEqualTo(999);
-        assertThat(mailSenderSpy.getSenderFrom()).isEqualTo("from@host.tld");
+        assertThat(mailSenderSpy.getSenderFrom()).isEqualTo("parse@host.tld");
     }
 
 }
