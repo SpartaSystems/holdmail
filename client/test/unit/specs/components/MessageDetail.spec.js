@@ -159,8 +159,6 @@ describe('MessageDetail.vue', () => {
             var alert = comp.$el.querySelector('#forward-alert')
 
             expect(alert.textContent.trim()).to.equal('Mail 63 successfully sent to test@test.com')
-
-            stub.restore()
             done()
           }, 0)
         })
@@ -175,13 +173,13 @@ describe('MessageDetail.vue', () => {
           comp.$nextTick(() => {
             triggerEvent(comp, '#fwdButton', 'click')
 
-            comp.$nextTick(() => {
+            setTimeout(function () {
               var alert = comp.$el.querySelector('#forward-error')
 
               expect(alert.textContent.trim()).to.equal('The forwardEmail field must be a valid email.')
 
               done()
-            })
+            }, 0)
           })
         })
       })
