@@ -147,6 +147,8 @@ describe('MessageDetail.vue', () => {
         comp = getMountedComponent()
         comp.forwardRecipient = 'test@test.com'
 
+        sandbox.stub(comp.$validator, 'validateAll').returnsPromise().resolves()
+
         comp.$nextTick(() => {
           var forwardInput = comp.$el.querySelector('input[name="forwardEmail"]')
           expect(forwardInput.value).to.equal('test@test.com')
@@ -172,13 +174,17 @@ describe('MessageDetail.vue', () => {
           comp = getMountedComponent()
           comp.forwardRecipient = 'not valid email'
 
+          sandbox.stub(comp.$validator, 'validateAll').returnsPromise().resolves()
+          sandbox.stub(comp.errors, 'has').withArgs('forwardEmail').returns(true)
+          sandbox.stub(comp.errors, 'first').withArgs('forwardEmail').returns('Not a valid email')
+
           comp.$nextTick(() => {
             triggerEvent(comp, '#fwdButton', 'click')
 
             comp.$nextTick(() => {
               var alert = comp.$el.querySelector('#forward-error')
 
-              expect(alert.textContent.trim()).to.equal('The forwardEmail field must be a valid email.')
+              expect(alert.textContent.trim()).to.equal('Not a valid email')
 
               done()
             })

@@ -34,7 +34,7 @@
         <h4 class="pl-2 message-subject">{{ message.subject }}</h4>
         <div>
         <div class="forward-group input-group">
-          <input v-model="forwardRecipient" v-validate="'email'"
+          <input v-model="forwardRecipient" v-validate="'required|email'"
             type="email" name="forwardEmail" placeholder="Forward to..." class="form-control"></input>
           <b-button id="fwdButton" size="sm" variant="primary" @click="forwardMail">
             Forward
@@ -143,21 +143,22 @@ export default {
   methods: {
     forwardMail () {
       this.$validator.validateAll()
+        .then(() => {
+          if (this.errors.has('forwardEmail')) {
+            this.validationError = true
+          } else {
+            this.busyForwarding = true
 
-      if (this.errors.has('forwardEmail')) {
-        this.validationError = true
-      } else {
-        this.busyForwarding = true
-
-        messagesApi.forwardMessage(this.message.messageId, this.forwardRecipient)
-          .then((response) => {
-            this.busyForwarding = false
-            this.dismissCountDown = 5
-          })
-          .catch(() => {
-            console.log('Service failed to forward message to ' + this.forwardRecipient)
-          })
-      }
+            messagesApi.forwardMessage(this.message.messageId, this.forwardRecipient)
+              .then((response) => {
+                this.busyForwarding = false
+                this.dismissCountDown = 5
+              })
+              .catch(() => {
+                console.log('Service failed to forward message to ' + this.forwardRecipient)
+              })
+          }
+        })
     },
     countDownChanged (dismissCountDown) {
       this.dismissCountDown = dismissCountDown
