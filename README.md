@@ -116,26 +116,28 @@ To release forwarded mails from HoldMail to the real world, you'll need to confi
 
 ## Run It From Source
 
-HoldMail's backend is a [Spring Boot](http://projects.spring.io/spring-boot) application, exposing a REST API and SMTP server.  The UI is an [Angular JS](https://angularjs.org) & [Bootstrap](http://getbootstrap.com) web application. 
+HoldMail's backend is a [Spring Boot](http://projects.spring.io/spring-boot) application, exposing a REST API and SMTP server.  The UI is built with [Vue](https://vuejs.org/). 
 
 ### You'll Need:
 
  * [Java 8+ JDK](http://www.oracle.com/technetwork/java/javase/downloads/index-jsp-138363.html#javasejdk)
  * [Gradle](https://gradle.org)
- * [NPM](https://www.npmjs.com) with the following globally installed (npm install -g _modulename_) modules:
-    * browserify
-    * uglifyjs 
-    * karma	 
+ * [NPM](https://www.npmjs.com)
  
 To build from the command line, use:
 
-	gradle build (this triggers NPM as well)
+	gradle build (this builds the UI as well)
 
 You'll find the JARs under <code>build/libs</code>, with the RPM under <code>build/rpm</code>.  
 
-Most modern Java-aware IDEs should be able to import *build.gradle* and launch the app by running the <code>HoldMailApplication</code> class, but from the command line, the app can be launched in dev mode by using:
+Most modern Java-aware IDEs should be able to import *build.gradle* and launch the app by running the <code>HoldMailApplication</code> class, but from the command line, the server can be launched in dev mode by using:
 
 	gradle bootRun
+
+
+The UI can also be run in dev mode by navigating to the `client/` directory and using:
+  
+  npm start
 
 	
 # Meta
