@@ -59,6 +59,10 @@ public class MessageService {
         return messageMapper.toDomain(entity);
     }
 
+    public void deleteMessage(Long id) {
+        messageRepository.delete(id);
+    }
+
     public Message getMessage(long messageId) {
 
         MessageEntity entity = messageRepository.findOne(messageId);
