@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
-import static io.restassured.module.mockmvc.RestAssuredMockMvc.get;
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.*;
 import static java.lang.System.currentTimeMillis;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.*;
@@ -204,6 +204,21 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
 
     }
 
+    @Test
+    public void shouldBeAbleToDeleteAnEmail() throws Exception {
+
+        String recipient = generateRecipient("msg-summary");
+
+        final String queryURIForRecipient = ENDPOINT_MESSAGES + "?recipient=" + recipient;
+
+        get(queryURIForRecipient).then().assertThat().body("messages.size()", equalTo(0));
+
+        smtpClient.sendTextEmail(FROM_EMAIL, recipient, "mail one", TEXT_BODY);
+
+        final int messageId = verifySingleHitAndGetMessageId(recipient);
+
+        delete(ENDPOINT_MESSAGES + "/" + messageId).then().assertThat().statusCode(200);
+    }
     // TODO: integration coverage for
     // TODO: message ContentId fetch
     // TODO: attachment content fetch
