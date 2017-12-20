@@ -31,6 +31,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -53,7 +55,7 @@ public class MimeUtilsTest {
     private MessageContentExtractor messageContentExtractorMock;
 
     @Test
-    public void shouldFindAllBodyParts() throws Exception {
+    public void shouldFindAllBodyPartsOnParse() throws Exception {
 
         MessageContent expectedParts = mock(MessageContent.class);
         whenNew(MimeStreamParser.class).withAnyArguments().thenReturn(mimeStreamParserMock);
@@ -70,7 +72,7 @@ public class MimeUtilsTest {
     }
 
     @Test
-    public void shouldRethrowMimeException() throws Exception {
+    public void shouldRethrowMimeExceptionOnParse() throws Exception {
 
         MimeException mimeException = new MimeException("mimeError");
         whenNew(MessageContentExtractor.class).withNoArguments()
@@ -84,7 +86,7 @@ public class MimeUtilsTest {
     }
 
     @Test
-    public void shouldRethrowIOException() throws Exception {
+    public void shouldRethrowIOExceptionOnParse() throws Exception {
 
         IOException ioException = new IOException("ioError");
         whenNew(MessageContentExtractor.class).withNoArguments()
@@ -94,6 +96,38 @@ public class MimeUtilsTest {
                 .isInstanceOf(HoldMailException.class)
                 .hasMessage("Failed to parse body")
                 .hasCause(ioException);
+
+    }
+
+    @Test
+    public void shouldTrimAndUnquote() {
+
+        assertThat(MimeUtils.trimQuotes(null)).isEqualTo(null);
+        assertThat(MimeUtils.trimQuotes("")).isEqualTo("");
+        assertThat(MimeUtils.trimQuotes("blah")).isEqualTo("blah");
+        assertThat(MimeUtils.trimQuotes(" \"blah\" ")).isEqualTo("blah");
+        assertThat(MimeUtils.trimQuotes(" \" blah \" ")).isEqualTo(" blah ");
+        assertThat(MimeUtils.trimQuotes(" \" blah blah \" ")).isEqualTo(" blah blah ");
+
+    }
+
+    @Test
+    public void shouldSafeDecode() {
+
+        assertThat(MimeUtils.safeURLDecode(null, "enc")).isEqualTo(null);
+        assertThat(MimeUtils.safeURLDecode("", "enc")).isEqualTo("");
+        assertThat(MimeUtils.safeURLDecode("val", null)).isEqualTo("val");
+        assertThat(MimeUtils.safeURLDecode("val", "")).isEqualTo("val");
+
+        String helloWorldChinese = "你好世界";
+        String helloWorldChineseEncodedUTF8 = "%E4%BD%A0%E5%A5%BD%E4%B8%96%E7%95%8C";
+
+        assertThat(MimeUtils.safeURLDecode(helloWorldChineseEncodedUTF8, "BADENCONDING"))
+                .isEqualTo(helloWorldChineseEncodedUTF8);
+
+        assertThat(MimeUtils.safeURLDecode(helloWorldChineseEncodedUTF8, "UTF-8"))
+                .isEqualTo(helloWorldChinese);
+
 
     }
 

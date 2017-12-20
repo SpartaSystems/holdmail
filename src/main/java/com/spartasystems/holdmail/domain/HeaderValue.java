@@ -27,39 +27,59 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.spartasystems.holdmail.mime.MimeUtils.safeURLDecode;
+import static com.spartasystems.holdmail.mime.MimeUtils.trimQuotes;
+import static java.util.Arrays.stream;
+import static java.util.Comparator.comparingInt;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
+
 /**
- * Represents a paramaterized mime header value, of the form:
- * <code>"value; p1key=p1val; p2key=p2val; ..."</code>
+ * Represents the header information as converted from the potentially RFC2231-encoded source.
  */
 public class HeaderValue {
-
-    private static final String TRIM_SPEC        = "[\\s\"]*";
-    private static final String TRIM_PARAM_REGEX = "^" + TRIM_SPEC + "|" + TRIM_SPEC + "$";
 
     private final String value;
     private final Map<String, String> params = new HashMap<>();
 
-    public HeaderValue(String valueString) {
+    /**
+     * @param sourceValueStr The origianl (possibly RFC2231-encoded) header value string, e.g.
+     *                       <code>"value; p1key=p1val; p2key=p2val; ..."</code>
+     */
+    public HeaderValue(String sourceValueStr) {
 
-        if (StringUtils.isBlank(valueString)) {
-            value = valueString;
-        }
-        else {
+        if (StringUtils.isBlank(sourceValueStr)) {
+            value = sourceValueStr;
+        } else {
 
-            String[] parts = valueString.split(";");
-            value = parts[0];
-            for (int i = 1; i < parts.length; i++) {
-                String[] paramToken = parts[i].split("=");
+            String[] parts = sourceValueStr.split(";");
 
-                String keyTrimmed = paramToken[0].replaceAll(TRIM_PARAM_REGEX, "");
-                String valTrimmed = paramToken.length < 2 ? "" : paramToken[1].replaceAll(TRIM_PARAM_REGEX, "");
+            // the value is everything up to the first ';'
+            value = trimQuotes(parts[0]);
 
-                params.put(keyTrimmed, valTrimmed);
+            // all following parts are key=value parts
+            stream(parts, 1, parts.length)
+                    .map(HeaderValueParam::parse)
+                    .collect(groupingBy(HeaderValueParam::getName))
+                    .forEach((name, params) -> {
 
-            }
+                        String concatenated = params.stream()
+                                .sorted(comparingInt(HeaderValueParam::getPosition))
+                                .map(HeaderValueParam::getValue).collect(joining(""));
+
+                        String decoded = params.stream()
+                                .min(comparingInt(HeaderValueParam::getPosition))
+                                .map(HeaderValueParam::getCharset)
+                                .map(encoding -> safeURLDecode(concatenated, encoding))
+                                .orElse(concatenated);
+
+                        this.params.put(name, decoded);
+                    });
+
         }
 
     }
+
 
     public boolean hasValue(String value) {
         return value != null && StringUtils.equals(this.value, value);

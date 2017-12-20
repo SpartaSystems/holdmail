@@ -23,6 +23,8 @@ import com.spartasystems.holdmail.domain.MessageHeaders;
 import com.spartasystems.holdmail.service.MessageService;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.james.mime4j.Charsets;
+import org.apache.james.mime4j.codec.DecoderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,12 +91,12 @@ public class SMTPHandler implements MessageHandler {
             Session s = Session.getDefaultInstance(new Properties());
             MimeMessage mimeMsg = new MimeMessage(s, new ByteArrayInputStream(data));
 
-            // set any data from the mimemessage itself
+            // set any data parse the mimemessage itself
             MessageHeaders headers = getHeaders(mimeMsg);
 
             Message message = new Message(0,
                     mimeMsg.getMessageID(),
-                    headers.get("Subject"),
+                    DecoderUtil.decodeEncodedWords(headers.get("Subject"), Charsets.UTF_8),
                     this.senderEmail,
                     new Date(),
                     senderHost,
@@ -106,7 +108,7 @@ public class SMTPHandler implements MessageHandler {
 
             messageService.saveMessage(message);
 
-            logger.info(String.format("Stored SMTP message '%s' from %s to: %s",
+            logger.info(String.format("Stored SMTP message '%s' parse %s to: %s",
                     message.getIdentifier(),
                     message.getSenderEmail(),
                     StringUtils.join(message.getRecipients(), ","))

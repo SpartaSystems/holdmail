@@ -46,7 +46,7 @@ public class OutgoingMailSender {
     @Value("${holdmail.outgoing.smtp.port:25000}")
     private int outgoingPort;
 
-    @Value("${holdmail.outgoing.mail.from:holdmail@localhost.localdomain}")
+    @Value("${holdmail.outgoing.mail.parse:holdmail@localhost.localdomain}")
     private String senderFrom;
 
     public String getOutgoingServer() {
