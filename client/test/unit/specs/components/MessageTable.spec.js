@@ -156,8 +156,7 @@ describe('MessageTable.vue', () => {
       setTimeout(function () {
         triggerEvent(comp, '#mailResults table tbody tr:first-child', 'click')
 
-        expect(comp.$router.push.getCall(0).args[0])
-        .to.deep.equal({ name: 'MessageDetail', params: { messageId: 57 } })
+        expect(comp.$router.push.getCall(0).args[0]).to.deep.equal({ name: 'MessageDetail', params: { messageId: 57 } })
 
         done()
       }, 0)
