@@ -106,7 +106,11 @@ public final class TestMailClient {
         return textPart;
     }
 
-    public void sendResourceEmail(String resourceName, String sender, String recipient, String subject) {
+    public void sendResourceEmail(String resourceName, String sender, String recipient) {
+        sendResourceEmail(resourceName, sender, recipient, null);
+    }
+
+    public void sendResourceEmail(String resourceName, String sender, String recipient, String subjectOverride) {
 
         try {
 
@@ -125,7 +129,10 @@ public final class TestMailClient {
             // then set the new data
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
             message.setFrom(InternetAddress.parse(sender)[0]);
-            message.setSubject(subject);
+
+            if(StringUtils.isNotBlank(subjectOverride)) {
+                message.setSubject(subjectOverride);
+            }
 
             Transport.send(message);
 

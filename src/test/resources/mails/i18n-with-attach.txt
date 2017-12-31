@@ -1,0 +1,150 @@
+From: Holdmail Tester <holdmail@spartasystems.com>
+To: testrecipient@testdomain.com
+Subject: =?UTF-8?B?44GT44KT44Gr44Gh44Gv5LiW55WMIOOBk+OCk+OBq+OBoeOBr+S4lg==?=
+ =?UTF-8?B?55WMIOOBk+OCk+OBq+OBoeOBr+S4lueVjA==?=
+Message-ID: <b77c3b76-7948-d53e-a431-14d27a1675b2@spartasystems.com>
+Date: Tue, 26 Dec 2017 18:58:25 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:52.0)
+ Gecko/20100101 Thunderbird/52.5.0
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="------------261D9158B034B347CF8BCE9F"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------261D9158B034B347CF8BCE9F
+Content-Type: multipart/alternative;
+ boundary="------------5D0DBA77A67A69687D3F7A1D"
+
+
+--------------5D0DBA77A67A69687D3F7A1D
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+This is the plaintext message content!
+
+The following is a list of non-ASCII sentences:
+
+* Russian: Мое судно на воздушной подушке полно угрей
+* Taiwanese: 我的氣墊船充滿了鰻魚
+* Hindi: मेरी मँडराने वाली नाव सर्पमीनों से भरी हैं
+
+An embedded image (chinese flag with encoded filename) should appear below:
+
+flag-cn
+
+The end.
+
+
+
+
+--------------5D0DBA77A67A69687D3F7A1D
+Content-Type: multipart/related;
+ boundary="------------E6BA9139AC8B78655285B6EA"
+
+
+--------------E6BA9139AC8B78655285B6EA
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  </head>
+  <body text="#000000" bgcolor="#FFFFFF">
+    <h1>This is the HTML message content!</h1>
+    <b>This line is in bold.</b><br>
+    <br>
+    The following is a list of non-ASCII sentences:<br>
+    <ul>
+      <li>Russian: Мое судно на воздушной подушке полно угрей</li>
+      <li>Taiwanese: 我的氣墊船充滿了鰻魚</li>
+      <li>Hindi: मेरी मँडराने वाली नाव सर्पमीनों से भरी हैं</li>
+    </ul>
+    An embedded image (chinese flag with encoded filename) should appear
+    below:<br>
+    <br>
+    <img moz-do-not-send="false"
+      src="cid:part1.4D21FEAB.C26B12D2@spartasystems.com" alt="flag-cn"
+      width="100" height="67"><br>
+    <br>
+    The end.<br>
+    <br>
+    <br>
+    <br>
+  </body>
+</html>
+
+--------------E6BA9139AC8B78655285B6EA
+Content-Type: image/png;
+ name="=?UTF-8?B?YXR0LUNOLeS9oOWlveS4lueVjC5wbmc=?="
+Content-Transfer-Encoding: base64
+Content-ID: <part1.4D21FEAB.C26B12D2@spartasystems.com>
+Content-Disposition: inline;
+ filename*0*=utf-8''%61%74%74%2D%43%4E%2D%E4%BD%A0%E5%A5%BD%E4%B8%96%E7%95;
+ filename*1*=%8C%2E%70%6E%67
+
+iVBORw0KGgoAAAANSUhEUgAAAGQAAABDCAIAAADlKTeNAAAABmJLR0QA/wD/AP+gvaeTAAAA
+CXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QsYAjsQ0TAH1AAABIhJREFUeNrt2U1oHVUU
+B/D/uXPnzcz7StrX2JTaUoQqabUqFsQiiova2IWLqnRVi+CiO0VBFy5FF12JduFKKOKiSLG4
+6EIUimJExCKKtYpYpE0M+Wo+3st83I/j4jWm1jRvXjGhk9yznveY++Oce889Q38M9MJFvhCO
+4PbDYoeVW4pCdljLBQXsbzOizNEeXX1cgQqPJW+loPItmxPqeTaVDev325kzASdEPhd6k6Su
+T0MPMPmwDPwGbzs9gwzcotaQP30qUJe94np1+eIWvYfSnBsQCWx6vcVzgEXzXGn200CNeIXO
+rO7e3euztcHU7+POpxvD325mToWXn++ZH/LnvvCTX72in4ndYflbrNxqawdSVh3zCupPb/57
+aWZo6mRkJgV5i+W5DrAI4X0aErXBDIby/Dd5AEENCz0u/inkYKdhvaDGaxSLPFT2KWhQD0d7
+VXvBeQ/QBRTWFN5j+l6NRZV7n0m9Hi6Ql7zZQXZj7ljI7aa02yAGGLXBrDXki+gGTia/k5qF
+maHa02llX9Y8VzJNKlD/JZc88qL7dXivsTHRdXzhHg298MBeteFIioWVMkCC2WDubLBMxlHE
+jWNx7ckMKUSDyQN0ka6nS/dZJNE4Nl87mOWtEQE9IkZeq5lx6rB4hlfnbSdn1ahASs1z/vTp
+gGShy1Bj/J1ydkn2Hk68zRZ6uV2fFZqflyZOlGFypAlBjYrkFzn5fphckF6ZiyIFwHupL7xZ
+S5n8JJOfpdzI/l0WdqmHSjATYvJENP1xCM5bUORBjXrpRSmigt1+Ol13GBRxz6G093ByYwpI
+xEP+xLtlPUVr4JL8f7QOBJ6n5AfJMf23gptf+/rqepHK22eFe7So8+Iu19bRqB/Ili7PPJ3X
+msQSVQ536WtAAvF38trvNIIHtLiFrpIh+21ph7lF6Nsaq87BLtMeY02+Vx59o3rlxbqZEPAA
+Qm1/xoq6kuKMqk9klUeVzahYXrLj2sIBIzax/l2MvV2JL0gRshoWl1+o973Sqjym6k+lVz8K
+c2qRj+hBJbfa2mBGBFFh9ZeYPRMU5Uzs8JpsUN2fzX1SGn65lvzmifYki8AKY8crEyfKVOVw
+t845SGAFPSbKD2nZb70tVlS5+VlQoO5BLp9WIuK5s6X5b3zW+FfrQABj7mwp/lH6d3RRS8lF
+GZ+X0cPKTlF2ybPJmilDAitqfeWDlpq7E0DQI0IPL86q8kSw01w5WrdNqh1MqcScFab1oNX4
+Is2Ah/ZeThKwWLxsF6qDX8mXJdiYWEH22+Bu085N1uD2FVIU73O4WLls8urc/2arsk9tPJqU
+7jSL7VhhO365cmmlx0R83tt8vAULM01ew9oZ0cV8dX2VoYCdFRCAQvkRtfFI6jVs4br2Vcks
+RmmHCQb0+FvlDc+lUx+GrS/9/GOcdVeGakRMfRCBYZtkZ6nQu9UKY103Woi/9dfGiGY1ZrrF
+/aq6ihv8mguH5bAclsNyWA7LhcNyWA7LYTksh+XCYTksh+WwHJbDcuGwHJbDclgOy2G5cFgO
+y2E5LIflsFw4rC7ibxRPwwXY6aXqAAAAAElFTkSuQmCC
+--------------E6BA9139AC8B78655285B6EA--
+
+--------------5D0DBA77A67A69687D3F7A1D--
+
+--------------261D9158B034B347CF8BCE9F
+Content-Type: image/png;
+ name="=?UTF-8?B?YXR0LUpQLeOBguOCiuOBi+OCmeOBqOOBhuOBk+OCmeOBleOCmeOBhA==?=
+ =?UTF-8?B?44G+44GZLnBuZw==?="
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename*0*=utf-8''%61%74%74%2D%4A%50%2D%E3%81%82%E3%82%8A%E3%81%8B%E3%82;
+ filename*1*=%99%E3%81%A8%E3%81%86%E3%81%93%E3%82%99%E3%81%95%E3%82%99%E3;
+ filename*2*=%81%84%E3%81%BE%E3%81%99%2E%70%6E%67
+
+iVBORw0KGgoAAAANSUhEUgAAAGQAAABDCAIAAADlKTeNAAAABmJLR0QA/wD/AP+gvaeTAAAA
+CXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QsYAjsjbuBmwgAABGxJREFUeNrt219oW1UY
+APDv3Nyb3iRN0rRqmjZp2tXikjb7U6erTibowHUP4oPDrS+6gAN1oOge/MMmrkNk4h86FdRi
+J0gzoWyCUEUciDIW1Lm12saxrU1tetNUbUya5Ca5N+f4UGEIdujMPenNzvd8uffkl++c853D
+OYgQAiz+XXCMgGExLIbFsBgWw2IEDIthMSyGxbCu++BXSTvyM1IqPJ6duFyYnVeXcgDAW801
+nkZLZ7u9Z73odTEsKP6ajB0dloY+KcTmAdAKTxHR7XIFH3Dv22280VHB1qLKbNFgnP5+IvbO
+x3MfjgBgBEZ01QGBACZQBODce3Y2P/aQbVMnIHRdYOVnE9HD784PjyqZJAfGlRPqH9AwFIzW
+BmffjtYXHhU9jVWOlfzqu0jwoDwdW/76Nb2DAICpze0f6q+7e1PVYv3+2emx+/cRVb1Wpr+R
+IUHY8OnR+vu2VGHpkAiNntuxF6tKOaQAAGGl+MP2vYnjn1fbbDgfGo0EDyLgyiS13Ic5ADIZ
+PABAnLt6qySzspGpy88P4HyxjFJX8ksuXHpuIBuZqgYsoqjRw+/lotPafSIXnYq+/D5RVN1j
+LX5xRho+yUGNlr+hRvroxOKpsO5nw2+a7inEEwgM2uYvlMSmxrvmTuk4s6TBE4V4XGspAEBg
+kCVJ+uCkjrFib4cQrQmXAz72VkivWEvnIvJMXIMZcMX0kqNS5vwFXWKlzoyXMjmay5FSJpcK
+j+sSK/vjRawUqO5lKIXMmA4zq5SR83MJin3wr56YlxZKWVlvWDm5uLBImwpAWVgs5fSGRRQV
+5/L0M6uUlbUr5TXDwhgXFaAeuKiSEtYZFjJwnFGgj8UZBWTg9IbF85xZXN7VpBjEYBYRz+sM
+y2AxGZ0NtKkAjI0NBotJf1ii20m/G9a4nfrDAoDaQAcnGKkOWIKxNtChywrednuAt1poYvFW
+i21zQJdY1m6f6HVRHOOJ2Npk3bBWl1gA0PLMwxgoLQ9LUPTuf0TbklfrndLTrdvlmVkKO6Xm
+Nu+dU6Pajola/+H+oX4KyYWh4D/Wr/kEovUH6rbe2tz3IAFVy7RSm/t22rds1D0WMnBrDj1h
+8rZoNtITU2vLmkOPa7fKoYcFAKZ2j2/wRe3e7xt8ydTuoVHH0Zmq6rfd0TV8BICUNb8IAOkK
+Ham/dzOlopfass25uzcw8rrgsJdl/CKgCvV160becO7qpVbJ0T6flf72p8k9B9KTEwYQ/0dJ
+lbf5O/3H+m23ddFsfAVO/hFFvbj/tZmBIQ6E/76VSjAo3ieDHa8+jQTaB2JRpa79Lp2dvPTs
+m0vnf1Z+SxLAVz2NRJYfEG5wWLt9N7/ylHWjryJtRpW9I50Kjye/DCe/PpsZuyAvxAAIXFEj
+ABgAmW7y1K6/xbG127Gtx96zroKtRavhQrmayqjJtPJHOheZzv8SV9NZAOBtFtHrMq9tE+ps
+vMPG22sr3k7Ebt+vvtKBYTEsFgyLYTEshsWwGBYLhsWwGNbqjT8BRPulSq7HXd0AAAAASUVO
+RK5CYII=
+--------------261D9158B034B347CF8BCE9F--

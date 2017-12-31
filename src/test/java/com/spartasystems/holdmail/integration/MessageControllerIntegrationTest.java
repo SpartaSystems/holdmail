@@ -46,6 +46,9 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
     private static final String ENDPOINT_MESSAGES = "/rest/messages";
     private static final String FROM_EMAIL = "john.doe@senderdomain.org";
     private static final String TEXT_BODY = "whatever";
+    private static final String TESTRESOURCE_BASIC_TEXT_AND_HTML = "mails/basic-text-and-html.txt";
+    private static final String TESTRESOURCE_I18N_WITH_ATTACH = "mails/i18n-with-attach.txt";
+
 
     @Value("${holdmail.smtp.port:25000}")
     private int smtpServerPort;
@@ -65,7 +68,7 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldAcceptAndListMailsForRandomRecipients() throws Exception {
+    public void shouldAcceptAndListMailsForRandomRecipients() {
 
         int countBeforeStart = get(ENDPOINT_MESSAGES).then().extract().path("messages.size()");
 
@@ -88,7 +91,7 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldFindMailsForSpecificRecipient() throws Exception {
+    public void shouldFindMailsForSpecificRecipient() {
 
         final String email = generateRecipient("find-by-recipient");
 
@@ -116,7 +119,7 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldConformToMessageListSchema() throws Exception {
+    public void shouldConformToMessageListSchema() {
 
         // ensure there's at least a couple of messages there
         sendMailToRandomRecipients(3);
@@ -130,56 +133,68 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldFetchMessageSummary() throws Exception {
+    public void shouldFetchMessageSummary() {
 
         String recipient = generateRecipient("msg-summary");
 
-        smtpClient.sendResourceEmail("mails/multipart-with-attachments.txt", FROM_EMAIL, recipient, "multipart mail");
+        smtpClient.sendResourceEmail(TESTRESOURCE_I18N_WITH_ATTACH, FROM_EMAIL, recipient);
 
         final int messageId = verifySingleHitAndGetMessageId(recipient);
+
+        String HTML_HEADERTEXT = "<h1>This is the HTML message content!</h1>";
+        String PLAIN_HEADERTEXT = "This is the plaintext message content!";
+        String NONASCII_SAMPLE = "Russian: Мое судно на воздушной подушке полно угрей";
+
+        // "hello world hello world hello world" in japanese, lengthy on purpose to test multitoken encoding
+        String SUBJECT = "こんにちは世界 こんにちは世界 こんにちは世界";
 
         get(ENDPOINT_MESSAGES + "/" + messageId)
                 .then().assertThat()
                 .body("messageId", equalTo(messageId))
                 .body("identifier", notNullValue())
-                .body("subject", equalTo("multipart mail"))
+                .body("subject", equalTo(SUBJECT))
                 .body("senderEmail", equalTo(FROM_EMAIL))
-                .body("messageHeaders.size()", equalTo(9))
-                .body("messageHeaders.User-Agent", startsWith("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11;"))
+                .body("messageHeaders.size()", equalTo(10))
+                .body("messageHeaders.User-Agent", startsWith("Mozilla/5.0 (Macintosh;"))
                 .body("messageHeaders.To", equalTo(recipient))
                 .body("messageHeaders.From", equalTo(FROM_EMAIL))
-                .body("messageHeaders.Subject", equalTo("multipart mail"))
+                .body("messageHeaders.Subject", startsWith("=?UTF-8?B?"))
                 .body("messageHeaders.MIME-Version", equalTo("1.0"))
                 .body("messageHeaders.Content-Type", startsWith("multipart/mixed;"))
-                .body("messageBodyHTML", containsString("<h1>This is a header</h1>"))
-                .body("messageBodyText", containsString("This is the text content."))
-                .body("messageRaw", nullValue()) // attrib going away in v2: https://github.com/SpartaSystems/holdmail/issues/14
+                .body("messageBodyHTML", containsString(HTML_HEADERTEXT))
+                .body("messageBodyText", containsString(PLAIN_HEADERTEXT))
+                // ensure content is limited to that type's text
+                .body("messageBodyHTML", not(containsString(PLAIN_HEADERTEXT)))
+                .body("messageBodyText", not(containsString(HTML_HEADERTEXT)))
+                // ensure unicode characters made it
+                .body("messageBodyHTML", containsString("<li>" + NONASCII_SAMPLE + "</li>"))
+                .body("messageBodyText", containsString("* " + NONASCII_SAMPLE))
+                // attrib going away in v2: https://github.com/SpartaSystems/holdmail/issues/14
+                .body("messageRaw", nullValue())
                 .body("messageHasBodyHTML", equalTo(true))
                 .body("messageHasBodyText", equalTo(true))
                 .body("attachments.size()", equalTo(2))
                 .body("attachments.get(0).sequence", equalTo(3))
                 .body("attachments.get(0).disposition", equalTo("inline"))
-                .body("attachments.get(0).filename", equalTo("seal of approval.jpg"))
-                .body("attachments.get(0).size", equalTo(43549))
-                .body("attachments.get(0).contentType", equalTo("image/jpeg"))
+                .body("attachments.get(0).filename", equalTo("att-CN-你好世界.png"))
+                .body("attachments.get(0).size", equalTo(1275))
+                .body("attachments.get(0).contentType", equalTo("image/png"))
                 .body("attachments.get(1).sequence", equalTo(4))
                 .body("attachments.get(1).disposition", equalTo("attachment"))
-                .body("attachments.get(1).filename", equalTo("cheerio-challenge.jpg"))
-                .body("attachments.get(1).size", equalTo(21561))
-                .body("attachments.get(1).contentType", equalTo("image/jpeg"));
-
-
+                .body("attachments.get(1).filename", equalTo("att-JP-ありがとうございます.png"))
+                .body("attachments.get(1).size", equalTo(1247))
+                .body("attachments.get(1).contentType", equalTo("image/png"));
     }
 
 
     @Test
-    public void shouldFetchIndividualContentTypesForMsg() throws Exception {
+    public void shouldFetchIndividualContentTypesForMsg() {
 
         final String CONTENT_PLAIN = "this is the boring plaintext content!";
         final String CONTENT_HTML = "<html><body><h1>This is the exciting html content!</h1></body></html>";
 
         final String recipient = generateRecipient("html-text-and-raw");
-        smtpClient.sendResourceEmail("mails/basic-text-and-html.txt", FROM_EMAIL, recipient, "multipart mail");
+        smtpClient.sendResourceEmail(TESTRESOURCE_BASIC_TEXT_AND_HTML, FROM_EMAIL, recipient);
         final int messageId = verifySingleHitAndGetMessageId(recipient);
 
         // text
@@ -205,7 +220,7 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldBeAbleToDeleteAnEmail() throws Exception {
+    public void shouldBeAbleToDeleteAnEmail() {
 
         String recipient = generateRecipient("msg-summary");
 
@@ -218,7 +233,10 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
         final int messageId = verifySingleHitAndGetMessageId(recipient);
 
         delete(ENDPOINT_MESSAGES + "/" + messageId).then().assertThat().statusCode(200);
+
+        get(queryURIForRecipient).then().assertThat().body("messages.size()", equalTo(0));
     }
+
     // TODO: integration coverage for
     // TODO: message ContentId fetch
     // TODO: attachment content fetch
