@@ -105,6 +105,7 @@ rat {
             '**/*.iml',
             'README.md',
             'CONTRIBUTING.md',
+            'RELEASE.md',
             '.github/*',
             'docker/',
             'src/main/resources/db/migration/*.sql',
