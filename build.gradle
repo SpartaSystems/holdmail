@@ -38,7 +38,7 @@ description = 'holdmail'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
-def dockerName = System.getProperty("dockerName", "sparta/holdmail")
+def dockerName = System.getProperty("dockerName", "spartasystems-docker-containers.bintray.io/sparta/holdmail")
 
 dependencies {
 

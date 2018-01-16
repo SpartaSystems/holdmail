@@ -139,6 +139,19 @@ The UI can also be run in dev mode by navigating to the `client/` directory and 
   
   npm start
 
+## Run it from Docker
+
+Images of HoldMail are pushed to our [private docker registry](https://bintray.com/spartasystems/containers/sparta%3Aholdmail) hosted on Bintray.  The image pushed is our MySQL based image, and should be used within a docker compose or similar setup pointing to an external MySQL database.  You can find an example at [docker-compose.yml](https://github.com/SpartaSystems/holdmail/blob/master/docker/docker-compose.yml).
+
+If you want to pull the container yourself, you can use `docker pull spartasystems-docker-containers.bintray.io/sparta/holdmail`
+
+### Building the Docker container
+
+To build the application, including docker image and pushing to bintray, use the following gradle command:
+
+    ./gradlew build docker dockerPush
+    
+If you want to push to another registry, you can use `-DdockerName=your.repo/namespace/image-name` on the command line.
 	
 # Meta
 
@@ -148,7 +161,7 @@ HoldMail is licensed under the [Apache 2.0](LICENSE) license.
 
 ## Sparta Systems
 
-© Copyright 2016 Sparta Systems Inc. 
+© Copyright 2016 - 2018 Sparta Systems Inc. 
 
 [Sparta Systems](http://www.spartasystems.com) helps customers bring products to market safely and efficiently by delivering quality management software solutions that provide control and transparency throughout the enterprise and their critical supplier network. 
 
