@@ -137,7 +137,11 @@ export default {
       return receivedDate || 0
     },
     messageRawEndpoint () {
-      return messagesApi.getMessageRAWEndpoint(this.message.messageId)
+      if (this.message.messageId) {
+        return messagesApi.getMessageRAWEndpoint(this.message.messageId)
+      } else {
+        return ''
+      }
     }
   },
   methods: {
