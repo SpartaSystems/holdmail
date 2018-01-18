@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 - 2017 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ plugins {
     id "com.github.jk1.dependency-license-report" version "0.4.1"
     id "net.researchgate.release" version "2.5.0"
     id "com.jfrog.bintray" version "1.7.3"
+    id "com.palantir.docker" version "0.17.2"
 }
 
 
@@ -36,6 +37,8 @@ description = 'holdmail'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
+
+def dockerName = System.getProperty("dockerName", "spartasystems-docker-containers.bintray.io/sparta/holdmail")
 
 dependencies {
 
@@ -106,6 +109,7 @@ rat {
             'README.md',
             'CONTRIBUTING.md',
             'RELEASE.md',
+            'Dockerfile',
             '.github/*',
             'docker/',
             'src/main/resources/db/migration/*.sql',
@@ -137,6 +141,12 @@ jar {
     }
 
     from { ['LICENSE', 'NOTICE', "$projectDir/build/thirdparty-licenses"] }
+}
+
+docker {
+    name dockerName
+    files jar.archivePath, './docker/assets/etc/holdmail.properties', './docker/assets/opt/holdmail/bin/holdmail.conf'
+    buildArgs(['JAR_FILE': "${jar.archiveName}", 'PROP_FILE': 'holdmail.properties', 'CONF_FILE':'holdmail.conf'])
 }
 
 def RPM_INSTALL_DIR = '/opt/holdmail'
