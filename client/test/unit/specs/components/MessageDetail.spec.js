@@ -194,6 +194,24 @@ describe('MessageDetail.vue', () => {
     })
   })
 
+  describe('Computed Properties', () => {
+    describe('messageRawEndpoint', () => {
+      it('returns empty string if message detail not fetched yet', () => {
+        comp = getMountedComponent()
+
+        expect(comp.messageRawEndpoint).to.equal('')
+      })
+
+      it('returns correct url path', () => {
+        stubMessageDetailSuccess(message1)
+
+        comp = getMountedComponent()
+
+        expect(comp.messageRawEndpoint).to.equal('/rest/messages/57/raw')
+      })
+    })
+  })
+
   const getComponent = () => {
     Vue.use(Router)
     var Constructor = Vue.extend(MessageDetail)
