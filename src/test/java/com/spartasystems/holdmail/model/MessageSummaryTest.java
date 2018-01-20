@@ -61,7 +61,6 @@ public class MessageSummaryTest {
         assertThat(summary.getSenderHost()).isEqualTo(SENDERHOST);
         assertThat(summary.getMessageSize()).isEqualTo(SIZE);
         assertThat(summary.getRecipients()).isEqualTo(RECIPIENTS);
-        assertThat(summary.getMessageRaw()).isEqualTo(RAW);
         assertThat(summary.getMessageHeaders()).isEqualTo(HEADERS);
         assertThat(summary.getAttachments()).isEqualTo(ATTACHMENTS);
 
@@ -85,7 +84,7 @@ public class MessageSummaryTest {
 
     private MessageSummary buildSummary(String html, String text) {
         return new MessageSummary(ID, IDENTIFIER, SUBJECT, SENDER,
-                RECIEVED, SENDERHOST, SIZE, RECIPIENTS, RAW,
+                RECIEVED, SENDERHOST, SIZE, RECIPIENTS,
                 HEADERS, text, html, ATTACHMENTS);
     }
 

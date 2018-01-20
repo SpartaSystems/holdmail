@@ -35,19 +35,11 @@ import static java.util.stream.Collectors.toList;
 @Component
 public class MessageSummaryMapper {
 
-    @Value("${holdmail.message.summary.enableraw:false}")
-    private boolean enableRaw;
-
     @Autowired
     private AttachmentMapper attachmentMapper;
 
     @Autowired
     private HTMLPreprocessor htmlPreprocessor;
-
-    // this support disappears in v2 (https://github.com/SpartaSystems/holdmail/issues/14)
-    boolean getEnableRaw() {
-        return enableRaw;
-    }
 
     public MessageSummary toMessageSummary(Message message) {
 
@@ -67,7 +59,6 @@ public class MessageSummaryMapper {
                 message.getSenderHost(),
                 message.getMessageSize(),
                 StringUtils.join(message.getRecipients(), ","),
-                getEnableRaw() ? message.getRawMessage() : null,
                 message.getHeaders().asMap(),
                 messageContent.findFirstTextPart(),
                 htmlPreprocessor.preprocess(message.getMessageId(), messageContent.findFirstHTMLPart()),

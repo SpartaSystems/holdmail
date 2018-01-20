@@ -106,7 +106,7 @@ public class MessageControllerTest {
     @Test
     public void shouldGetMessageContentHTML() throws Exception {
 
-        MessageSummary summaryMock = setupSpyToLoadMessageSummaryMock(900, null, null, "original_html");
+        MessageSummary summaryMock = setupSpyToLoadMessageSummaryMock(900, null, "original_html");
 
         when(htmlPreprocessorMock.preprocess(900, summaryMock.getMessageBodyHTML())).thenReturn("modified_html");
 
@@ -120,7 +120,7 @@ public class MessageControllerTest {
     @Test
     public void shouldGetMessageContextTEXT() throws Exception {
 
-        MessageSummary summaryMock = setupSpyToLoadMessageSummaryMock(555, null, "some_text", null);
+        MessageSummary summaryMock = setupSpyToLoadMessageSummaryMock(555, "some_text", null);
 
         ResponseEntity expectedResponse = mock(ResponseEntity.class);
         String text = summaryMock.getMessageBodyText();
@@ -228,11 +228,10 @@ public class MessageControllerTest {
 
     }
 
-    private MessageSummary setupSpyToLoadMessageSummaryMock(int messageId, String raw, String text, String html)
+    private MessageSummary setupSpyToLoadMessageSummaryMock(int messageId, String text, String html)
             throws Exception {
 
         MessageSummary summaryMock = mock(MessageSummary.class);
-        when(summaryMock.getMessageRaw()).thenReturn(raw);
         when(summaryMock.getMessageBodyText()).thenReturn(text);
         when(summaryMock.getMessageBodyHTML()).thenReturn(html);
         doReturn(summaryMock).when(messageControllerSpy).loadMessageSummary(messageId);
