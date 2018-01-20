@@ -77,7 +77,7 @@ public class MessageControllerTest {
     public static final String FILE_NAME = "wibble.pdf";
 
     @Test
-    public void shouldGetMessages() throws Exception {
+    public void shouldGetMessages() {
 
         List<MessageListItem> messageMocks = new ArrayList<>(100);
         for (int i = 0; i < 100; i++) {
@@ -92,7 +92,7 @@ public class MessageControllerTest {
     }
 
     @Test
-    public void shouldGetMessageContent() throws Exception {
+    public void shouldGetMessageContent() {
 
         MessageSummary summaryMock = mock(MessageSummary.class);
         doReturn(summaryMock).when(messageControllerSpy).loadMessageSummary(445);
@@ -104,9 +104,9 @@ public class MessageControllerTest {
     }
 
     @Test
-    public void shouldGetMessageContentHTML() throws Exception {
+    public void shouldGetMessageContentHTML() {
 
-        MessageSummary summaryMock = setupSpyToLoadMessageSummaryMock(900, null, null, "original_html");
+        MessageSummary summaryMock = setupSpyToLoadMessageSummaryMock(900, null, "original_html");
 
         when(htmlPreprocessorMock.preprocess(900, summaryMock.getMessageBodyHTML())).thenReturn("modified_html");
 
@@ -118,9 +118,9 @@ public class MessageControllerTest {
     }
 
     @Test
-    public void shouldGetMessageContextTEXT() throws Exception {
+    public void shouldGetMessageContextTEXT() {
 
-        MessageSummary summaryMock = setupSpyToLoadMessageSummaryMock(555, null, "some_text", null);
+        MessageSummary summaryMock = setupSpyToLoadMessageSummaryMock(555, "some_text", null);
 
         ResponseEntity expectedResponse = mock(ResponseEntity.class);
         String text = summaryMock.getMessageBodyText();
@@ -131,7 +131,7 @@ public class MessageControllerTest {
     }
 
     @Test
-    public void shouldGetMessageContextRAW() throws Exception {
+    public void shouldGetMessageContextRAW() {
 
         String raw = "original-mime-message";
 
@@ -147,7 +147,7 @@ public class MessageControllerTest {
     }
 
     @Test
-    public void shouldGetMessageContentByPartId() throws Exception{
+    public void shouldGetMessageContentByPartId() {
 
         final int MSG_ID = 983;
         final String PART_ID = "derpPart";
@@ -173,7 +173,7 @@ public class MessageControllerTest {
     }
 
     @Test
-    public void shouldGetMessageAttachmentBySequenceId() throws Exception{
+    public void shouldGetMessageAttachmentBySequenceId() {
 
         final InputStream streamMock = mock(InputStream.class);
 
@@ -190,7 +190,7 @@ public class MessageControllerTest {
     }
 
     @Test
-    public void shouldNotSetFilenameDispositionWhenFilenameNull() throws Exception{
+    public void shouldNotSetFilenameDispositionWhenFilenameNull() {
 
         final InputStream streamMock = mock(InputStream.class);
         setupForFetchAttachment(streamMock, null);
@@ -217,7 +217,7 @@ public class MessageControllerTest {
     }
 
     @Test
-    public void shouldCallMessageServiceToForwardMail() throws Exception {
+    public void shouldCallMessageServiceToForwardMail() {
 
         final int ID = 345;
         final String RECIPIENT = "some@guy.com";
@@ -228,11 +228,9 @@ public class MessageControllerTest {
 
     }
 
-    private MessageSummary setupSpyToLoadMessageSummaryMock(int messageId, String raw, String text, String html)
-            throws Exception {
+    private MessageSummary setupSpyToLoadMessageSummaryMock(int messageId, String text, String html) {
 
         MessageSummary summaryMock = mock(MessageSummary.class);
-        when(summaryMock.getMessageRaw()).thenReturn(raw);
         when(summaryMock.getMessageBodyText()).thenReturn(text);
         when(summaryMock.getMessageBodyHTML()).thenReturn(html);
         doReturn(summaryMock).when(messageControllerSpy).loadMessageSummary(messageId);
@@ -241,7 +239,7 @@ public class MessageControllerTest {
     }
 
     @Test
-    public void shouldLoadSummary() throws Exception {
+    public void shouldLoadSummary() {
 
         Message messageMock = mock(Message.class);
         MessageSummary summaryMock = mock(MessageSummary.class);
@@ -253,7 +251,7 @@ public class MessageControllerTest {
     }
 
     @Test
-    public void shouldServeNotFoundWhenDataIsNull() throws Exception {
+    public void shouldServeNotFoundWhenDataIsNull() {
 
         ResponseEntity response = messageControllerSpy.serveContent(null, null);
 
@@ -262,7 +260,7 @@ public class MessageControllerTest {
     }
 
     @Test
-    public void shouldServeContentWhenDataIsNull() throws Exception {
+    public void shouldServeContentWhenDataIsNull() {
 
         Object content = "{}";
         MediaType type = MediaType.APPLICATION_JSON;

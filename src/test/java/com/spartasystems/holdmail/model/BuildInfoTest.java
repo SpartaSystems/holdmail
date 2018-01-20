@@ -25,7 +25,7 @@ import org.junit.Test;
 public class BuildInfoTest {
 
     @Test
-    public void shouldHaveValidEqualsHashcode() throws Exception {
+    public void shouldHaveValidEqualsHashcode() {
 
         EqualsVerifier.forClass(BuildInfo.class)
                       .suppress(Warning.STRICT_INHERITANCE)

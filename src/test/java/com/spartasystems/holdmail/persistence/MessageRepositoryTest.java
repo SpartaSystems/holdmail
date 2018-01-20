@@ -51,13 +51,13 @@ public class MessageRepositoryTest extends BaseIntegrationTest{
     private MessageRepository messageRepository;
 
     @Test
-    public void shouldFindSixMessagesWithThisIsItTitle() throws Exception {
+    public void shouldFindSixMessagesWithThisIsItTitle() {
         Stream<MessageEntity> first150BySubjectDesc = messageRepository.findBySubject("This is it", new PageRequest(0,150));
         assertThat(first150BySubjectDesc.collect(Collectors.toList())).hasSize(6);
     }
 
     @Test
-    public void shouldFind25MessagesWithSomeoneExampleComSenderEmail() throws Exception {
+    public void shouldFind25MessagesWithSomeoneExampleComSenderEmail() {
         Stream<MessageEntity> first150BySenderEmail = messageRepository.findBySenderEmail("someone@example.org",new PageRequest(0,150));
 
         assertThat(first150BySenderEmail.collect(Collectors.toList())).hasSize(25);
@@ -65,7 +65,7 @@ public class MessageRepositoryTest extends BaseIntegrationTest{
     }
 
     @Test
-    public void shouldFindEmailsBySenderWithAlias() throws Exception {
+    public void shouldFindEmailsBySenderWithAlias() {
         Stream<MessageEntity> oneEmailFound = messageRepository.findBySenderEmail("someone+alias@example.org",new PageRequest(0,150));
         assertThat(oneEmailFound.collect(Collectors.toList())).hasSize(1);
     }

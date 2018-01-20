@@ -44,7 +44,7 @@ public class BuildInfoControllerTest {
     private BuildInfoController buildInfoController;
 
     @Test
-    public void shouldGetBuildInfo() throws Exception {
+    public void shouldGetBuildInfo() {
 
         BuildInfo expectedInfo = mock(BuildInfo.class);
 

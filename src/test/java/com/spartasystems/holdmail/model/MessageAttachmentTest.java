@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MessageAttachmentTest {
 
     @Test
-    public void shouldHaveValidEqualsHashcode() throws Exception {
+    public void shouldHaveValidEqualsHashcode() {
 
         EqualsVerifier.forClass(MessageAttachment.class)
                       .suppress(Warning.STRICT_INHERITANCE)
@@ -35,7 +35,7 @@ public class MessageAttachmentTest {
     }
 
     @Test
-    public void shouldHaveValidConstructor() throws Exception {
+    public void shouldHaveValidConstructor() {
 
         MessageAttachment attach = new MessageAttachment(3, "myfile", "mytype", "mydispos", 555);
         assertThat(attach.getSequence()).isEqualTo(3);

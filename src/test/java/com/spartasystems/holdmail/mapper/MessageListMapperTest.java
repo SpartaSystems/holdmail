@@ -55,7 +55,7 @@ public class MessageListMapperTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldMapEntityListToMessageList() throws Exception{
+    public void shouldMapEntityListToMessageList() {
 
         List<MessageEntity> entityListMock = mock(List.class);
         Stream<MessageEntity> streamMock = mock(Stream.class);
@@ -67,7 +67,7 @@ public class MessageListMapperTest {
         assertThat(messageListMapperSpy.toMessageList(entityListMock)).isEqualTo(messageListMock);
     }
 
-    public void shouldMapEntityStreamToMessageList() throws Exception {
+    public void shouldMapEntityStreamToMessageList() {
 
         MessageEntity entityMock1 = mock(MessageEntity.class);
         MessageEntity entityMock2 = mock(MessageEntity.class);
@@ -81,13 +81,13 @@ public class MessageListMapperTest {
     }
 
     @Test
-    public void shouldMapToEmptyListWhenStreamIsEmpty() throws Exception {
+    public void shouldMapToEmptyListWhenStreamIsEmpty() {
         MessageList messageList = messageListMapperSpy.toMessageList(Stream.empty());
         assertThat(messageList.getMessages()).isEmpty();
     }
 
     @Test
-    public void shouldMapToMessageListItem() throws Exception{
+    public void shouldMapToMessageListItem() {
 
         MessageRecipientEntity recipientEntity1 = new MessageRecipientEntity(EMAIL_HOMER);
         MessageRecipientEntity recipientEntity2 = new MessageRecipientEntity(EMAIL_MONTY);

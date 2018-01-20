@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MessageForwardCommandTest {
 
     @Test
-    public void shouldSetRecipientOnConstruct() throws Exception{
+    public void shouldSetRecipientOnConstruct() {
 
         MessageForwardCommand command = new MessageForwardCommand("bob");
 
@@ -35,7 +35,7 @@ public class MessageForwardCommandTest {
     }
 
     @Test
-    public void shouldHaveValidEqualsHashcode() throws Exception {
+    public void shouldHaveValidEqualsHashcode() {
 
         EqualsVerifier.forClass(MessageForwardCommand.class)
                       .suppress(Warning.NONFINAL_FIELDS,

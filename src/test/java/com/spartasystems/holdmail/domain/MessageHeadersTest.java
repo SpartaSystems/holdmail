@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MessageHeadersTest {
 
     @Test
-    public void shouldSetEmptyMapOnConstructor() throws Exception {
+    public void shouldSetEmptyMapOnConstructor() {
 
         MessageHeaders headers = new MessageHeaders();
         assertThat(headers.asMap()).isEmpty();
@@ -38,7 +38,7 @@ public class MessageHeadersTest {
     }
 
     @Test
-    public void shouldSetMapOnMapCopyContructor() throws Exception {
+    public void shouldSetMapOnMapCopyContructor() {
 
         Map<String, String> otherMap = of("k1", "v1", "k2", "v2");
 
@@ -48,7 +48,7 @@ public class MessageHeadersTest {
     }
 
     @Test
-    public void shouldAddValueOnPutOfNewKey() throws Exception {
+    public void shouldAddValueOnPutOfNewKey() {
 
         MessageHeaders headers = new MessageHeaders(of("name", "Mary"));
         headers.put("age", "10");
@@ -58,7 +58,7 @@ public class MessageHeadersTest {
     }
 
     @Test
-    public void shouldReplaceValueOnPutOfExistingKEy() throws Exception {
+    public void shouldReplaceValueOnPutOfExistingKEy() {
 
         MessageHeaders headers = new MessageHeaders(of("name", "Alex", "age", "15"));
 
@@ -69,7 +69,7 @@ public class MessageHeadersTest {
     }
 
     @Test
-    public void shouldGetValue() throws Exception {
+    public void shouldGetValue() {
 
         MessageHeaders headers = new MessageHeaders(of("name", "Alex", "age", "15"));
 
@@ -79,7 +79,7 @@ public class MessageHeadersTest {
     }
 
     @Test
-    public void shouldHaveValidEqualsHashcode() throws Exception {
+    public void shouldHaveValidEqualsHashcode() {
 
         EqualsVerifier.forClass(MessageHeaders.class)
                       .suppress(Warning.NONFINAL_FIELDS,
@@ -90,7 +90,7 @@ public class MessageHeadersTest {
     }
 
     @Test
-    public void shouldHaveToString() throws Exception{
+    public void shouldHaveToString() {
 
         MessageHeaders headers = new MessageHeaders(of("name", "Alex", "age", "15"));
 

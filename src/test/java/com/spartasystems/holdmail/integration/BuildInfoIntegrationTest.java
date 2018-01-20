@@ -41,7 +41,7 @@ public class BuildInfoIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldConformToBuildInfoSchema() throws Exception {
+    public void shouldConformToBuildInfoSchema() {
 
         get("/rest/buildInfo").then()
                               .assertThat()

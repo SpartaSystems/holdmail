@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class HTMLPreprocessorTest {
 
     @Test
-    public void shouldReplaceCIDWithRestPath() throws Exception{
+    public void shouldReplaceCIDWithRestPath() {
 
         HTMLPreprocessor preParser = new HTMLPreprocessor();
 
@@ -45,7 +45,7 @@ public class HTMLPreprocessorTest {
     }
 
     @Test
-    public void shouldPassThroughNulls() throws Exception {
+    public void shouldPassThroughNulls() {
 
         HTMLPreprocessor preParser = new HTMLPreprocessor();
 

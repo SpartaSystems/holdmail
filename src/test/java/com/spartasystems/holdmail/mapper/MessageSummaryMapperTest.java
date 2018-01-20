@@ -78,7 +78,7 @@ public class MessageSummaryMapperTest {
     private MessageSummaryMapper messageSummaryMapperSpy;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
 
         doReturn(messageContentMock).when(MESSAGE_SPY).getContent();
 
@@ -89,13 +89,11 @@ public class MessageSummaryMapperTest {
     }
 
     @Test
-    public void shouldMapToMessageSummaryWithRAW() throws Exception {
+    public void shouldMapToMessageSummary() {
 
         MessageSummary expected = new MessageSummary(MESSAGE_ID, IDENTIFIER, SUBJECT, SENDER_MAIL,
                 RECEIVED, SENDER_HOST, MESSAGE_SIZE, "recip1,recip2",
-                RAW_CONTENT, HEADER_VALS, CONTENT_TXT, CONTENT_HTML_PROCESSED, Collections.emptyList());
-
-        doReturn(true).when(messageSummaryMapperSpy).getEnableRaw();
+                HEADER_VALS, CONTENT_TXT, CONTENT_HTML_PROCESSED, Collections.emptyList());
 
         MessageSummary actual = messageSummaryMapperSpy.toMessageSummary(MESSAGE_SPY);
 
@@ -104,23 +102,7 @@ public class MessageSummaryMapperTest {
     }
 
     @Test
-    public void shouldMapToMessageSummaryWithoutRAW() throws Exception {
-
-        MessageSummary expected = new MessageSummary(MESSAGE_ID, IDENTIFIER, SUBJECT, SENDER_MAIL,
-                RECEIVED, SENDER_HOST, MESSAGE_SIZE, "recip1,recip2",
-                null, HEADER_VALS, CONTENT_TXT, CONTENT_HTML_PROCESSED, Collections.emptyList());
-
-        doReturn(false).when(messageSummaryMapperSpy).getEnableRaw();
-
-        MessageSummary actual = messageSummaryMapperSpy.toMessageSummary(MESSAGE_SPY);
-
-        assertThat(actual).isEqualTo(expected);
-
-
-    }
-
-    @Test
-    public void shouldMapAttachments() throws Exception {
+    public void shouldMapAttachments() {
 
         MessageContentPart attContentMock1 = mock(MessageContentPart.class);
         MessageContentPart attContentMock2 = mock(MessageContentPart.class);

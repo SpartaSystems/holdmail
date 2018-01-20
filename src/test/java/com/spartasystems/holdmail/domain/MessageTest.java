@@ -55,12 +55,12 @@ public class MessageTest {
     public static final  String RAW_CONTENT = "someRawContent";
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mockStatic(MimeUtils.class);
     }
 
     @Test
-    public void shouldSetIdentifierOnConstructor() throws Exception {
+    public void shouldSetIdentifierOnConstructor() {
 
         Message message = buildMessage("derpId", "");
         assertThat(message.getIdentifier()).isEqualTo("derpId");

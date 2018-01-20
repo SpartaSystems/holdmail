@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class HoldMailExceptionTest {
 
     @Test
-    public void shouldSetMessage() throws Exception{
+    public void shouldSetMessage() {
 
         final String MESSAGE = "the message";
         final Throwable CAUSE = new Throwable();

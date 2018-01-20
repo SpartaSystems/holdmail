@@ -38,14 +38,13 @@ public class MessageSummary {
     private final String                  senderHost;
     private final int                     messageSize;
     private final String                  recipients;
-    private final String                  messageRaw;
     private final Map<String, String>     messageHeaders;
     private final String                  messageBodyText;
     private final String                  messageBodyHTML;
     private final List<MessageAttachment> attachments;
 
     public MessageSummary(long messageId, String identifier, String subject, String senderEmail,
-            Date receivedDate, String senderHost, int messageSize, String recipients, String messageRaw,
+            Date receivedDate, String senderHost, int messageSize, String recipients,
             Map<String, String> messageHeaders, String messageBodyText, String messageBodyHTML,
             List<MessageAttachment> attachments) {
         this.messageId = messageId;
@@ -56,7 +55,6 @@ public class MessageSummary {
         this.senderHost = senderHost;
         this.messageSize = messageSize;
         this.recipients = recipients;
-        this.messageRaw = messageRaw;
         this.messageHeaders = messageHeaders;
         this.messageBodyText = messageBodyText;
         this.messageBodyHTML = messageBodyHTML;
@@ -93,10 +91,6 @@ public class MessageSummary {
 
     public String getRecipients() {
         return recipients;
-    }
-
-    public String getMessageRaw() {
-        return messageRaw;
     }
 
     public Map<String, String> getMessageHeaders() {

@@ -51,7 +51,7 @@ public class MessageContentTest {
     private MessageContentPart part4Mock;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
 
         when(part1Mock.getContentString()).thenReturn(PART_1_CONTENT);
         when(part2Mock.getContentString()).thenReturn(PART_2_CONTENT);
@@ -61,7 +61,7 @@ public class MessageContentTest {
     }
 
     @Test
-    public void shouldHaveNoPartsOnConstruction() throws Exception {
+    public void shouldHaveNoPartsOnConstruction() {
 
         MessageContent messageContent = new MessageContent();
 
@@ -70,7 +70,7 @@ public class MessageContentTest {
     }
 
     @Test
-    public void shouldAddParts() throws Exception {
+    public void shouldAddParts() {
 
         MessageContent messageContent = new MessageContent();
         messageContent.addPart(part1Mock);
@@ -80,14 +80,14 @@ public class MessageContentTest {
     }
 
     @Test
-    public void shouldNotFindFirstHTMLBody() throws Exception {
+    public void shouldNotFindFirstHTMLBody() {
 
         MessageContent messageContent = buildMimeBodyPartsWith4Parts();
         assertThat(messageContent.findFirstHTMLPart()).isNull();
     }
 
     @Test
-    public void shouldFindFirstHTMLBody() throws Exception {
+    public void shouldFindFirstHTMLBody() {
 
         when(part2Mock.isHTML()).thenReturn(true);
 
@@ -98,14 +98,14 @@ public class MessageContentTest {
     }
 
     @Test
-    public void shouldNotFindFirstTextBody() throws Exception {
+    public void shouldNotFindFirstTextBody() {
 
         MessageContent messageContent = buildMimeBodyPartsWith4Parts();
         assertThat(messageContent.findFirstTextPart()).isNull();
     }
 
     @Test
-    public void shouldFindFirstTextBody() throws Exception {
+    public void shouldFindFirstTextBody() {
 
         when(part4Mock.isText()).thenReturn(true);
 
@@ -116,7 +116,7 @@ public class MessageContentTest {
     }
 
     @Test
-    public void shouldFindAllAttachments() throws Exception {
+    public void shouldFindAllAttachments() {
 
         when(part1Mock.isAttachment()).thenReturn(false);
         when(part2Mock.isAttachment()).thenReturn(true);
@@ -130,14 +130,14 @@ public class MessageContentTest {
     }
 
     @Test
-    public void shouldNotFindByContentId() throws Exception {
+    public void shouldNotFindByContentId() {
 
         MessageContent messageContent = buildMimeBodyPartsWith4Parts();
         assertThat(messageContent.findByContentId("blah")).isNull();
     }
 
     @Test
-    public void shouldFindByContentId() throws Exception {
+    public void shouldFindByContentId() {
 
         when(part3Mock.hasContentId("herp derp")).thenReturn(true);
 
@@ -148,14 +148,14 @@ public class MessageContentTest {
     }
 
     @Test
-    public void shouldNotFindBySequenceId() throws Exception {
+    public void shouldNotFindBySequenceId() {
 
         MessageContent messageContent = buildMimeBodyPartsWith4Parts();
         assertThat(messageContent.findBySequenceId(555)).isNull();
     }
 
     @Test
-    public void shouldFindBySequenceId() throws Exception {
+    public void shouldFindBySequenceId() {
 
         when(part4Mock.getSequence()).thenReturn(54);
 
@@ -166,7 +166,7 @@ public class MessageContentTest {
     }
 
     @Test
-    public void shouldHaveToString() throws Exception {
+    public void shouldHaveToString() {
 
         when(part1Mock.toString()).thenReturn("mbp1");
         when(part2Mock.toString()).thenReturn("mbp2");
@@ -180,7 +180,7 @@ public class MessageContentTest {
     }
 
     @Test
-    public void shouldGetSize() throws Exception {
+    public void shouldGetSize() {
 
         MessageContent parts0 = new MessageContent();
         assertThat(parts0.size()).isEqualTo(0);
@@ -195,7 +195,7 @@ public class MessageContentTest {
     }
 
     @Test
-    public void shouldHaveValidEqualsHashcode() throws Exception {
+    public void shouldHaveValidEqualsHashcode() {
 
         EqualsVerifier.forClass(MessageContent.class)
                       .suppress(Warning.NONFINAL_FIELDS,

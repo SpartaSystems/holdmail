@@ -33,12 +33,12 @@ public class AttachmentMapperTest {
     private AttachmentMapper attachmentMapper;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         attachmentMapper = new AttachmentMapper();
     }
 
     @Test
-    public void shouldMapFromContentPart() throws Exception {
+    public void shouldMapFromContentPart() {
 
         MessageContentPart partSpy = spy(new MessageContentPart());
         partSpy.setHeader(FieldName.CONTENT_DISPOSITION, "my-disposition; a=b; c=d;");
