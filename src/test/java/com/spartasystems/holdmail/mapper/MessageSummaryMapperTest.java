@@ -89,7 +89,7 @@ public class MessageSummaryMapperTest {
     }
 
     @Test
-    public void shouldMapToMessageSummaryWithRAW() {
+    public void shouldMapToMessageSummary() {
 
         MessageSummary expected = new MessageSummary(MESSAGE_ID, IDENTIFIER, SUBJECT, SENDER_MAIL,
                 RECEIVED, SENDER_HOST, MESSAGE_SIZE, "recip1,recip2",
