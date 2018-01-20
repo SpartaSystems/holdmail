@@ -39,13 +39,13 @@ class MessageContentExtractor extends AbstractContentHandler {
     }
 
     @Override
-    public void startHeader() throws MimeException {
+    public void startHeader() {
         nextPotentialPart = new MessageContentPart();
         nextPotentialPart.setSequence(bodyParts.size()+1);
     }
 
     @Override
-    public void field(Field field) throws MimeException {
+    public void field(Field field) {
 
         // field may have been called after a message container header()
         if(nextPotentialPart != null) {
@@ -55,7 +55,7 @@ class MessageContentExtractor extends AbstractContentHandler {
 
 
     @Override
-    public void body(BodyDescriptor bd, InputStream is) throws MimeException, IOException {
+    public void body(BodyDescriptor bd, InputStream is) throws IOException {
 
         nextPotentialPart.setContent(is);
         bodyParts.addPart(nextPotentialPart);

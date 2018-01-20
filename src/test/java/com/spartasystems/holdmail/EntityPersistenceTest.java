@@ -50,7 +50,7 @@ public class EntityPersistenceTest extends BaseIntegrationTest {
     private MessageRepository messageRepository;
 
     @Test
-    public void shouldSaveEmail() throws Exception {
+    public void shouldSaveEmail() {
 
         MessageEntity entity = buildBasicEntity();
 
@@ -70,7 +70,7 @@ public class EntityPersistenceTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldSaveHeaders() throws Exception {
+    public void shouldSaveHeaders() {
 
         MessageEntity entity = buildBasicEntity();
 
@@ -93,7 +93,7 @@ public class EntityPersistenceTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldSaveRecipients() throws Exception {
+    public void shouldSaveRecipients() {
 
         MessageEntity entity = buildBasicEntity();
 
@@ -127,7 +127,7 @@ public class EntityPersistenceTest extends BaseIntegrationTest {
      */
     @Test
     @Transactional(Transactional.TxType.NEVER)
-    public void shouldSaveWithMillisPrecision_issue8() throws Exception{
+    public void shouldSaveWithMillisPrecision_issue8() {
 
         MessageEntity messageEntity = buildBasicEntity();
 

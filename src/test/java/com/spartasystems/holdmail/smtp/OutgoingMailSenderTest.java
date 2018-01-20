@@ -64,7 +64,7 @@ public class OutgoingMailSenderTest {
     private OutgoingMailSender mailSenderSpy = new OutgoingMailSender();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         suppress(methodsDeclaredIn(Transport.class));
     }
 
@@ -122,7 +122,7 @@ public class OutgoingMailSenderTest {
     }
 
     @Test
-    public void shouldGetMailSession() throws Exception {
+    public void shouldGetMailSession() {
 
         doReturn(OUTGOING_SERVER).when(mailSenderSpy).getOutgoingServer();
         doReturn(OUTGOING_PORT).when(mailSenderSpy).getOutgoingPort();
@@ -138,7 +138,7 @@ public class OutgoingMailSenderTest {
     }
 
     @Test
-    public void shouldGetInjectedProps() throws Exception {
+    public void shouldGetInjectedProps() {
 
         Whitebox.setInternalState(mailSenderSpy, "outgoingServer", "outserver");
         Whitebox.setInternalState(mailSenderSpy, "outgoingPort", 999);

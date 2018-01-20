@@ -55,7 +55,7 @@ public class MessageMapperTest {
     private static final MessageMapper  messageMapper = new MessageMapper();
 
     @Test
-    public void shouldMapFromDomain() throws Exception {
+    public void shouldMapFromDomain() {
 
         Message messageDomain = new Message(messageId, IDENTIFIER, subject, senderEmail, receivedDate,
                 senderHost, messageSize, rawMessage, recipients, headers);
@@ -81,7 +81,7 @@ public class MessageMapperTest {
     }
 
     @Test
-    public void shouldMapToDomain() throws Exception {
+    public void shouldMapToDomain() {
         MessageEntity messageEntity = getMessageEntity();
 
         Message message = messageMapper.toDomain(messageEntity);

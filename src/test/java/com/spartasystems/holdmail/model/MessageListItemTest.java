@@ -25,7 +25,7 @@ import org.junit.Test;
 public class MessageListItemTest {
 
     @Test
-    public void shouldHaveValidEqualsHashcode() throws Exception {
+    public void shouldHaveValidEqualsHashcode() {
 
         EqualsVerifier.forClass(MessageListItem.class)
                       .suppress(Warning.NONFINAL_FIELDS,

@@ -44,7 +44,7 @@ public class BuildInfoMapperTest {
     private BuildInfoMapper buildInfoMapper;
 
     @Test
-    public void shouldMapFromProperties() throws Exception {
+    public void shouldMapFromProperties() {
 
         when(buildPropertiesMock.getVersion()).thenReturn(BUILD_VERSION);
         when(buildPropertiesMock.getTime()).thenReturn(BUILD_TIME);

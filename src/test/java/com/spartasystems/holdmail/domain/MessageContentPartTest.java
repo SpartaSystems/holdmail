@@ -44,7 +44,7 @@ public class MessageContentPartTest {
     public static final String NON_ASCII_STR = "Donaudampfschiffahrtselektrizitätenhauptbetriebswerkbauunterbeamtengesellschaft";
 
     @Test
-    public void shouldSetAndGetHeaders() throws Exception {
+    public void shouldSetAndGetHeaders() {
 
         MessageContentPart messageContentPart = new MessageContentPart();
         assertThat(messageContentPart.getHeaders()).isEmpty();
@@ -62,7 +62,7 @@ public class MessageContentPartTest {
     }
 
     @Test
-    public void shouldGetContentType() throws Exception {
+    public void shouldGetContentType() {
 
         MessageContentPart messageContentPart = new MessageContentPart();
         assertThat(messageContentPart.getContentType()).isNull();
@@ -73,7 +73,7 @@ public class MessageContentPartTest {
     }
 
     @Test
-    public void shouldGetIsHTML() throws Exception {
+    public void shouldGetIsHTML() {
 
         MessageContentPart messageContentPart = new MessageContentPart();
         assertThat(messageContentPart.isHTML()).isFalse();
@@ -86,7 +86,7 @@ public class MessageContentPartTest {
     }
 
     @Test
-    public void shouldGetIsText() throws Exception {
+    public void shouldGetIsText() {
 
         MessageContentPart messageContentPart = new MessageContentPart();
         assertThat(messageContentPart.isText()).isFalse();
@@ -99,7 +99,7 @@ public class MessageContentPartTest {
     }
 
     @Test
-    public void shouldHaveContentId() throws Exception {
+    public void shouldHaveContentId() {
 
         MessageContentPart messageContentPart = new MessageContentPart();
         assertThat(messageContentPart.hasContentId("thing")).isFalse();
@@ -164,7 +164,7 @@ public class MessageContentPartTest {
     }
 
     @Test
-    public void shouldReturnIsAttachmentTrueWhenDispositionIsInline() throws Exception {
+    public void shouldReturnIsAttachmentTrueWhenDispositionIsInline() {
 
         MessageContentPart messageContentPart = new MessageContentPart();
         messageContentPart.setHeader(CONTENT_DISPOSITION, "inline");
@@ -173,7 +173,7 @@ public class MessageContentPartTest {
     }
 
     @Test
-    public void shouldReturnIsAttachmentTrueWhenDispositionIsAttachment() throws Exception {
+    public void shouldReturnIsAttachmentTrueWhenDispositionIsAttachment() {
 
         MessageContentPart messageContentPart = new MessageContentPart();
         messageContentPart.setHeader(CONTENT_DISPOSITION, "attachment");
@@ -182,7 +182,7 @@ public class MessageContentPartTest {
     }
 
     @Test
-    public void shouldReturnIsAttachmentFalseWhenDispositionAnythingElse() throws Exception {
+    public void shouldReturnIsAttachmentFalseWhenDispositionAnythingElse() {
 
         // not set at all
         MessageContentPart messageContentPart = new MessageContentPart();
@@ -208,7 +208,7 @@ public class MessageContentPartTest {
     }
 
     @Test
-    public void shouldReturnNullAttachmentFilenameIfNotAttachment() throws Exception {
+    public void shouldReturnNullAttachmentFilenameIfNotAttachment() {
 
         MessageContentPart partSpy = spy(new MessageContentPart());
         doReturn(false).when(partSpy).isAttachment();
@@ -217,7 +217,7 @@ public class MessageContentPartTest {
     }
 
     @Test
-    public void shouldReturnAttachmentFilenameFromDisposition() throws Exception {
+    public void shouldReturnAttachmentFilenameFromDisposition() {
 
         MessageContentPart part = new MessageContentPart();
         part.setHeader(FieldName.CONTENT_DISPOSITION, "inline; filename=myfile.pdf");
@@ -228,7 +228,7 @@ public class MessageContentPartTest {
     }
 
     @Test
-    public void shouldReturnAttachmentFilenameFromContentTypeFallback() throws Exception {
+    public void shouldReturnAttachmentFilenameFromContentTypeFallback() {
 
         MessageContentPart part = new MessageContentPart();
         part.setHeader(FieldName.CONTENT_DISPOSITION, "inline; a=b;"); // no 'filename' param
@@ -239,7 +239,7 @@ public class MessageContentPartTest {
     }
 
     @Test
-    public void shouldReturnNullAttachmentFilenameFallback() throws Exception {
+    public void shouldReturnNullAttachmentFilenameFallback() {
 
         MessageContentPart part = new MessageContentPart();
         part.setHeader(FieldName.CONTENT_DISPOSITION, "inline; a=b;"); // no 'filename' param
@@ -266,7 +266,7 @@ public class MessageContentPartTest {
     }
 
     @Test
-    public void shouldHaveValidEqualsHashcode() throws Exception {
+    public void shouldHaveValidEqualsHashcode() {
 
         EqualsVerifier.forClass(MessageContentPart.class)
                       .suppress(Warning.NONFINAL_FIELDS,

@@ -35,7 +35,7 @@ public class MessageListTest {
             asList(mock(MessageListItem.class), mock(MessageListItem.class));
 
     @Test
-    public void shouldInitWithItems() throws Exception {
+    public void shouldInitWithItems() {
 
         MessageList messageList = new MessageList(TWO_ITEM_LIST);
 
@@ -44,7 +44,7 @@ public class MessageListTest {
     }
 
     @Test
-    public void shouldSetAndGetMessages() throws Exception {
+    public void shouldSetAndGetMessages() {
 
         MessageList messageList = new MessageList(TWO_ITEM_LIST);
 
@@ -56,7 +56,7 @@ public class MessageListTest {
     }
 
     @Test
-    public void shouldHaveValidEqualsHashcode() throws Exception {
+    public void shouldHaveValidEqualsHashcode() {
 
         EqualsVerifier.forClass(MessageList.class)
                       .suppress(Warning.NONFINAL_FIELDS,

@@ -31,7 +31,7 @@ import org.springframework.boot.SpringApplication;
 public class HoldMailApplicationTest {
 
     @Test
-    public void shouldInvokeSpringApp() throws Exception{
+    public void shouldInvokeSpringApp() {
 
         String[] args = {"a", "b", "c"};
 

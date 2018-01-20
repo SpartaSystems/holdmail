@@ -49,7 +49,7 @@ public class MessageSummaryTest {
                                             mock(MessageAttachment.class), mock(MessageAttachment.class));
 
     @Test
-    public void shouldSetValuesOnConstruct() throws Exception {
+    public void shouldSetValuesOnConstruct() {
 
         MessageSummary summary = buildSummary(HTML, TEXT);
 
@@ -67,7 +67,7 @@ public class MessageSummaryTest {
     }
 
     @Test
-    public void shouldIndicateWhenMessageHasHTML() throws Exception{
+    public void shouldIndicateWhenMessageHasHTML() {
 
         assertThat(buildSummary(HTML, TEXT).getMessageHasBodyHTML()).isTrue();
         assertThat(buildSummary(null, TEXT).getMessageHasBodyHTML()).isFalse();
@@ -75,7 +75,7 @@ public class MessageSummaryTest {
     }
 
     @Test
-    public void shouldIndicateWhenMessageHasText() throws Exception{
+    public void shouldIndicateWhenMessageHasText() {
 
         assertThat(buildSummary(HTML, TEXT).getMessageHasBodyText()).isTrue();
         assertThat(buildSummary(HTML, null).getMessageHasBodyText()).isFalse();
@@ -89,7 +89,7 @@ public class MessageSummaryTest {
     }
 
     @Test
-    public void shouldHaveValidEqualsHashcode() throws Exception {
+    public void shouldHaveValidEqualsHashcode() {
 
         EqualsVerifier.forClass(MessageSummary.class)
                       .suppress(Warning.NONFINAL_FIELDS,

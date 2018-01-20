@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 public class MessageContentExtractorTest {
 
     @Test
-    public void shouldInitializeOnConstructor() throws Exception {
+    public void shouldInitializeOnConstructor() {
 
         MessageContentExtractor extractor = new MessageContentExtractor();
 
@@ -50,7 +50,7 @@ public class MessageContentExtractorTest {
     }
 
     @Test
-    public void shouldStartHeader() throws Exception{
+    public void shouldStartHeader() {
 
         MessageContentExtractor extractor = new MessageContentExtractor();
         assertThat(extractor.getNextPotentialPart()).isNull();
@@ -63,7 +63,7 @@ public class MessageContentExtractorTest {
     }
 
     @Test
-    public void shouldNotHandleFieldIfNoPart() throws Exception{
+    public void shouldNotHandleFieldIfNoPart() {
 
         MessageContentExtractor extractor = new MessageContentExtractor();
 
@@ -73,7 +73,7 @@ public class MessageContentExtractorTest {
     }
 
     @Test
-    public void shouldHandleField() throws Exception{
+    public void shouldHandleField() {
 
         Field fieldMock = mock(Field.class);
         when(fieldMock.getName()).thenReturn("fName");

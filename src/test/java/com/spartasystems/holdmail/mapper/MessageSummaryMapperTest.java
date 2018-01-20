@@ -78,7 +78,7 @@ public class MessageSummaryMapperTest {
     private MessageSummaryMapper messageSummaryMapperSpy;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
 
         doReturn(messageContentMock).when(MESSAGE_SPY).getContent();
 
@@ -89,7 +89,7 @@ public class MessageSummaryMapperTest {
     }
 
     @Test
-    public void shouldMapToMessageSummaryWithRAW() throws Exception {
+    public void shouldMapToMessageSummaryWithRAW() {
 
         MessageSummary expected = new MessageSummary(MESSAGE_ID, IDENTIFIER, SUBJECT, SENDER_MAIL,
                 RECEIVED, SENDER_HOST, MESSAGE_SIZE, "recip1,recip2",
@@ -102,7 +102,7 @@ public class MessageSummaryMapperTest {
     }
 
     @Test
-    public void shouldMapAttachments() throws Exception {
+    public void shouldMapAttachments() {
 
         MessageContentPart attContentMock1 = mock(MessageContentPart.class);
         MessageContentPart attContentMock2 = mock(MessageContentPart.class);

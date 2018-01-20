@@ -65,7 +65,7 @@ public class MessageServiceTest {
     private MessageService messageService;
 
     @Test
-    public void shouldSaveMessage() throws Exception {
+    public void shouldSaveMessage() {
 
         Message messageToSave = mock(Message.class);
         Message savedMessage = mock(Message.class);
@@ -81,7 +81,7 @@ public class MessageServiceTest {
     }
 
     @Test
-    public void shouldGetMessage() throws Exception {
+    public void shouldGetMessage() {
 
         long messageId = 34234;
 
@@ -96,7 +96,7 @@ public class MessageServiceTest {
     }
 
     @Test
-    public void shouldFindMessagesAndReturnAllIfEmailIsBlank() throws Exception {
+    public void shouldFindMessagesAndReturnAllIfEmailIsBlank() {
 
         List<MessageEntity> entities = asList(mock(MessageEntity.class), mock(MessageEntity.class));
         MessageList messageListMock = mock(MessageList.class);
@@ -109,7 +109,7 @@ public class MessageServiceTest {
     }
 
     @Test
-    public void shouldFindMessagesForRecipientIfEmailIsNotBlank() throws Exception {
+    public void shouldFindMessagesForRecipientIfEmailIsNotBlank() {
 
         List<MessageEntity> entities = asList(mock(MessageEntity.class), mock(MessageEntity.class));
         MessageList messageListMock = mock(MessageList.class);
@@ -122,7 +122,7 @@ public class MessageServiceTest {
     }
 
     @Test
-    public void shouldForwardMail() throws Exception {
+    public void shouldForwardMail() {
 
         Message messageMock = mock(Message.class);
         when(messageMock.getRawMessage()).thenReturn("RAW message");
