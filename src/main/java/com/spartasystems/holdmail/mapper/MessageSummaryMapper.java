@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 - 2017 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import com.spartasystems.holdmail.model.MessageSummary;
 import com.spartasystems.holdmail.rest.HTMLPreprocessor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -45,7 +44,7 @@ public class MessageSummaryMapper {
 
         MessageContent messageContent = message.getContent();
 
-        List<MessageAttachment> attachments = messageContent.findAllAttachments()
+        List<MessageAttachment> attachments = messageContent.findAttachmentParts()
                                                             .stream()
                                                             .map(attachmentMapper::fromMessageContentPart)
                                                             .collect(toList());

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 - 2017 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import nl.jqno.equalsverifier.Warning;
 import org.apache.commons.io.IOUtils;
 import org.apache.james.mime4j.dom.field.FieldName;
 import org.junit.Test;
-import org.powermock.reflect.Whitebox;
 
 import java.io.ByteArrayInputStream;
 
@@ -34,14 +33,16 @@ import static org.mockito.Mockito.spy;
 
 public class MessageContentPartTest {
 
-    public static final String CONTENT_TYPE = "Content-Type";
+    private static final String CONTENT_TYPE = "Content-Type";
 
-    public static final String CONTENT_ID = "Content-ID";
+    private static final String CONTENT_ID = "Content-ID";
 
-    public static final String CONTENT_DISPOSITION = "Content-Disposition";
+    private static final String CONTENT_DISPOSITION = "Content-Disposition";
 
     // "Association of sub-ordinate officials of the head office management of the Danube steamboat electrical services"
-    public static final String NON_ASCII_STR = "Donaudampfschiffahrtselektrizitätenhauptbetriebswerkbauunterbeamtengesellschaft";
+    private static final String NON_ASCII_STR = "Donaudampfschiffahrtselektrizitätenhauptbetriebswerkbauunterbeamtengesellschaft";
+    private static final String NON_ASCII_STR_SHA256 = "29fa17ffd1ca2b8d34c4e3556b0cd537a194fcf53ef9633b8796c02aa2d01281";
+    private static final int NON_ASCII_STR_LENGTH = 80;
 
     @Test
     public void shouldSetAndGetHeaders() {
@@ -117,20 +118,6 @@ public class MessageContentPartTest {
     }
 
     @Test
-    public void shouldSetContent() throws Exception {
-
-        byte[] input = NON_ASCII_STR.getBytes();
-
-        MessageContentPart messageContentPart = new MessageContentPart();
-
-        messageContentPart.setContent(new ByteArrayInputStream(input));
-
-        byte[] actual = Whitebox.getInternalState(messageContentPart, "content");
-        assertThat(actual).isEqualTo(input);
-
-    }
-
-    @Test
     public void shouldGetContentString() throws Exception {
 
         MessageContentPart messageContentPart = new MessageContentPart();
@@ -153,6 +140,17 @@ public class MessageContentPartTest {
     }
 
     @Test
+    public void shouldGetSHA256Sum() throws Exception {
+
+        MessageContentPart messageContentPart = new MessageContentPart();
+        assertThat(messageContentPart.getSHA256Sum()).isNull();
+
+        messageContentPart.setContent(new ByteArrayInputStream(NON_ASCII_STR.getBytes("UTF-8")));
+        assertThat(messageContentPart.getSHA256Sum()).isEqualTo(NON_ASCII_STR_SHA256);
+
+    }
+
+    @Test
     public void shouldGetSize() throws Exception {
 
         MessageContentPart part = new MessageContentPart();
@@ -160,7 +158,7 @@ public class MessageContentPartTest {
 
         byte[] bytes = NON_ASCII_STR.getBytes("UTF-8");
         part.setContent(new ByteArrayInputStream(bytes));
-        assertThat(part.getSize()).isEqualTo(bytes.length);
+        assertThat(part.getSize()).isEqualTo(NON_ASCII_STR_LENGTH);
     }
 
     @Test
@@ -249,30 +247,13 @@ public class MessageContentPartTest {
     }
 
     @Test
-    public void shouldHaveToString() throws Exception {
-
-        MessageContentPart messageContentPart = new MessageContentPart();
-        messageContentPart.setSequence(9);
-
-        assertThat(messageContentPart.toString()).isEqualTo("MessageContentPart[headers={}, sequence=9, content=null]");
-
-        messageContentPart.setContent(new ByteArrayInputStream("hello".getBytes()));
-        messageContentPart.setHeader("k", "v");
-
-        String hVal = messageContentPart.getHeaders().get("k").toString();
-
-        assertThat(messageContentPart.toString()).isEqualTo("MessageContentPart[headers={k=" + hVal
-                + "}, sequence=9, content=5 bytes]");
-    }
-
-    @Test
     public void shouldHaveValidEqualsHashcode() {
 
         EqualsVerifier.forClass(MessageContentPart.class)
-                      .suppress(Warning.NONFINAL_FIELDS,
-                              Warning.NULL_FIELDS,
-                              Warning.STRICT_INHERITANCE)
-                      .verify();
+                .suppress(Warning.NONFINAL_FIELDS,
+                        Warning.NULL_FIELDS,
+                        Warning.STRICT_INHERITANCE)
+                .verify();
 
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 - 2017 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,6 @@ import static org.springframework.http.MediaType.TEXT_PLAIN;
 @RunWith(MockitoJUnitRunner.class)
 public class MessageControllerTest {
 
-    public static final String MOE_SZYSLAK = "moe szyslak";
 
     @Mock
     private MessageService messageServiceMock;
@@ -71,10 +70,12 @@ public class MessageControllerTest {
     @Spy
     @InjectMocks
     private MessageController messageControllerSpy;
-    public static final int MSG_ID = 55;
-    public static final int SEQ_ID = 4523;
-    public static final String CONTENT_TYPE = "attach/type";
-    public static final String FILE_NAME = "wibble.pdf";
+
+    private static final String EMAIL = "moe.szyslak@springfieldnuclear.com";
+    private static final int MSG_ID = 55;
+    private static final int ATTACH_ID = 99;
+    private static final String CONTENT_TYPE = "attach/type";
+    private static final String FILE_NAME = "wibble.pdf";
 
     @Test
     public void shouldGetMessages() {
@@ -86,9 +87,9 @@ public class MessageControllerTest {
 
         MessageList expectedMessages = new MessageList(messageMocks);
 
-        when(messageServiceMock.findMessages(MOE_SZYSLAK, pageableMock)).thenReturn(expectedMessages);
+        when(messageServiceMock.findMessages(EMAIL, pageableMock)).thenReturn(expectedMessages);
 
-        assertThat(messageControllerSpy.getMessages(MOE_SZYSLAK, pageableMock)).isEqualTo(expectedMessages);
+        assertThat(messageControllerSpy.getMessages(EMAIL, pageableMock)).isEqualTo(expectedMessages);
     }
 
     @Test
@@ -181,7 +182,7 @@ public class MessageControllerTest {
 
         String expectedDisposition = "attachment; filename=\"" + FILE_NAME + "\";";
 
-        ResponseEntity response = messageControllerSpy.getMessageContentByAttachmentId(MSG_ID, SEQ_ID);
+        ResponseEntity response = messageControllerSpy.getMessageContentByAttachmentId(MSG_ID, ATTACH_ID);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getHeaders().get("Content-Type")).hasSize(1).contains(CONTENT_TYPE);
         assertThat(response.getHeaders().get("Content-Disposition")).hasSize(1).contains(expectedDisposition);
@@ -195,7 +196,7 @@ public class MessageControllerTest {
         final InputStream streamMock = mock(InputStream.class);
         setupForFetchAttachment(streamMock, null);
 
-        ResponseEntity response = messageControllerSpy.getMessageContentByAttachmentId(MSG_ID, SEQ_ID);
+        ResponseEntity response = messageControllerSpy.getMessageContentByAttachmentId(MSG_ID, ATTACH_ID);
         assertThat(response.getHeaders().get("Content-Disposition")).hasSize(1).contains("attachment;");
 
     }
@@ -213,7 +214,7 @@ public class MessageControllerTest {
 
         MessageContent contentMock = mock(MessageContent.class);
         when(messageMock.getContent()).thenReturn(contentMock);
-        when(contentMock.findBySequenceId(SEQ_ID)).thenReturn(contentPartMock);
+        when(contentMock.findBySequenceId(ATTACH_ID)).thenReturn(contentPartMock);
     }
 
     @Test

@@ -110,7 +110,7 @@ public class MessageSummaryMapperTest {
         MessageAttachment attachmentMock1 = mock(MessageAttachment.class);
         MessageAttachment attachmentMock2 = mock(MessageAttachment.class);
 
-        when(messageContentMock.findAllAttachments()).thenReturn(asList(attContentMock1, attContentMock2));
+        when(messageContentMock.findAttachmentParts()).thenReturn(asList(attContentMock1, attContentMock2));
         when(attachmentMapperMock.fromMessageContentPart(attContentMock1)).thenReturn(attachmentMock1);
         when(attachmentMapperMock.fromMessageContentPart(attContentMock2)).thenReturn(attachmentMock2);
 

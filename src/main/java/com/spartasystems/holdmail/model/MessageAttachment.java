@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 - 2017 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,22 +25,24 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class MessageAttachment {
 
-    private final int    sequence;
+    private final String attachmentId;
     private final String filename;
     private final String contentType;
     private final String disposition;
+    private final String sha256Sum;
     private final int size;
 
-    public MessageAttachment(int sequence, String filename, String contentType, String disposition, int size) {
-        this.sequence = sequence;
+    public MessageAttachment(String attachmentId, String filename, String contentType, String disposition, String sha256Sum, int size) {
+        this.attachmentId = attachmentId;
         this.filename = filename;
         this.contentType = contentType;
         this.disposition = disposition;
+        this.sha256Sum = sha256Sum;
         this.size = size;
     }
 
-    public int getSequence() {
-        return sequence;
+    public String getAttachmentId() {
+        return attachmentId;
     }
 
     public String getFilename() {
@@ -53,6 +55,10 @@ public class MessageAttachment {
 
     public String getDisposition() {
         return disposition;
+    }
+
+    public String getSha256Sum() {
+        return sha256Sum;
     }
 
     public int getSize() {
