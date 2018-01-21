@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2017 Sparta Systems, Inc
+ * Copyright 2017 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,13 +45,24 @@
       </div>
       <table class="table table-sm table-condensed addresses">
           <tr>
-            <td class=""><strong>From:</strong></td>
-            <td>{{message.senderEmail}}</td>
-            <td class="text-right pr-2">{{ receivedDate | date('%b %-d, %Y %r') }}</td>
+            <td><strong>From:</strong></td>
+            <td class="message-sender">{{message.senderEmail}}</td>
+            <td class="message-received-date text-right pr-2">{{ receivedDate | date('%b %-d, %Y %r') }}</td>
           </tr>
           <tr>
             <td><strong>To:</strong></td>
-            <td colspan="2">{{message.recipients}}</td>
+            <td class="message-recipients" colspan="2">{{message.recipients}}</td>
+          </tr>
+          <tr class="message-attach-row" v-show="attachmentList.length !== 0">
+            <td><strong>Atts:</strong></td>
+            <td colspan="2">
+              <ul class="attach-list">
+                <li class="attach-item" v-for="attachment in attachmentList">
+                  <b-link class="attach-link" :href="attachment.downloadURI" dow><span class="attach-icon fa fa-paperclip" aria-hidden="true"></span><span class="attach-link-text">{{attachment.filename}}</span></b-link>
+                  <span class="attach-size">({{attachment.size | prettyBytes}})</span>
+                </li>
+              </ul>
+            </td>
           </tr>
       </table>
       <b-tabs :no-fade="true" ref="tabs">
@@ -76,6 +87,7 @@ import Vue from 'vue'
 import VeeValidate from 'vee-validate'
 import BootstrapVue from 'bootstrap-vue'
 import messagesApi from '@/api/messages'
+import filters from '@/filters/filters'
 
 Vue.use(BootstrapVue)
 Vue.use(VeeValidate)
@@ -92,6 +104,9 @@ export default {
       errorContent: null,
       validationError: false
     }
+  },
+  filters: {
+    prettyBytes: filters.prettyBytes
   },
   mounted () {
     const messageId = this.$route.params.messageId
@@ -142,6 +157,13 @@ export default {
       } else {
         return ''
       }
+    },
+    attachmentList () {
+      return ((this.message && this.message.attachments) ? this.message.attachments : [])
+        .filter(f => f.disposition === 'attachment') // drop any 'inline' attachments
+        .map(x => Object.assign(x, {
+          'downloadURI': '/rest/messages/' + this.message.messageId + '/att/' + x.attachmentId
+        }))
     }
   },
   methods: {
@@ -230,5 +252,24 @@ table.addresses {
     white-space: pre;
     font-family: monospace;
     overflow: auto;
+}
+
+ul.attach-list {
+  padding: 0;
+  li {
+    display: inline;
+    padding: 0 0 0 10px;
+  }
+  .attach-icon {
+    padding-right: 5px;
+    color: black;
+  }
+  .attach-link-text {
+    font-size: 0.9em;
+  }
+  .attach-size {
+    font-style: italic;
+    font-size: 0.8em;
+  }
 }
 </style>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2017 Sparta Systems, Inc
+ * Copyright 2017 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,51 @@ describe('MessageDetail.vue', () => {
 
       Vue.nextTick(() => {
         expect(comp.$el.querySelector('.message-subject').textContent).to.equal('TEST')
+        done()
+      })
+    })
+
+    it('displays the mail delivery information', (done) => {
+      stubMessageDetailSuccess(message1)
+      comp = getMountedComponent()
+
+      Vue.nextTick(() => {
+        expect(comp.$el.querySelector('.message-sender').textContent).to.equal('holdmail@spartasystems.com')
+        expect(comp.$el.querySelector('.message-recipients').textContent).to.equal('test@test.com')
+        expect(comp.$el.querySelector('.message-received-date').textContent).to.equal('Mar 20, 2017 02:40:47 PM')
+        done()
+      })
+    })
+
+    it('displays attachments row with links when attachments are present', (done) => {
+      stubMessageDetailSuccess(message1)
+      comp = getMountedComponent()
+
+      Vue.nextTick(() => {
+        let attachRow = comp.$el.querySelector('.message-attach-row')
+        expect(attachRow.style.display).to.equal('')
+
+        let items = attachRow.querySelectorAll('.attach-item')
+        expect(items.length).to.equal(2)
+        expect(items[0].querySelector('.attach-link-text').textContent).to.equal('att-CN-你好世界.png')
+        expect(items[0].querySelector('.attach-size').textContent).to.equal('(1.25KB)')
+        expect(items[0].querySelector('.attach-link').href).to.contain('/rest/messages/57/att/5')
+
+        expect(items[1].querySelector('.attach-link-text').textContent).to.equal('att-JP-ありがとうございます.png')
+        expect(items[1].querySelector('.attach-size').textContent).to.equal('(1.22KB)')
+        expect(items[1].querySelector('.attach-link').href).to.contain('/rest/messages/57/att/10')
+        done()
+      })
+    })
+
+    it('does not display attachments row when no attachments are present', (done) => {
+      // message2 doesn't have attachments
+      // (attachments from the API with "disposition: inline" aren't shown as linked attachments in the UI)
+      stubMessageDetailSuccess(message2)
+      comp = getMountedComponent()
+
+      Vue.nextTick(() => {
+        expect(comp.$el.querySelector('.message-attach-row').style.display).to.equal('none')
         done()
       })
     })
@@ -208,6 +253,35 @@ describe('MessageDetail.vue', () => {
         comp = getMountedComponent()
 
         expect(comp.messageRawEndpoint).to.equal('/rest/messages/57/raw')
+      })
+    })
+
+    describe('attachmentList', () => {
+      it('return empty list if no attachments', () => {
+        // message two has no attachments, of which 1 is inline
+        stubMessageDetailSuccess(message2)
+        comp = getMountedComponent()
+        expect(comp.attachmentList).to.have.lengthOf(0)
+      })
+
+      it('filters out inline attachments', () => {
+        // message one has three attachments, of which 1 is inline
+        stubMessageDetailSuccess(message1)
+        comp = getMountedComponent()
+        expect(comp.attachmentList).to.have.lengthOf(2)
+      })
+
+      it('delivers existing attribs while adding downloadURI', () => {
+        // message one has three attachments, of which 1 is inline
+        stubMessageDetailSuccess(message1)
+        comp = getMountedComponent()
+        expect(comp.attachmentList[0]).to.include({
+          // let's not test all, just sanity check a couple
+          'attachmentId': '5',
+          'filename': 'att-CN-你好世界.png',
+          // see that the additional attrib is added
+          'downloadURI': '/rest/messages/57/att/5'
+        })
       })
     })
   })
