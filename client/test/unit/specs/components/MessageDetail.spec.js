@@ -18,6 +18,7 @@
 
 import Vue from 'vue'
 import Router from 'vue-router'
+import moment from 'moment'
 import router from '@/router'
 import MessageDetail from '@/components/MessageDetail'
 import messagesApi from '@/api/messages'
@@ -63,9 +64,10 @@ describe('MessageDetail.vue', () => {
       comp = getMountedComponent()
 
       Vue.nextTick(() => {
+        let dateInLocalFMT = moment(1490035247552).format('MMM D, YYYY hh:mm:ss A')
         expect(comp.$el.querySelector('.message-sender').textContent).to.equal('holdmail@spartasystems.com')
         expect(comp.$el.querySelector('.message-recipients').textContent).to.equal('test@test.com')
-        expect(comp.$el.querySelector('.message-received-date').textContent).to.equal('Mar 20, 2017 02:40:47 PM')
+        expect(comp.$el.querySelector('.message-received-date').textContent).to.equal(dateInLocalFMT)
         done()
       })
     })
