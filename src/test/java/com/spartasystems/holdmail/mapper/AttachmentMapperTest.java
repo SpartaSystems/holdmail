@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 - 2017 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,11 +42,13 @@ public class AttachmentMapperTest {
 
         MessageContentPart partSpy = spy(new MessageContentPart());
         partSpy.setHeader(FieldName.CONTENT_DISPOSITION, "my-disposition; a=b; c=d;");
+        doReturn(55).when(partSpy).getSequence();
         doReturn("my-file").when(partSpy).getAttachmentFilename();
         doReturn("my-mime").when(partSpy).getContentType();
+        doReturn("my-sha256").when(partSpy).getSHA256Sum();
         doReturn(333).when(partSpy).getSize();
 
-        MessageAttachment expected = new MessageAttachment(0, "my-file", "my-mime", "my-disposition", 333);
+        MessageAttachment expected = new MessageAttachment("55", "my-file", "my-mime", "my-disposition", "my-sha256", 333);
 
         assertThat(attachmentMapper.fromMessageContentPart(partSpy)).isEqualTo(expected);
 

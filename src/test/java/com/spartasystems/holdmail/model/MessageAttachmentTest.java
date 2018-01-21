@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 - 2017 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,11 +37,12 @@ public class MessageAttachmentTest {
     @Test
     public void shouldHaveValidConstructor() {
 
-        MessageAttachment attach = new MessageAttachment(3, "myfile", "mytype", "mydispos", 555);
-        assertThat(attach.getSequence()).isEqualTo(3);
+        MessageAttachment attach = new MessageAttachment("myAttachId", "myfile", "mytype", "mydispos", "mySHA256", 555);
+        assertThat(attach.getAttachmentId()).isEqualTo("myAttachId");
         assertThat(attach.getFilename()).isEqualTo("myfile");
         assertThat(attach.getContentType()).isEqualTo("mytype");
         assertThat(attach.getDisposition()).isEqualTo("mydispos");
+        assertThat(attach.getSha256Sum()).isEqualTo("mySHA256");
         assertThat(attach.getSize()).isEqualTo(555);
 
     }

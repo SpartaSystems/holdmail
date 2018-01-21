@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 - 2017 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -154,6 +154,7 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
                 .body("identifier", notNullValue())
                 .body("subject", equalTo(SUBJECT))
                 .body("senderEmail", equalTo(FROM_EMAIL))
+
                 .body("messageHeaders.size()", equalTo(10))
                 .body("messageHeaders.User-Agent", startsWith("Mozilla/5.0 (Macintosh;"))
                 .body("messageHeaders.To", equalTo(recipient))
@@ -161,27 +162,36 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
                 .body("messageHeaders.Subject", startsWith("=?UTF-8?B?"))
                 .body("messageHeaders.MIME-Version", equalTo("1.0"))
                 .body("messageHeaders.Content-Type", startsWith("multipart/mixed;"))
+
                 .body("messageBodyHTML", containsString(HTML_HEADERTEXT))
                 .body("messageBodyText", containsString(PLAIN_HEADERTEXT))
+
                 // ensure content is limited to that type's text
                 .body("messageBodyHTML", not(containsString(PLAIN_HEADERTEXT)))
                 .body("messageBodyText", not(containsString(HTML_HEADERTEXT)))
+
                 // ensure unicode characters made it
                 .body("messageBodyHTML", containsString("<li>" + NONASCII_SAMPLE + "</li>"))
                 .body("messageBodyText", containsString("* " + NONASCII_SAMPLE))
                 // attrib going away in v2: https://github.com/SpartaSystems/holdmail/issues/14
+
                 .body("messageRaw", nullValue())
                 .body("messageHasBodyHTML", equalTo(true))
                 .body("messageHasBodyText", equalTo(true))
+
                 .body("attachments.size()", equalTo(2))
-                .body("attachments.get(0).sequence", equalTo(3))
+
+                .body("attachments.get(0).attachmentId", equalTo("3"))
                 .body("attachments.get(0).disposition", equalTo("inline"))
                 .body("attachments.get(0).filename", equalTo("att-CN-你好世界.png"))
+                .body("attachments.get(0).sha256Sum", equalTo("7188be51b2c8a5deb92ae80e359fb27807fb2f5b69848a92e14644ae5ba57859"))
                 .body("attachments.get(0).size", equalTo(1275))
                 .body("attachments.get(0).contentType", equalTo("image/png"))
-                .body("attachments.get(1).sequence", equalTo(4))
+
+                .body("attachments.get(1).attachmentId", equalTo("4"))
                 .body("attachments.get(1).disposition", equalTo("attachment"))
                 .body("attachments.get(1).filename", equalTo("att-JP-ありがとうございます.png"))
+                .body("attachments.get(1).sha256Sum", equalTo("bcfa8cf2ed578694299bff3ba0a7b0fca9aef58459199fcb0e68b00f936201a6"))
                 .body("attachments.get(1).size", equalTo(1247))
                 .body("attachments.get(1).contentType", equalTo("image/png"));
     }

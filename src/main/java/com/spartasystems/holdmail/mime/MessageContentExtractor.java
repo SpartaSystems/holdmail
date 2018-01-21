@@ -20,7 +20,6 @@ package com.spartasystems.holdmail.mime;
 
 import com.spartasystems.holdmail.domain.MessageContent;
 import com.spartasystems.holdmail.domain.MessageContentPart;
-import org.apache.james.mime4j.MimeException;
 import org.apache.james.mime4j.parser.AbstractContentHandler;
 import org.apache.james.mime4j.stream.BodyDescriptor;
 import org.apache.james.mime4j.stream.Field;
@@ -30,7 +29,7 @@ import java.io.InputStream;
 
 class MessageContentExtractor extends AbstractContentHandler {
 
-    private MessageContent     bodyParts;
+    private MessageContent bodyParts;
     private MessageContentPart nextPotentialPart;
 
     public MessageContentExtractor() {
@@ -48,7 +47,7 @@ class MessageContentExtractor extends AbstractContentHandler {
     public void field(Field field) {
 
         // field may have been called after a message container header()
-        if(nextPotentialPart != null) {
+        if (nextPotentialPart != null) {
             nextPotentialPart.setHeader(field.getName(), field.getBody());
         }
     }

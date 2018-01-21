@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 - 2017 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -125,7 +125,7 @@ public class MessageContentTest {
 
         MessageContent messageContent = buildMimeBodyPartsWith4Parts();
 
-        assertThat(messageContent.findAllAttachments()).containsExactly(part2Mock, part4Mock);
+        assertThat(messageContent.findAttachmentParts()).containsExactly(part2Mock, part4Mock);
 
     }
 

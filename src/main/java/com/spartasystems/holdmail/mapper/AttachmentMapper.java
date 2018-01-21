@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 - 2017 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,9 @@ public class AttachmentMapper {
 
         String disposition = part.getHeaders().get(FieldName.CONTENT_DISPOSITION).getValue();
 
-        return new MessageAttachment(part.getSequence(), part.getAttachmentFilename(), part.getContentType(),
-                                    disposition, part.getSize());
+        return new MessageAttachment(String.valueOf(part.getSequence()),
+                                    part.getAttachmentFilename(), part.getContentType(),
+                                    disposition, part.getSHA256Sum(), part.getSize());
 
     }
 

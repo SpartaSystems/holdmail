@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 - 2017 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,15 @@
 
 package com.spartasystems.holdmail.domain;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.james.mime4j.dom.field.FieldName;
 
 import java.io.ByteArrayInputStream;
@@ -29,13 +34,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 public class MessageContentPart {
 
     private Map<String, HeaderValue> headers = new HashMap<>();
     private byte[] content;
-    private int    sequence;
+    private String sha256Sum;
+    private int sequence;
 
     public int getSequence() {
         return sequence;
@@ -43,6 +52,10 @@ public class MessageContentPart {
 
     public void setSequence(int sequence) {
         this.sequence = sequence;
+    }
+
+    public String getSHA256Sum() {
+        return sha256Sum;
     }
 
     public void setHeader(String header, String value) {
@@ -101,6 +114,7 @@ public class MessageContentPart {
 
     public void setContent(InputStream in) throws IOException {
         this.content = IOUtils.toByteArray(in);
+        this.sha256Sum = DigestUtils.sha256Hex(this.content);
     }
 
     public String getContentString() {
@@ -127,11 +141,11 @@ public class MessageContentPart {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("MessageContentPart[");
-        sb.append("headers=").append(headers);
-        sb.append(", sequence=").append(sequence);
-        sb.append(", content=").append(content == null ? "null" : content.length + " bytes");
-        sb.append(']');
-        return sb.toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("sequence", sequence)
+                .append("headers", headers)
+                .append("content", content)
+                .append("sha256Sum", sha256Sum)
+                .toString();
     }
 }
