@@ -25,6 +25,7 @@ import io.restassured.module.mockmvc.response.MockMvcResponse;
 import io.restassured.module.mockmvc.response.ValidatableMockMvcResponse;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,23 +100,34 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
 
         get(queryURIForRecipient).then().assertThat().body("messages.size()", equalTo(0));
 
-        // send a bunch of mails to random recips, but 3 to our target user too
-        smtpClient.sendTextEmail(FROM_EMAIL, email, "mail one", TEXT_BODY);
+        // send a bunch of mails to random recips, but 4 to our target user too
+        smtpClient.sendTextEmail(FROM_EMAIL, email, "first", TEXT_BODY);
         sendMailToRandomRecipients(2);
-        smtpClient.sendTextEmail(FROM_EMAIL, email, "mail two", TEXT_BODY);
-        sendMailToRandomRecipients(3);
-        smtpClient.sendTextEmail(FROM_EMAIL, email, "mail three", TEXT_BODY);
+        smtpClient.sendTextEmail(FROM_EMAIL, email, "second", TEXT_BODY);
         sendMailToRandomRecipients(1);
+        smtpClient.sendResourceEmail(TESTRESOURCE_I18N_WITH_ATTACH, FROM_EMAIL, email);
+        sendMailToRandomRecipients(3);
+        smtpClient.sendTextEmail(FROM_EMAIL, email, "last", TEXT_BODY);
 
         get(queryURIForRecipient).then().assertThat()
-                .body("messages.size()", equalTo(3))
+                .body("messages.size()", equalTo(4))
+
                 // mails are listed most recently accepted first
                 .body("messages.get(0).recipients", equalTo(email))
-                .body("messages.get(0).subject", equalTo("mail three"))
+                .body("messages.get(0).subject", equalTo("last"))
+                .body("messages.get(0).hasAttachments", is(false))
+
                 .body("messages.get(1).recipients", equalTo(email))
-                .body("messages.get(1).subject", equalTo("mail two"))
+                .body("messages.get(1).subject", equalTo("こんにちは世界 こんにちは世界 こんにちは世界"))
+                .body("messages.get(1).hasAttachments", is(true))
+
                 .body("messages.get(2).recipients", equalTo(email))
-                .body("messages.get(2).subject", equalTo("mail one"));
+                .body("messages.get(2).subject", equalTo("second"))
+                .body("messages.get(2).hasAttachments", is(false))
+
+                .body("messages.get(3).recipients", equalTo(email))
+                .body("messages.get(3).subject", equalTo("first"))
+                .body("messages.get(3).hasAttachments", is(false));
     }
 
     @Test

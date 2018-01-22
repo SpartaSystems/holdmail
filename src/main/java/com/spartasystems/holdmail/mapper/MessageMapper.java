@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,8 @@ public class MessageMapper {
                                     .stream()
                                     .map(MessageRecipientEntity::new)
                                     .collect(Collectors.toSet()));
+
+        entity.setHasAttachments(!message.getContent().findAttachmentParts(false).isEmpty());
         return entity;
 
     }

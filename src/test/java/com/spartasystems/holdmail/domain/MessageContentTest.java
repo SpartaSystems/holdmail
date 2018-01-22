@@ -116,16 +116,30 @@ public class MessageContentTest {
     }
 
     @Test
-    public void shouldFindAllAttachments() {
+    public void shouldFindAllAttachmentsWithDispositionTrue() {
 
-        when(part1Mock.isAttachment()).thenReturn(false);
-        when(part2Mock.isAttachment()).thenReturn(true);
-        when(part3Mock.isAttachment()).thenReturn(false);
-        when(part4Mock.isAttachment()).thenReturn(true);
+        when(part1Mock.hasAttachmentDisposition(true)).thenReturn(false);
+        when(part2Mock.hasAttachmentDisposition(true)).thenReturn(true);
+        when(part3Mock.hasAttachmentDisposition(true)).thenReturn(false);
+        when(part4Mock.hasAttachmentDisposition(true)).thenReturn(true);
 
         MessageContent messageContent = buildMimeBodyPartsWith4Parts();
 
-        assertThat(messageContent.findAttachmentParts()).containsExactly(part2Mock, part4Mock);
+        assertThat(messageContent.findAttachmentParts(true)).containsExactly(part2Mock, part4Mock);
+
+    }
+
+    @Test
+    public void shouldFindAllAttachmentsWithDispositionFalse() {
+
+        when(part1Mock.hasAttachmentDisposition(false)).thenReturn(false);
+        when(part2Mock.hasAttachmentDisposition(false)).thenReturn(false);
+        when(part3Mock.hasAttachmentDisposition(false)).thenReturn(true);
+        when(part4Mock.hasAttachmentDisposition(false)).thenReturn(true);
+
+        MessageContent messageContent = buildMimeBodyPartsWith4Parts();
+
+        assertThat(messageContent.findAttachmentParts(false)).containsExactly(part3Mock, part4Mock);
 
     }
 

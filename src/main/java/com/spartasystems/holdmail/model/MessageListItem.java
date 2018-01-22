@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,13 +30,15 @@ public class MessageListItem {
     private String senderEmail;
     private String recipients;
     private String subject;
+    private boolean hasAttachments;
 
-    public MessageListItem(long messageId, long receivedDate, String senderEmail, String recipients, String subject) {
+    public MessageListItem(long messageId, long receivedDate, String senderEmail, String recipients, String subject, boolean hasAttachments) {
         this.messageId = messageId;
         this.receivedDate = receivedDate;
         this.senderEmail = senderEmail;
         this.recipients = recipients;
         this.subject = subject;
+        this.hasAttachments = hasAttachments;
     }
 
     public long getMessageId() {
@@ -57,6 +59,10 @@ public class MessageListItem {
 
     public String getSubject() {
         return subject;
+    }
+
+    public boolean getHasAttachments() {
+        return hasAttachments;
     }
 
     @Override

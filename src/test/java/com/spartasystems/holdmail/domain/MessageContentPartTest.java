@@ -162,21 +162,23 @@ public class MessageContentPartTest {
     }
 
     @Test
-    public void shouldReturnIsAttachmentTrueWhenDispositionIsInline() {
+    public void shouldReturnIsAttachmentWhenDispositionIsInline() {
 
         MessageContentPart messageContentPart = new MessageContentPart();
         messageContentPart.setHeader(CONTENT_DISPOSITION, "inline");
 
-        assertThat(messageContentPart.isAttachment()).isTrue();
+        assertThat(messageContentPart.hasAttachmentDisposition(true)).isTrue();
+        assertThat(messageContentPart.hasAttachmentDisposition(false)).isFalse();
     }
 
     @Test
-    public void shouldReturnIsAttachmentTrueWhenDispositionIsAttachment() {
+    public void shouldReturnIsAttachmentWhenDispositionIsAttachment() {
 
         MessageContentPart messageContentPart = new MessageContentPart();
         messageContentPart.setHeader(CONTENT_DISPOSITION, "attachment");
 
-        assertThat(messageContentPart.isAttachment()).isTrue();
+        assertThat(messageContentPart.hasAttachmentDisposition(true)).isTrue();
+        assertThat(messageContentPart.hasAttachmentDisposition(false)).isTrue();
     }
 
     @Test
@@ -185,23 +187,23 @@ public class MessageContentPartTest {
         // not set at all
         MessageContentPart messageContentPart = new MessageContentPart();
         messageContentPart.getHeaders().remove(CONTENT_DISPOSITION);
-        assertThat(messageContentPart.isAttachment()).isFalse();
+        assertThat(messageContentPart.hasAttachmentDisposition(true)).isFalse();
 
         // blank
         messageContentPart.setHeader(CONTENT_DISPOSITION, "");
-        assertThat(messageContentPart.isAttachment()).isFalse();
+        assertThat(messageContentPart.hasAttachmentDisposition(true)).isFalse();
 
         // garbage
         messageContentPart.setHeader(CONTENT_DISPOSITION, "poop");
-        assertThat(messageContentPart.isAttachment()).isFalse();
+        assertThat(messageContentPart.hasAttachmentDisposition(true)).isFalse();
 
         // case sensitive?
         messageContentPart.setHeader(CONTENT_DISPOSITION, "iNlINe");
-        assertThat(messageContentPart.isAttachment()).isFalse();
+        assertThat(messageContentPart.hasAttachmentDisposition(true)).isFalse();
 
         // valid, but doesn't start with
         messageContentPart.setHeader(CONTENT_DISPOSITION, "blah inline");
-        assertThat(messageContentPart.isAttachment()).isFalse();
+        assertThat(messageContentPart.hasAttachmentDisposition(true)).isFalse();
 
     }
 
@@ -209,7 +211,7 @@ public class MessageContentPartTest {
     public void shouldReturnNullAttachmentFilenameIfNotAttachment() {
 
         MessageContentPart partSpy = spy(new MessageContentPart());
-        doReturn(false).when(partSpy).isAttachment();
+        doReturn(false).when(partSpy).hasAttachmentDisposition(true);
 
         assertThat(partSpy.getAttachmentFilename()).isNull();
     }

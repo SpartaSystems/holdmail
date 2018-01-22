@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 - 2017 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,7 +110,7 @@ public class MessageSummaryMapperTest {
         MessageAttachment attachmentMock1 = mock(MessageAttachment.class);
         MessageAttachment attachmentMock2 = mock(MessageAttachment.class);
 
-        when(messageContentMock.findAttachmentParts()).thenReturn(asList(attContentMock1, attContentMock2));
+        when(messageContentMock.findAttachmentParts(true)).thenReturn(asList(attContentMock1, attContentMock2));
         when(attachmentMapperMock.fromMessageContentPart(attContentMock1)).thenReturn(attachmentMock1);
         when(attachmentMapperMock.fromMessageContentPart(attContentMock2)).thenReturn(attachmentMock2);
 

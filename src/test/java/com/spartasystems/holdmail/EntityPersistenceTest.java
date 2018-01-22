@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 - 2017 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,6 +66,7 @@ public class EntityPersistenceTest extends BaseIntegrationTest {
         assertThat(loaded.getSenderEmail()).isEqualTo(SENDER_EMAIL);
         assertThat(loaded.getSenderHost()).isEqualTo(SENDER_HOST);
         assertThat(loaded.getSubject()).isEqualTo(SUBJECT);
+        assertThat(loaded.getHasAttachments()).isEqualTo(true);
 
     }
 
@@ -165,6 +166,7 @@ public class EntityPersistenceTest extends BaseIntegrationTest {
         entity.setSenderEmail(SENDER_EMAIL);
         entity.setSenderHost(SENDER_HOST);
         entity.setSubject(SUBJECT);
+        entity.setHasAttachments(true);
         return entity;
     }
 }

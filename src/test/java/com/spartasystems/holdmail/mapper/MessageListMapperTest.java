@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,6 +101,7 @@ public class MessageListMapperTest {
         entity.setReceivedDate(receivedDate);
         entity.setSenderEmail(EMAIL_CARL);
         entity.setSubject(MESSAGE_SUBJECT);
+        entity.setHasAttachments(false);
 
         MessageListItem messageListItem = messageListMapperSpy.toMessageListItem(entity);
         assertThat(messageListItem.getMessageId()).isEqualTo(MESSAGE_ID);
@@ -108,7 +109,12 @@ public class MessageListMapperTest {
         assertThat(messageListItem.getSenderEmail()).isEqualTo(EMAIL_CARL);
         assertThat(messageListItem.getRecipients()).isEqualTo(EMAIL_HOMER + ", " + EMAIL_MONTY);
         assertThat(messageListItem.getSubject()).isEqualTo(MESSAGE_SUBJECT);
+        assertThat(messageListItem.getHasAttachments()).isFalse();
 
+        // repeat, but with the attachment as true
+        entity.setHasAttachments(true);
+        assertThat(messageListMapperSpy.toMessageListItem(entity).getHasAttachments()).isTrue();
     }
+
 
 }
