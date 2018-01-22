@@ -198,34 +198,34 @@ buildRpm {
     link('/etc/init.d/holdmail', RPM_INSTALL_DIR + '/bin/holdmail.jar')
 }
 
-//task runNpmInstall(type: NpmTask) {
-//  workingDir = file("${project.projectDir}/client")
-//
-//  args = ['install']
-//}
+task runNpmInstall(type: NpmTask) {
+  workingDir = file("${project.projectDir}/client")
 
-//task compileUI(type: NpmTask) {
-//  dependsOn 'runNpmInstall'
-//
-//  workingDir = file("${project.projectDir}/client")
-//
-//  args = ['run', 'build']
-//}
-//
-//task testUI(type: NpmTask) {
-//  dependsOn 'runNpmInstall'
-//
-//  workingDir = file("${project.projectDir}/client")
-//
-//  args = ['run', 'test']
-//}
-//
-//task buildUI(type: Copy) {
-//  dependsOn 'compileUI'
-//
-//  from "${project.projectDir}/client/dist"
-//  into "${project.projectDir}/src/main/resources/static"
-//}
+  args = ['install']
+}
+
+task compileUI(type: NpmTask) {
+  dependsOn 'runNpmInstall'
+
+  workingDir = file("${project.projectDir}/client")
+
+  args = ['run', 'build']
+}
+
+task testUI(type: NpmTask) {
+  dependsOn 'runNpmInstall'
+
+  workingDir = file("${project.projectDir}/client")
+
+  args = ['run', 'test']
+}
+
+task buildUI(type: Copy) {
+  dependsOn 'compileUI'
+
+  from "${project.projectDir}/client/dist"
+  into "${project.projectDir}/src/main/resources/static"
+}
 
 test {
     testLogging {
@@ -234,8 +234,8 @@ test {
     }
 }
 
-//test.dependsOn testUI
-//compileJava.dependsOn('buildUI')
+test.dependsOn testUI
+compileJava.dependsOn('buildUI')
 tasks.build.dependsOn('buildRpm')
 
 task srcJAR(type: Jar) {
