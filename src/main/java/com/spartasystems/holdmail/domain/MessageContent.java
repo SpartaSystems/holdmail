@@ -22,7 +22,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.h2.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +59,9 @@ public class MessageContent {
                     .orElse(null);
     }
 
-    public List<MessageContentPart> findAttachmentParts() {
+    public List<MessageContentPart> findAttachmentParts(boolean includeInline) {
         return parts.stream()
-                    .filter(MessageContentPart::isAttachment)
+                    .filter(part -> part.hasAttachmentDisposition(includeInline))
                     .collect(Collectors.toList());
     }
 

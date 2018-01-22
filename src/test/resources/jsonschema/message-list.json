@@ -21,6 +21,9 @@
           },
           "subject": {
             "type": "string"
+          },
+          "hasAttachments": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -28,7 +31,8 @@
           "receivedDate",
           "senderEmail",
           "recipients",
-          "subject"
+          "subject",
+          "hasAttachments"
         ]
       }
     }

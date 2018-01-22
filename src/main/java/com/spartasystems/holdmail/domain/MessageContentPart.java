@@ -20,9 +20,7 @@ package com.spartasystems.holdmail.domain;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -34,10 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.function.Predicate;
 
 public class MessageContentPart {
 
@@ -82,14 +77,21 @@ public class MessageContentPart {
         return type != null && type.equals("text/plain");
     }
 
-    public boolean isAttachment() {
+    /**
+     * Whether this content part's disposition indicates this is an attachment part
+     * @param includeInline An attachment is a part with a 'disposition' value of 'inline' or 'attachment'. If
+     *                      this parameter is false, those with 'inline' disposition will result in false.
+     * @return Whether this part's disposition represents an attachment.
+     */
+    public boolean hasAttachmentDisposition(boolean includeInline) {
         HeaderValue disposition = headers.get(FieldName.CONTENT_DISPOSITION);
-        return disposition != null && (disposition.hasValue("inline") || disposition.hasValue("attachment"));
+        return disposition != null
+                && ((includeInline && disposition.hasValue("inline")) || disposition.hasValue("attachment"));
     }
 
     public String getAttachmentFilename() {
 
-        if (!isAttachment()) {
+        if (!hasAttachmentDisposition(true)) {
             return null;
         }
 

@@ -44,7 +44,7 @@ public class MessageSummaryMapper {
 
         MessageContent messageContent = message.getContent();
 
-        List<MessageAttachment> attachments = messageContent.findAttachmentParts()
+        List<MessageAttachment> attachments = messageContent.findAttachmentParts(true)
                                                             .stream()
                                                             .map(attachmentMapper::fromMessageContentPart)
                                                             .collect(toList());

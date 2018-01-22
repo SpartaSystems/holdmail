@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 - 2017 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,6 +74,9 @@ public class MessageEntity {
     @Column(name = "sender_host")
     private String senderHost;
 
+    @Column(name = "has_attachments")
+    private boolean hasAttachments;
+
     @NotNull
     @Column(name = "message_size")
     private int messageSize;
@@ -132,6 +135,14 @@ public class MessageEntity {
 
     public void setReceivedDate(Date receivedDate) {
         this.receivedDate = receivedDate;
+    }
+
+    public boolean getHasAttachments() {
+        return hasAttachments;
+    }
+
+    public void setHasAttachments(boolean hasAttachments) {
+        this.hasAttachments = hasAttachments;
     }
 
     public int getMessageSize() {

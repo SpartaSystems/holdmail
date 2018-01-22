@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Sparta Systems, Inc
+ * Copyright 2016 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,18 +20,21 @@ package com.spartasystems.holdmail.mapper;
 
 import com.google.common.collect.ImmutableMap;
 import com.spartasystems.holdmail.domain.Message;
+import com.spartasystems.holdmail.domain.MessageContent;
+import com.spartasystems.holdmail.domain.MessageContentPart;
 import com.spartasystems.holdmail.domain.MessageHeaders;
 import com.spartasystems.holdmail.persistence.MessageEntity;
 import com.spartasystems.holdmail.persistence.MessageHeaderEntity;
 import com.spartasystems.holdmail.persistence.MessageRecipientEntity;
 import org.junit.Test;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.nCopies;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 public class MessageMapperTest {
 
@@ -78,6 +81,31 @@ public class MessageMapperTest {
                                              .contains(new MessageHeaderEntity(header1, header1Val),
                                                      new MessageHeaderEntity(header2, header2Val))
                                              .doesNotHaveDuplicates();
+    }
+
+    @Test
+    public void shouldSetHasAttachmentsWhenContentFindsAttachmentParts() {
+
+        Message message1Part = buildMessageSpyWithMockContent(1);
+        assertThat(messageMapper.fromDomain(message1Part).getHasAttachments()).isTrue();
+
+        Message message5Parts = buildMessageSpyWithMockContent(5);
+        assertThat(messageMapper.fromDomain(message5Parts).getHasAttachments()).isTrue();
+
+        Message messageNoParts = buildMessageSpyWithMockContent(0);
+        assertThat(messageMapper.fromDomain(messageNoParts).getHasAttachments()).isFalse();
+
+    }
+
+    private Message buildMessageSpyWithMockContent(int numPartsToFind) {
+
+        Message messageSpy = spy(new Message(messageId, IDENTIFIER, subject, senderEmail, receivedDate,
+                senderHost, messageSize, rawMessage, recipients, headers));
+
+        MessageContent contentMock = mock(MessageContent.class);
+        when(contentMock.findAttachmentParts(false)).thenReturn(nCopies(numPartsToFind, mock(MessageContentPart.class)));
+        doReturn(contentMock).when(messageSpy).getContent();
+        return messageSpy;
     }
 
     @Test
