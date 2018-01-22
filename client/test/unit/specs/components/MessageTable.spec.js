@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2017 Sparta Systems, Inc
+ * Copyright 2017 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,11 +92,13 @@ describe('MessageTable.vue', () => {
         expect(messages[0].querySelector('.item-sender-mail').textContent).to.equal('holdmail@spartasystems.com')
         expect(messages[0].querySelector('.item-recipients').textContent).to.equal('test@test.com')
         expect(messages[0].querySelector('.item-subject').textContent).to.equal('TEST')
+        expect(messages[0].querySelector('.item-has-attach .attach-icon').style.display).to.equal('none')
         expect(messages[1].querySelector('.item-id').textContent).to.equal('58')
         expect(messages[1].querySelector('.item-received-date').textContent).to.equal(msg2Date)
         expect(messages[1].querySelector('.item-sender-mail').textContent).to.equal('holdmail@spartasystems.com')
         expect(messages[1].querySelector('.item-recipients').textContent).to.equal('test@test.com')
         expect(messages[1].querySelector('.item-subject').textContent).to.equal('TEST')
+        expect(messages[1].querySelector('.item-has-attach .attach-icon').style.display).to.equal('')
 
         stub.restore()
 

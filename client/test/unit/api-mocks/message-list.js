@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2017 Sparta Systems, Inc
+ * Copyright 2017 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,6 @@
  ******************************************************************************/
 /*eslint-disable */
 export default [
-  {messageId: 57, receivedDate: 1490035247552, senderEmail: 'holdmail@spartasystems.com', recipients: 'test@test.com', subject: 'TEST'},
-  {messageId: 58, receivedDate: 1490035247552, senderEmail: 'holdmail@spartasystems.com', recipients: 'test@test.com', subject: 'TEST'}
+  {messageId: 57, receivedDate: 1490035247552, senderEmail: 'holdmail@spartasystems.com', recipients: 'test@test.com', subject: 'TEST', hasAttachments: false},
+  {messageId: 58, receivedDate: 1490035247552, senderEmail: 'holdmail@spartasystems.com', recipients: 'test@test.com', subject: 'TEST', hasAttachments: true}
 ]

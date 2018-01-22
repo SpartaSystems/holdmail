@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2017 Sparta Systems, Inc
+ * Copyright 2017 - 2018 Sparta Systems, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,19 +46,21 @@
         <thead>
         <tr>
             <th width="2%">ID</th>
-            <th width="8%">Received</th>
             <th width="15%">From</th>
             <th width="25%">Recipients</th>
-            <th width="50%">Subject</th>
+            <th width="49%">Subject</th>
+            <th width="1%"><span class="attach-icon fa fa-paperclip"></span></th>
+            <th width="8%">Received</th>
         </tr>
         </thead>
         <tbody>
           <tr v-for="item in items" @click="rowClick(item)">
             <td class="item-id" nowrap>{{ item.messageId }}</td>
-            <td class="item-received-date" nowrap>{{ item.receivedDate | date('%b %-d, %Y %r') }}</td>
             <td class="item-sender-mail" nowrap>{{ item.senderEmail }}</td>
             <td class="item-recipients">{{ item.recipients }}</td>
             <td class="item-subject">{{ item.subject }}</td>
+            <td class="item-has-attach"><span class="attach-icon fa fa-paperclip" v-show="item.hasAttachments"></span></td>
+            <td class="item-received-date" nowrap>{{ item.receivedDate | date('%b %-d, %Y %r') }}</td>
           </tr>
         </tbody>
       </table>
@@ -155,5 +157,6 @@ export default {
     background-color: #efefff;
     cursor: pointer;
 }
+
 </style>
 
