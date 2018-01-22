@@ -105,6 +105,16 @@ public class MessageControllerTest {
     }
 
     @Test
+    public void shouldDeleteMessage() {
+
+        final long ID = 345;
+        ResponseEntity response = messageControllerSpy.deleteMessage(ID);
+
+        Mockito.verify(messageServiceMock).deleteMessage(ID);
+        assertThat(response).isEqualTo(ResponseEntity.ok().build());
+    }
+
+    @Test
     public void shouldGetMessageContentHTML() {
 
         MessageSummary summaryMock = setupSpyToLoadMessageSummaryMock(900, null, "original_html");
