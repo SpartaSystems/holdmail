@@ -23,20 +23,28 @@ import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.response.MockMvcResponse;
 import io.restassured.module.mockmvc.response.ValidatableMockMvcResponse;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.hamcrest.CoreMatchers;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.context.WebApplicationContext;
+import sun.misc.IOUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
-import static io.restassured.module.mockmvc.RestAssuredMockMvc.*;
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.delete;
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.get;
 import static java.lang.System.currentTimeMillis;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.*;
@@ -242,6 +250,40 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    public void shouldFetchAttachmentContent() throws IOException {
+
+        final String FILENAME = "att-JP-ありがとうございます.png";
+        final int SIZE = 1247;
+        final String SHA256 = "bcfa8cf2ed578694299bff3ba0a7b0fca9aef58459199fcb0e68b00f936201a6";
+
+        final String recipient = generateRecipient("attachment-endpoint");
+        smtpClient.sendResourceEmail(TESTRESOURCE_I18N_WITH_ATTACH, FROM_EMAIL, recipient);
+
+        final int messageId = verifySingleHitAndGetMessageId(recipient);
+
+        List<Map<String, String>> attachments = get(ENDPOINT_MESSAGES + "/" + messageId).then()
+                .extract().path("attachments");
+
+        Map<String, String> attAttrs = attachments.stream()
+                .filter(a -> FILENAME.equals(a.get("filename"))).findFirst()
+                .orElseThrow(() -> new AssertionError("Couldn't find '" + FILENAME + "' in attachment list"));
+
+
+        InputStream as = get(ENDPOINT_MESSAGES + "/" + messageId + "/att/" + attAttrs.get("attachmentId"))
+                .then().assertThat().statusCode(200)
+                .assertThat().header("Content-Type", attAttrs.get("contentType"))
+                .assertThat().header("Content-Disposition", "attachment; filename=\"" + FILENAME + "\";")
+                .extract().asInputStream();
+
+        byte[] content = org.apache.commons.io.IOUtils.toByteArray(as);
+        String sha256 = DigestUtils.sha256Hex(content);
+
+        assertThat(content.length).as("attachment content was the wrong length").isEqualTo(SIZE);
+        assertThat(sha256).as("attachment checksum mismatch").isEqualTo(SHA256);
+
+    }
+
+    @Test
     public void shouldBeAbleToDeleteAnEmail() {
 
         String recipient = generateRecipient("msg-summary");
@@ -258,10 +300,6 @@ public class MessageControllerIntegrationTest extends BaseIntegrationTest {
 
         get(queryURIForRecipient).then().assertThat().body("messages.size()", equalTo(0));
     }
-
-    // TODO: integration coverage for
-    // TODO: message ContentId fetch
-    // TODO: attachment content fetch
 
     private List<Pair<String, String>> sendMailToRandomRecipients(int numMails) {
 

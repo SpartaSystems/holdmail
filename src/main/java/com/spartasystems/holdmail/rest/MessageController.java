@@ -66,7 +66,7 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/{messageId}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteMessageContent(@PathVariable("messageId") long messageId) {
+    public ResponseEntity deleteMessage(@PathVariable("messageId") long messageId) {
         messageService.deleteMessage(messageId);
         return ResponseEntity.ok().build();
     }
