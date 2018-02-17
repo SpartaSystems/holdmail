@@ -1,8 +1,22 @@
 ![HoldMail](docs/images/holdmail-header.png "HoldMail")
 
-### HoldMail - A fake SMTP relay server.
+### HoldMail - A fake SMTP relay server
 
 [![Build Status](https://travis-ci.org/SpartaSystems/holdmail.svg?branch=master)](https://travis-ci.org/SpartaSystems/holdmail) &nbsp; [![Download](https://api.bintray.com/packages/spartasystems/HoldMail/holdmail/images/download.svg) ](https://bintray.com/spartasystems/HoldMail/holdmail/_latestVersion)
+
+## Release 2.0 Is Out!
+
+The latest release of holdmail brings several improvements:
+
+* Support for attachments
+* Multilingual support
+* A new UI (We're now using VueJS as the UI framework)
+* Direct linking to emails in the UI
+* Many miscellaneous bugfixes
+
+For a full list of changes, [see the CHANGELOG](CHANGELOG.md). 
+
+## What is Holdmail?
 
 Instead of spamming real users (or worse - customers) while you test your applications, HoldMail offers the following: 
 
