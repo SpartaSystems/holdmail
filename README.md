@@ -4,17 +4,18 @@
 
 [![Build Status](https://travis-ci.org/SpartaSystems/holdmail.svg?branch=master)](https://travis-ci.org/SpartaSystems/holdmail) &nbsp; [![Download](https://api.bintray.com/packages/spartasystems/HoldMail/holdmail/images/download.svg) ](https://bintray.com/spartasystems/HoldMail/holdmail/_latestVersion)
 
-## Release 2.0 Is Out!
+## Release 2.0 Available!
 
 The latest release of holdmail brings several improvements:
 
 * Support for attachments
 * Multilingual support
-* A new UI (We're now using VueJS as the UI framework)
+* A new UI (We're now using [Vue.js](https://vuejs.org/) as the UI framework)
 * Direct linking to emails in the UI
 * Many miscellaneous bugfixes
 
-For a full list of changes, [see the CHANGELOG](CHANGELOG.md). 
+For the list of issues included in this release, [see the CHANGELOG](CHANGELOG.md). 
+
 
 ## What is Holdmail?
 
@@ -27,13 +28,13 @@ Instead of spamming real users (or worse - customers) while you test your applic
 
 ### Screenshots
 
-[![Mail List](docs/images/screenshots/mail-list-small.png)](docs/images/screenshots/mail-list.png)
-_Mail List_
+#### Mail List
+![Mail List](docs/images/screenshots/mail-list.png?raw=true "Mail List")
 
-[![Mail Preview](docs/images/screenshots/html-preview-small.png)](docs/images/screenshots/html-preview.png)
-_HTML Content Preview_
+#### Mail Preview
+![Mail List](docs/images/screenshots/mail-preview.png?raw=true "Mail Preview")
 
-## Run It
+## Installation
 
 If you just want to try it out, grab and install the RPM from the 'rpm' folder here:  [![Download](https://api.bintray.com/packages/spartasystems/HoldMail/holdmail/images/download.svg) ](https://bintray.com/spartasystems/HoldMail/holdmail/_latestVersion)  
 
@@ -51,6 +52,13 @@ It's now ready to use!  Without any configuration, HoldMail does the following:
 * Similarly, the REST API will be available at [http://localhost:8080/rest/messages](http://localhost:8080/rest/messages)
 * A [H2](http://www.h2database.com/) embedded database will be created in holdmail's home directory (/opt/holdmail).
 
+## Upgrading
+
+Running a new distibution of holdmail will automatically apply any needed changes to the attached database. 
+
+:heavy_exclamation_mark: It's still always a good idea to **make a backup** first!  If you just ran holdmail without configuring anything, that's going to be the H2 database file at ``$HOME/holdmail.mv.db``. 
+
+
 ### REST API
 
 | Endpoint&nbsp;Description | Method | URI | Request/Response |
@@ -61,9 +69,10 @@ It's now ready to use!  Without any configuration, HoldMail does the following:
 | Get message text body | GET | **/rest/messages/{id}/text** | **Response**: 200, text/plain: the text body if one was present, 404 otherwise. |
 | Get message HTML body | GET | **/rest/messages/{id}/html** | **Response**: 200, text/html: the HTML body if one was present, HTTP 404 otherwise. Any embedded content in the HTML will be replaced with a URI to the 'embedded content' endpoint (next)  |
 | Get embedded content | GET | **/rest/messages/{id}/content/{cid}** |  **Response**: 200, The embedded content with identifier 'cid' will be served with its related content type |
+| Get attachment (new in 2.0) | GET | **/rest/messages/{id}/att/{att_id}** | **Response**: 200 with the headers and content associated with the referenced attachment ID (the attachment ID is found in the ``attachments[]`` array in the **/rest/messages/{id}** response. |
 | Forward message | POST | **/rest/messages/{id}/forward** | **Request**: application/json: The recipient email, in the format: <code>{"recipient":"herp@derp.com"}</code>. <br/><br/>**Response**: 202 on acceptance. |
 
-## Configure It
+## Configuration
 
 If using the RPM deployment, HoldMail will look for an optional file called <code>/etc/holdmail.properties</code> which it will use to override its default configuration.  
 
@@ -130,7 +139,7 @@ To release forwarded mails from HoldMail to the real world, you'll need to confi
 
 ## Run It From Source
 
-HoldMail's backend is a [Spring Boot](http://projects.spring.io/spring-boot) application, exposing a REST API and SMTP server.  The UI is built with [Vue](https://vuejs.org/). 
+HoldMail's backend is a [Spring Boot](http://projects.spring.io/spring-boot) application, exposing a REST API and SMTP server.  The UI is built with [Vue.js](https://vuejs.org/). 
 
 ### You'll Need:
 
