@@ -30,7 +30,6 @@
 - Add ability to delete emails via the REST api [\#54](https://github.com/SpartaSystems/holdmail/issues/54)
 - Address Security Issue For "ejs" NPM module [\#49](https://github.com/SpartaSystems/holdmail/issues/49)
 - Publish CONTRIBUTING guide to repository [\#16](https://github.com/SpartaSystems/holdmail/issues/16)
-- ----- [\#7](https://github.com/SpartaSystems/holdmail/issues/7)
 
 
 

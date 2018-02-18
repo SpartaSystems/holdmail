@@ -38,8 +38,9 @@ fi
 github_changelog_generator \
     -u spartasystems \
     -p holdmail \
-    -o ../CHANGELOG.md \
+    -o ../../CHANGELOG.md \
     --no-pull-requests \
+    --no-unreleased \
     --since-tag 1.0.0 \
     --header-label "# HoldMail Changelog"
 

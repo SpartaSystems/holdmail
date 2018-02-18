@@ -11,3 +11,13 @@ There are some prerequisites to releasing the application that need to happen.
 ## Executing a Release
 
 Releases are executed via a release plugin in gradle, `./gradlew clean release`.  Once that's done, using your configured bintray account the release will be available there, and the repository tagged.
+
+## Updating Documentation
+
+- Update the README.md with the news of the new release!
+- Use [generate-changelog.sh](docs/docutils/generate-changelog.sh) to generate a new CHANGELOG.md
+    - Tip: Mark any junk issues you wish to exclude as 'invalid'
+- Use [](docs/docutils/send-sample-emails.py) to generate fake email data
+    - Useful for making new screenshots
+
+    
