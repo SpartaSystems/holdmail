@@ -17,7 +17,7 @@ Releases are executed via a release plugin in gradle, `./gradlew clean release`.
 - Update the README.md with the news of the new release!
 - Use [generate-changelog.sh](docs/docutils/generate-changelog.sh) to generate a new CHANGELOG.md
     - Tip: Mark any junk issues you wish to exclude as 'invalid'
-- Use [](docs/docutils/send-sample-emails.py) to generate fake email data
+- Use [send-sample-emails.py](docs/docutils/send-sample-emails.py) to generate fake email data
     - Useful for making new screenshots
 
     
