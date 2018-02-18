@@ -109,6 +109,7 @@ rat {
             '**/*.iml',
             'README.md',
             'CONTRIBUTING.md',
+            'CHANGELOG.md',
             'RELEASE.md',
             'Dockerfile',
             '.github/*',
