@@ -20,4 +20,11 @@ Releases are executed via a release plugin in gradle, `./gradlew clean release`.
 - Use [send-sample-emails.py](docs/docutils/send-sample-emails.py) to generate fake email data
     - Useful for making new screenshots
 
-    
+## Deploying Docker Image
+
+Pre-requisites:
+1. Ensure you have logged in to the docker registry, `docker login spartasystems-docker-containers.bintray.io`
+
+Execution:
+1. Checkout the tag created in the release
+2. Run `./gradlew build docker dockerPush`  
