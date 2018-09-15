@@ -183,6 +183,24 @@ describe('MessageDetail.vue', () => {
         expectSelectedTab(false, false, 'Original Content', done)
       })
     })
+
+    describe('XSS', () => {
+      it('all iframes are sandboxed', (done) => {
+        stubMessageDetailSuccess(message1)
+
+        comp = getMountedComponent()
+
+        Vue.nextTick(() => {
+          const sandboxedIFrames = Array.from(comp.$el.querySelectorAll('iframe'))
+            .filter(iframe => iframe.hasAttribute('sandbox'))
+
+          // currently 2 iframes on the message detail view
+          expect(sandboxedIFrames).to.have.length(2)
+
+          done()
+        })
+      })
+    })
   })
 
   describe('Behavior', () => {

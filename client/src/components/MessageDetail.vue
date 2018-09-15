@@ -68,14 +68,14 @@
       <b-tabs :no-fade="true" ref="tabs">
         <b-tab id="html-body" title="HTML Body" :disabled="!message.messageHasBodyHTML">
             <!-- <mail-metadata :message="message"></mail-metadata> -->
-            <iframe class="mail-summary-content mail-summary-content-html" :srcdoc="messageHTML"></iframe>
+            <iframe class="mail-summary-content mail-summary-content-html" :srcdoc="messageHTML" sandbox=""></iframe>
         </b-tab>
         <b-tab id="html-text" title="Text Body" :disabled="!message.messageHasBodyText">
             <!-- <mail-metadata :message="message"></mail-metadata> -->
             <div class="mail-summary-content mail-summary-content-pre">{{message.messageBodyText}}</div>
         </b-tab>
         <b-tab id="original-message" title="Original Content">
-          <iframe class="mail-summary-content mail-summary-content-pre mail-summary-content-raw" :src="messageRawEndpoint"></iframe>
+          <iframe class="mail-summary-content mail-summary-content-pre mail-summary-content-raw" :src="messageRawEndpoint" sandbox=""></iframe>
         </b-tab>
       </b-tabs>
     </b-card>
