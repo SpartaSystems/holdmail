@@ -1,5 +1,12 @@
 # HoldMail Changelog
 
+## [2.0.1](https://github.com/spartasystems/holdmail/tree/2.0.1) (2018-09-15)
+[Full Changelog](https://github.com/spartasystems/holdmail/compare/2.0.0...2.0.1)
+
+**Fixed bugs:**
+
+- Clicking on registration email notification via holdmail, showing xss script [\#81](https://github.com/SpartaSystems/holdmail/issues/81)
+
 ## [2.0.0](https://github.com/spartasystems/holdmail/tree/2.0.0) (2018-01-31)
 [Full Changelog](https://github.com/spartasystems/holdmail/compare/1.0.0...2.0.0)
 
