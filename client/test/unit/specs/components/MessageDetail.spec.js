@@ -203,7 +203,6 @@ describe('MessageDetail.vue', () => {
     })
   })
 
-
   describe('Behavior', () => {
     describe('Forwarding', () => {
       it('can forward an email to another address', (done) => {
