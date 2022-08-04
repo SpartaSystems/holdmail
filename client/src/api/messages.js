@@ -21,11 +21,13 @@ import axios from 'axios'
 const MESSAGES_ENDPOINT = '/rest/messages'
 
 export default {
-  getMessageList (size, page, recipientEmail) {
+  getMessageList (size, page, recipientEmail, subject) {
     let params = { size, page }
 
     if (recipientEmail) {
       params.recipient = recipientEmail
+    } else if (subject) {
+      params.subject = subject
     }
 
     return axios.get(MESSAGES_ENDPOINT, { params })

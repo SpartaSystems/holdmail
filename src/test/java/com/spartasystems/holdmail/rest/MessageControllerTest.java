@@ -87,9 +87,9 @@ public class MessageControllerTest {
 
         MessageList expectedMessages = new MessageList(messageMocks);
 
-        when(messageServiceMock.findMessages(EMAIL, pageableMock)).thenReturn(expectedMessages);
+        when(messageServiceMock.findMessages(EMAIL, null, pageableMock)).thenReturn(expectedMessages);
 
-        assertThat(messageControllerSpy.getMessages(EMAIL, pageableMock)).isEqualTo(expectedMessages);
+        assertThat(messageControllerSpy.getMessages(EMAIL, null, pageableMock)).isEqualTo(expectedMessages);
     }
 
     @Test

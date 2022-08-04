@@ -70,12 +70,15 @@ public class MessageService {
         return messageMapper.toDomain(entity);
     }
 
-    public MessageList findMessages(@Null @Email String recipientEmail, Pageable pageRequest) {
+    public MessageList findMessages(@Null @Email String recipientEmail, String subject, Pageable pageRequest) {
 
         List<MessageEntity> entities;
 
-        if (StringUtils.isBlank(recipientEmail)) {
+        if (StringUtils.isBlank(recipientEmail) && StringUtils.isBlank(subject)) {
             entities = messageRepository.findAllByOrderByReceivedDateDesc(pageRequest);
+        }
+        else if (StringUtils.isBlank(recipientEmail)) {
+            entities = messageRepository.findAllForSubjectDateDesc(subject, pageRequest);
         }
         else {
             entities = messageRepository.findAllForRecipientOrderByReceivedDateDesc(recipientEmail, pageRequest);

@@ -35,6 +35,9 @@ public interface MessageRepository extends CrudRepository<MessageEntity, Long> {
     @Query("SELECT m FROM MessageEntity m join m.recipients r where r.recipientEmail = :recipientEmail order by  m.receivedDate desc")
     List<MessageEntity> findAllForRecipientOrderByReceivedDateDesc(@Param("recipientEmail") String recipientEmail, Pageable pageable);
 
+    @Query("select m from MessageEntity m where m.subject like %:subject% order by m.receivedDate desc")
+    List<MessageEntity> findAllForSubjectDateDesc(@Param("subject") String subject, Pageable pageable);
+
     Stream<MessageEntity> findBySubject(String subject, Pageable pageable);
 
     Stream<MessageEntity> findBySenderEmail(String senderEmail, Pageable pageable);

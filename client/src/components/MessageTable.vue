@@ -19,23 +19,21 @@
 <template>
   <div id="mailCriteriaAndResults" class="col-lg-12">
     <div id="mailCriteria" class="mt-4">
-        <form>
-            <div class="input-group">
-                <span class="input-group-addon text-white bg-primary">Recipient Email</span>
-
-                <input id="mainSearchTxt" type="text" class="form-control"
-                       placeholder="Enter full email address: e.g. homer@simpson.com"
-                       v-model="recipientEmail"
-                       @keyup.enter="clearAndFetchMessages" />
-
-                <span class="input-group-btn">
-                    <button id="mainSearchBut" class="btn btn-success" type="button"
-                            @click="clearAndFetchMessages">
-                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search!
+      <form>
+        <div class="input-group">
+          <b-dropdown id="dropdown-1" :text="dropdownTitle">
+            <b-dropdown-item @click="recipientClicked">Recipient Email</b-dropdown-item>
+            <b-dropdown-item @click="subjectClicked">Subject</b-dropdown-item>
+          </b-dropdown>
+          <input id="mainSearchTxt" type="text" class="form-control" placeholder="Enter subject" v-model="subject" @keyup.enter="clearAndFetchMessages" v-if="currentSearchBar == 'subject'" />
+          <input id="mainSearchTxt" type="text" class="form-control" placeholder="Enter recipient email" v-model="recipientEmail" @keyup.enter="clearAndFetchMessages" v-if="currentSearchBar == 'recipientEmail'"  />
+          <span class="input-group-btn">
+                    <button id="mainSearchBut" class="btn btn-success" type="button" @click="clearAndFetchMessages">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search!
                     </button>
-                </span>
-            </div>
-        </form>
+          </span>
+        </div>
+      </form>
     </div>
 
     <div id="mailResults">
@@ -45,30 +43,30 @@
              infinite-scroll-distance="10">
         <thead>
         <tr>
-            <th width="2%">ID</th>
-            <th width="15%">From</th>
-            <th width="25%">Recipients</th>
-            <th width="49%">Subject</th>
-            <th width="1%"><span class="attach-icon fa fa-paperclip"></span></th>
-            <th width="8%">Received</th>
+          <th width="2%">ID</th>
+          <th width="15%">From</th>
+          <th width="25%">Recipients</th>
+          <th width="49%">Subject</th>
+          <th width="1%"><span class="attach-icon fa fa-paperclip"></span></th>
+          <th width="8%">Received</th>
         </tr>
         </thead>
         <tbody>
-          <tr v-for="item in items" @click="rowClick(item)">
-            <td class="item-id" nowrap>{{ item.messageId }}</td>
-            <td class="item-sender-mail" nowrap>{{ item.senderEmail }}</td>
-            <td class="item-recipients">{{ item.recipients }}</td>
-            <td class="item-subject">{{ item.subject }}</td>
-            <td class="item-has-attach"><span class="attach-icon fa fa-paperclip" v-show="item.hasAttachments"></span></td>
-            <td class="item-received-date" nowrap>{{ item.receivedDate | date('%b %-d, %Y %r') }}</td>
-          </tr>
+        <tr v-for="item in items" @click="rowClick(item)">
+          <td class="item-id" nowrap>{{ item.messageId }}</td>
+          <td class="item-sender-mail" nowrap>{{ item.senderEmail }}</td>
+          <td class="item-recipients">{{ item.recipients }}</td>
+          <td class="item-subject">{{ item.subject }}</td>
+          <td class="item-has-attach"><span class="attach-icon fa fa-paperclip" v-show="item.hasAttachments"></span></td>
+          <td class="item-received-date" nowrap>{{ item.receivedDate | date('%b %-d, %Y %r') }}</td>
+        </tr>
         </tbody>
       </table>
 
       <div class="progress" v-show="busy">
         <div class="progress-bar" role="progressbar" aria-valuenow="70"
              aria-valuemin="0" aria-valuemax="100" style="width:100%">
-            Fetching...
+          Fetching...
         </div>
       </div>
 
@@ -101,7 +99,10 @@ export default {
       page: 0,
       size: 40,
       recipientEmail: '',
-      selectedMail: {}
+      subject: '',
+      selectedMail: {},
+      dropdownTitle: 'Recipient Email',
+      currentSearchBar: 'recipientEmail'
     }
   },
   mounted () {
@@ -113,6 +114,16 @@ export default {
     }
   },
   methods: {
+    recipientClicked () {
+      this.currentSearchBar = 'recipientEmail'
+      this.dropdownTitle = 'Recipient Email'
+      this.subject = ''
+    },
+    subjectClicked () {
+      this.currentSearchBar = 'subject'
+      this.dropdownTitle = 'Subject'
+      this.recipientEmail = ''
+    },
     clearAndFetchMessages () {
       this.items = []
       this.page = 0
@@ -127,7 +138,7 @@ export default {
 
       this.busy = true
 
-      messagesApi.getMessageList(this.size, this.page, this.recipientEmail)
+      messagesApi.getMessageList(this.size, this.page, this.recipientEmail, this.subject)
         .then((response) => {
           const messages = response.data.messages
 
@@ -154,8 +165,8 @@ export default {
 }
 
 #mailResults .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
-    background-color: #efefff;
-    cursor: pointer;
+  background-color: #efefff;
+  cursor: pointer;
 }
 
 </style>

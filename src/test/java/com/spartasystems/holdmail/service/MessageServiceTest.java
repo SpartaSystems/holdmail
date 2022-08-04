@@ -104,8 +104,8 @@ public class MessageServiceTest {
         when(messageRepositoryMock.findAllByOrderByReceivedDateDesc(pageableMock)).thenReturn(entities);
         when(messageListMapper.toMessageList(entities)).thenReturn(messageListMock);
 
-        assertThat(messageService.findMessages(null, pageableMock)).isEqualTo(messageListMock);
-        assertThat(messageService.findMessages("", pageableMock)).isEqualTo(messageListMock);
+        assertThat(messageService.findMessages(null, null, pageableMock)).isEqualTo(messageListMock);
+        assertThat(messageService.findMessages("", null, pageableMock)).isEqualTo(messageListMock);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class MessageServiceTest {
                 .thenReturn(entities);
         when(messageListMapper.toMessageList(entities)).thenReturn(messageListMock);
 
-        assertThat(messageService.findMessages(SENDER_EMAIL, pageableMock)).isEqualTo(messageListMock);
+        assertThat(messageService.findMessages(SENDER_EMAIL, null, pageableMock)).isEqualTo(messageListMock);
     }
 
     @Test

@@ -60,9 +60,9 @@ public class MessageController {
     @RequestMapping()
     public MessageList getMessages(
             @RequestParam(name = "recipient", required = false) @Email String recipientEmail,
-            Pageable pageRequest) {
+            @RequestParam(name = "subject", required = false) String subject, Pageable pageRequest) {
 
-        return messageService.findMessages(recipientEmail, pageRequest);
+        return messageService.findMessages(recipientEmail, subject, pageRequest);
     }
 
     @RequestMapping(value = "/{messageId}", method = RequestMethod.DELETE)
