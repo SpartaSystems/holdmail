@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ################################################################################
-version: '2'
+version: '3.8'
 services:
   mysql:
     image: mysql
@@ -26,14 +26,27 @@ services:
       - MYSQL_DATABASE=holdmail
       - MYSQL_USER=holdmail
       - MYSQL_PASSWORD=password
+    ports:
+      - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
   holdmail:
-    image: spartasystems-docker-containers.bintray.io/sparta/holdmail
+    image: artifactory-docker.r53.stratas.net:5411/sparta/holdmail
     container_name: holdmail
     hostname: holdmail
     ports:
       - "8080:8080"
       - "25000:25000"
     volumes:
+      - "./scripts:/custom"
       - "./assets/etc/holdmail.properties:/etc/holdmail.properties"
-    links:
-      - mysql
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 30s
+      retries: 10
